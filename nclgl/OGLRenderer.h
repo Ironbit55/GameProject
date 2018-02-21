@@ -105,6 +105,8 @@ public:
 	virtual void	UpdateScene(float msec);
 	void			SwapBuffers();
 
+	void	ClearBuffers();
+
 	bool			HasInitialised() const;	
 	
 	static void		DrawDebugLine  (DebugDrawMode mode, const Vector3 &from,const Vector3 &to,const Vector3 &fromColour = Vector3(1,1,1),const Vector3 &toColour = Vector3(1,1,1));

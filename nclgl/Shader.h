@@ -39,14 +39,22 @@ public:
 		return !loadFailed;
 	}
 	bool	LinkProgram();
+
+	bool UsingDefaultShader() const {
+		return usingBackupShader;
+	}
 protected:
 	bool	LoadShaderFile(string from, string &into);
 	GLuint	GenerateShader(string from, GLenum type);
 	void	SetDefaultAttributes();
+
+	void	LoadDefaultShader();
 	
+	//sets the number of shader files the shader can hold / manage
 	GLuint	objects[3];
 	GLuint	program;
 
+	bool usingBackupShader;
 	bool	loadFailed;
 
 	string	vertexName;

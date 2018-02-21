@@ -52,6 +52,8 @@ public:
 	static Mesh*	GenerateQuad();
 	static Mesh*	GenerateQuadAlt();
 
+	static Mesh* LoadMeshFile(const string &filename);
+
 	//Sets the Mesh's diffuse map. Takes an OpenGL texture 'name'
 	void	SetTexture(GLuint tex)	{texture = tex;}
 	//Gets the Mesh's diffuse map. Returns an OpenGL texture 'name'

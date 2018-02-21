@@ -56,6 +56,7 @@ OGLRenderer::OGLRenderer(Window &window)	{
 	pfd.cStencilBits	= 8;				//plus an 8 bit stencil buffer
    	pfd.iLayerType		= PFD_MAIN_PLANE;
 
+	
 	GLuint		PixelFormat;
 	if (!(PixelFormat=ChoosePixelFormat(deviceContext,&pfd)))		{	// Did Windows Find A Matching Pixel Format for our PFD?
 		std::cout << "OGLRenderer::OGLRenderer(): Failed to choose a pixel format!" << std::endl;
@@ -242,6 +243,10 @@ void OGLRenderer::SetCurrentShader(Shader*s) {
 	currentShader = s;
 
 	glUseProgram(s->GetProgram());
+}
+
+void	OGLRenderer::ClearBuffers() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void OGLRenderer::SetTextureRepeating( GLuint target, bool repeating )	{

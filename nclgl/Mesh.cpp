@@ -303,6 +303,65 @@ Mesh* Mesh::GenerateQuadAlt()	{
 	return m;
 }
 
+//addition from graphics coursework
+
+Mesh*	Mesh::LoadMeshFile(const string &filename) {
+	ifstream f(filename);
+
+	if (!f) {
+		cout << "\nWarning: could not load mesh from file:" <<  filename << endl;
+		return NULL;
+	}
+
+	Mesh*m = new Mesh();
+	f >> m->numVertices;
+
+	int hasTex = 0;
+	int hasColour = 0;
+
+	f >> hasTex;
+	f >> hasColour;
+
+	m->vertices = new Vector3[m->numVertices];
+
+	if (hasTex) {
+		m->textureCoords = new Vector2[m->numVertices];
+		m->colours = new Vector4[m->numVertices];
+	}
+
+	for (unsigned int i = 0; i < m->numVertices; ++i) {
+		f >> m->vertices[i].x;
+		f >> m->vertices[i].y;
+		f >> m->vertices[i].z;
+	}
+
+	if (hasColour) {
+		for (unsigned int i = 0; i < m->numVertices; ++i) {
+			unsigned char r, g, b, a;
+
+			f >> r;
+			f >> g;
+			f >> b;
+			f >> a;
+			//OpenGL can use floats for colours directly - this will take up 4x as
+			//much space, but could avoid any byte / float conversions happening
+			//behind the scenes in our shader executions
+			m->colours[i] = Vector4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+		}
+	}
+
+	if (hasTex) {
+		for (unsigned int i = 0; i < m->numVertices; ++i) {
+			f >> m->textureCoords[i].x;
+			f >> m->textureCoords[i].y;
+		}
+	}
+
+	m->BufferData();
+	return m;
+}
+//end
+
 void	Mesh::BufferData()	{
 	//GenerateNormals();
 	//GenerateTangents();
