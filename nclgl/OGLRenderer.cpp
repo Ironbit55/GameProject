@@ -140,7 +140,7 @@ OGLRenderer::OGLRenderer(Window &window)	{
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 #endif
 
-	glClearColor(0.0f,0.0f,0.0f,1.0f);
+	glClearColor(0.392f, 0.584f, 0.96f, 1.0f);
 
 	currentShader = 0;							//0 is the 'null' object name for shader programs...
 
