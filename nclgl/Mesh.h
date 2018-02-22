@@ -20,6 +20,9 @@ _-_-_-_-_-_-_-""  ""
 
 #include "OGLRenderer.h"
 #include <vector>
+#include <string>
+
+using std::string;
 
 //A handy enumerator, to determine which member of the bufferObject array
 //holds which data
@@ -40,9 +43,12 @@ public:
 	virtual ~Mesh(void);
 
 	virtual void Draw();
+	
+	static Mesh* LoadMeshFile(const string& filename);
 
 	//Generates a single triangle, with RGB colours
 	static Mesh*	GenerateTriangle();
+
 
 	static Mesh*	GenerateCone(float segments);
 	static Mesh*	TestTriangle(float texRotation);
@@ -52,7 +58,6 @@ public:
 	static Mesh*	GenerateQuad();
 	static Mesh*	GenerateQuadAlt();
 
-	static Mesh* LoadMeshFile(const string &filename);
 
 	//Sets the Mesh's diffuse map. Takes an OpenGL texture 'name'
 	void	SetTexture(GLuint tex)	{texture = tex;}

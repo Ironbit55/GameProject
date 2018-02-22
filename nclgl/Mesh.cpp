@@ -305,7 +305,7 @@ Mesh* Mesh::GenerateQuadAlt()	{
 
 //addition from graphics coursework
 
-Mesh*	Mesh::LoadMeshFile(const string &filename) {
+Mesh* Mesh::LoadMeshFile(const string& filename) {
 	ifstream f(filename);
 
 	if (!f) {
