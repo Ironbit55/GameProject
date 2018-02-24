@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\SOIL\$(Configuration)\;..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,9 +114,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="SDLRenderer.h" />
     <ClInclude Include="SdlWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SDLRenderer.cpp" />
     <ClCompile Include="SdlWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

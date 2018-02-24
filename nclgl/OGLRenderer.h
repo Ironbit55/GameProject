@@ -98,12 +98,17 @@ class Shader;
 class OGLRenderer	{
 public:
 	friend class Window;
-	OGLRenderer(Window &parent);
+	OGLRenderer();
 	virtual ~OGLRenderer(void);
 
 	virtual void	RenderScene()		= 0;
+	//used to initilise opengl context
+	virtual bool	Init() = 0;
+	//renderer specific way to swap buffers
+	virtual void	SwapBuffers() = 0;
+
 	virtual void	UpdateScene(float msec);
-	void			SwapBuffers();
+	bool InitDebugRenderer();
 
 	void	ClearBuffers();
 
@@ -131,6 +136,7 @@ protected:
 
 	void			SetShaderLight(const Light &l);
 
+	void			DrawDebug();
 	void			DrawDebugPerspective(Matrix4*matrix = 0);
 	void			DrawDebugOrtho(Matrix4*matrix = 0);
 
@@ -142,18 +148,18 @@ protected:
 	Matrix4 viewMatrix;		//View matrix
 	Matrix4 textureMatrix;	//Texture matrix
 
-	int		width;			//Render area width (not quite the same as window width)
-	int		height;			//Render area height (not quite the same as window height)
-	bool	init;			//Did the renderer initialise properly?
+	static int		width;			//Render area width (not quite the same as window width)
+	static int		height;			//Render area height (not quite the same as window height)
+	bool	initialised;			//Did the renderer initialise properly?
 
-	HDC		deviceContext;	//...Device context?
-	HGLRC	renderContext;	//Permanent Rendering Context
+	static void OGLRenderer::BasicResizeFunc(int x, int y);
 
 	static DebugDrawData* orthoDebugData;
 	static DebugDrawData* perspectiveDebugData;
 
 	static OGLRenderer*	  debugDrawingRenderer;
 	static Shader*		  debugDrawShader;
+
 
 #ifdef _DEBUG
 	static void CALLBACK DebugCallback(GLuint source, GLuint type,GLuint id, GLuint severity,

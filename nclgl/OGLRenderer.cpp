@@ -25,137 +25,26 @@ bool		   OGLRenderer::drawnDebugOrtho			= false;
 bool		   OGLRenderer::drawnDebugPerspective	= false;
 
 
+int	OGLRenderer::width = 0;	//Render area width (not quite the same as window width)
+int	OGLRenderer::height = 0;	//Render area height (not quite the same as window height)
+
+void OGLRenderer::BasicResizeFunc(int x, int y) {
+	OGLRenderer::width = x;
+	OGLRenderer::height = y;
+	glViewport(0, 0, OGLRenderer::width, OGLRenderer::height);
+}
+
+
 /*
 Creates an OpenGL 3.2 CORE PROFILE rendering context. Sets itself
 as the current renderer of the passed 'parent' Window. Not the best
 way to do it - but it kept the Tutorial code down to a minimum!
 */
-OGLRenderer::OGLRenderer(Window &window)	{
-	init					= false;
+OGLRenderer::OGLRenderer()	{
+	initialised = false;
 	drawnDebugOrtho			= false;
 	drawnDebugPerspective	= false;
-
-	HWND windowHandle = window.GetHandle();
-
-	// Did We Get A Device Context?
-	if (!(deviceContext=GetDC(windowHandle)))		{					
-		std::cout << "OGLRenderer::OGLRenderer(): Failed to create window!" << std::endl;
-		return;
-	}
-	
-	//A pixel format descriptor is a struct that tells the Windows OS what type of front / back buffers we want to create etc
-	PIXELFORMATDESCRIPTOR pfd;
-	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-
-	pfd.nSize			= sizeof(PIXELFORMATDESCRIPTOR);
-	pfd.nVersion		= 1; 
-   	pfd.dwFlags			= PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;   //It must be double buffered, it must support OGL(!), and it must allow us to draw to it...
-   	pfd.iPixelType		= PFD_TYPE_RGBA;	//We want our front / back buffer to have 4 channels!
-   	pfd.cColorBits		= 32;				//4 channels of 8 bits each!
-   	pfd.cDepthBits		= 24;				//24 bit depth buffer
-	pfd.cStencilBits	= 8;				//plus an 8 bit stencil buffer
-   	pfd.iLayerType		= PFD_MAIN_PLANE;
-
-	
-	GLuint		PixelFormat;
-	if (!(PixelFormat=ChoosePixelFormat(deviceContext,&pfd)))		{	// Did Windows Find A Matching Pixel Format for our PFD?
-		std::cout << "OGLRenderer::OGLRenderer(): Failed to choose a pixel format!" << std::endl;
-		return;
-	}
-
-	if(!SetPixelFormat(deviceContext,PixelFormat,&pfd))			{		// Are We Able To Set The Pixel Format?
-		std::cout << "OGLRenderer::OGLRenderer(): Failed to set a pixel format!" << std::endl;
-		return;
-	}
-
-	HGLRC		tempContext;		//We need a temporary OpenGL context to check for OpenGL 3.2 compatibility...stupid!!!
-	if (!(tempContext=wglCreateContext(deviceContext)))				{	// Are We Able To get the temporary context?
-		std::cout << "OGLRenderer::OGLRenderer(): Cannot create a temporary context!" << std::endl;
-		wglDeleteContext(tempContext);
-		return;
-	}
-
-	if(!wglMakeCurrent(deviceContext,tempContext))					{	// Try To Activate The Rendering Context
-		std::cout << "OGLRenderer::OGLRenderer(): Cannot set temporary context!" << std::endl;
-		wglDeleteContext(tempContext);
-		return;
-	}
-
-	//Now we have a temporary context, we can find out if we support OGL 3.x
-	char* ver = (char*)glGetString(GL_VERSION); // ver must equal "3.2.0" (or greater!)
-	int major = ver[0] - '0';		//casts the 'correct' major version integer from our version string
-	int minor = ver[2] - '0';		//casts the 'correct' minor version integer from our version string
-
-	if(major < 3) {					//Graphics hardware does not support OGL 3! Erk...
-		std::cout << "OGLRenderer::OGLRenderer(): Device does not support OpenGL 3.x!" << std::endl;
-		wglDeleteContext(tempContext);
-		return;
-	}
-
-	if(major == 3 && minor < 2) {	//Graphics hardware does not support ENOUGH of OGL 3! Erk...
-		std::cout << "OGLRenderer::OGLRenderer(): Device does not support OpenGL 3.2!" << std::endl;
-		wglDeleteContext(tempContext);
-		return;
-	}
-	//We do support OGL 3! Let's set it up...
-
-	int attribs[] = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, major,	//TODO: Maybe lock this to 3? We might actually get an OpenGL 4.x context...
-        WGL_CONTEXT_MINOR_VERSION_ARB, minor, 
-		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 
-#ifdef OPENGL_DEBUGGING 
-		| WGL_CONTEXT_DEBUG_BIT_ARB
-#endif		//No deprecated stuff!! DIE DIE DIE glBegin!!!!
-		,WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,		//We want everything OpenGL 3.2 provides...
-		0					//That's enough attributes...
-    };
-
-	//Everywhere else in the Renderers, we use function pointers provided by GLEW...but we can't initialise GLEW yet! So we have to use the 'Wiggle' API
-	//to get a pointer to the function that will create our OpenGL 3.2 context...
-	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC) wglGetProcAddress("wglCreateContextAttribsARB");
-	renderContext = wglCreateContextAttribsARB(deviceContext,0, attribs);
-
-	// Check for the context, and try to make it the current rendering context
-	if(!renderContext || !wglMakeCurrent(deviceContext,renderContext))		{			
-		std::cout << "OGLRenderer::OGLRenderer(): Cannot set OpenGL 3 context!" << std::endl;	//It's all gone wrong!
-		wglDeleteContext(renderContext);
-		wglDeleteContext(tempContext);
-		return;
-	}
-
-	wglDeleteContext(tempContext);	//We don't need the temporary context any more!
-
-	glewExperimental = GL_TRUE;	//This forces GLEW to give us function pointers for everything (gets around GLEW using 'old fashioned' methods
-								//for determining whether a OGL context supports a particular function or not
-	
-	if (glewInit() != GLEW_OK) {	//Try to initialise GLEW
-		std::cout << "OGLRenderer::OGLRenderer(): Cannot initialise GLEW!" << std::endl;	//It's all gone wrong!
-		return;
-	}
-	//If we get this far, everything's going well!
-
-#ifdef OPENGL_DEBUGGING
-	//PFNWGLCREATECONTEXTATTRIBSARBPROC glDebugMessageCallbackTEMP = (PFNWGLCREATECONTEXTATTRIBSARBPROC) wglGetProcAddress("glDebugMessageCallbackARB");
-	glDebugMessageCallbackARB(&OGLRenderer::DebugCallback, NULL);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-#endif
-
-	glClearColor(0.392f, 0.584f, 0.96f, 1.0f);
-
 	currentShader = 0;							//0 is the 'null' object name for shader programs...
-
-	window.SetRenderer(this);					//Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)
-
-	if(!debugDrawingRenderer) {
-		debugDrawShader		 = new Shader(SHADERDIR"/DebugVertex.glsl", SHADERDIR"DebugFragment.glsl");
-		orthoDebugData		 = new DebugDrawData();
-		perspectiveDebugData = new DebugDrawData();
-		debugDrawingRenderer = this;	
-		
-		if(!debugDrawShader->LinkProgram()) {
-			return;
-		}
-	}
 }
 
 /*
@@ -166,7 +55,6 @@ OGLRenderer::~OGLRenderer(void)	{
 	delete perspectiveDebugData;
 	delete currentShader;
 	delete debugDrawShader;
-	wglDeleteContext(renderContext);
 }
 
 /*
@@ -174,7 +62,7 @@ Returns TRUE if everything in the constructor has gone to plan.
 Check this to end the application if necessary...
 */
 bool OGLRenderer::HasInitialised() const{
-	return init;
+	return initialised;
 }
 
 /*
@@ -194,21 +82,24 @@ every frame, at the end of RenderScene(), or whereever appropriate for
 your application.
 */
 void OGLRenderer::SwapBuffers() {
-	if(debugDrawingRenderer == this) {
-		if(!drawnDebugOrtho) {
-			DrawDebugOrtho();
+}
+
+bool OGLRenderer::InitDebugRenderer(){
+	if (!debugDrawingRenderer) {
+		debugDrawShader = new Shader(SHADERDIR"/DebugVertex.glsl", SHADERDIR"DebugFragment.glsl");
+		orthoDebugData = new DebugDrawData();
+		perspectiveDebugData = new DebugDrawData();
+		debugDrawingRenderer = this;
+
+		if (!debugDrawShader->LinkProgram()) {
+			std::cout << "Cannot create debug shader program!" << std::endl;
+			return false;
 		}
-		if(!drawnDebugPerspective) {
-			DrawDebugPerspective();
-		}
-		drawnDebugOrtho			= false;
-		drawnDebugPerspective	= false;
 	}
 
-	//We call the windows OS SwapBuffers on win32. Wrapping it in this 
-	//function keeps all the tutorial code 100% cross-platform (kinda).
-	::SwapBuffers(deviceContext);
+	return true;
 }
+
 /*
 Used by some later tutorials when we want to have framerate-independent
 updates on certain datatypes. Really, OGLRenderer should have its own
@@ -262,6 +153,7 @@ void OGLRenderer::SetShaderLight(const Light &l) {
 	glUniform1f(glGetUniformLocation(currentShader->GetProgram() , "lightRadius"),l.GetRadius());
 }
 
+
 #ifdef OPENGL_DEBUGGING
 void OGLRenderer::DebugCallback(GLuint source, GLuint type,GLuint id, GLuint severity,
 	int length, const char* message, void* userParam)	{
@@ -297,6 +189,19 @@ void OGLRenderer::DebugCallback(GLuint source, GLuint type,GLuint id, GLuint sev
 		cout << "OpenGL Debug Output: " + sourceName + ", " + typeName + ", " + severityName + ", " + string(message) << endl;
 }
 #endif
+
+void OGLRenderer::DrawDebug(){
+	if (debugDrawingRenderer == this) {
+		if (!drawnDebugOrtho) {
+			DrawDebugOrtho();
+		}
+		if (!drawnDebugPerspective) {
+			DrawDebugPerspective();
+		}
+		drawnDebugOrtho = false;
+		drawnDebugPerspective = false;
+	}
+}
 
 void	OGLRenderer::DrawDebugPerspective(Matrix4*matrix)  {
 	glUseProgram(debugDrawShader->GetProgram());

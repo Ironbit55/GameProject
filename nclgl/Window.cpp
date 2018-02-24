@@ -9,13 +9,13 @@ Mouse*Window::mouse			= NULL;
 //GameTimer*Window::timer		= NULL;
 
 Window::Window(std::string title, int sizeX, int sizeY, bool fullScreen)	{
-	renderer		= NULL;
 	window			= this;
 	forceQuit		= false;
 	init			= false;
 	mouseLeftWindow	= false;
 	lockMouse		= false;
 	showMouse		= true;
+	resizable		= true;
 
 	this->fullScreen = fullScreen;
 
@@ -114,16 +114,11 @@ HWND Window::GetHandle() {
 	return windowHandle;
 }
 
+
 bool Window::HasInitialised() {
 	return init;
 }
 
-void	Window::SetRenderer(OGLRenderer* r)	{
-	renderer = r;
-	if(r) {
-		renderer->Resize((int)size.x,(int)size.y);				
-	}
-}
 
 bool	Window::UpdateWindow() {
 	MSG		msg;
@@ -177,6 +172,8 @@ void Window::CheckMessages(MSG &msg)	{
 		}
 	}
 }
+
+
 
 LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)	{
     switch(message)	 {
@@ -244,13 +241,9 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 			keyboard->Sleep();
 		}break;
 		case(WM_SIZE): {
-			window->size.x = (float)LOWORD(lParam);
-			window->size.y = (float)HIWORD(lParam);
-			if(window->renderer) {
-				window->renderer->Resize(LOWORD(lParam),HIWORD(lParam));				
-			}
+			window->Resize(LOWORD(lParam), HIWORD(lParam));
 
-			if(window->init) {
+			if(window->init && !window->resizable) {
 				mouse->SetAbsolutePositionBounds(LOWORD(lParam),HIWORD(lParam));
 
 				POINT pt;
@@ -296,5 +289,18 @@ void	Window::ShowOSPointer(bool show)	{
 	}
 	else{
 		ShowCursor(0);
+	}
+}
+
+void Window::RegisterResizeCallback(ResizeCallbackFunction func) {
+	resizeListeners.push_back(func);
+	func((int)size.x, (int)size.y);
+}
+
+void Window::Resize(int width, int height) {
+	size.x = (float)width;
+	size.y = (float)height;
+	for (std::vector<ResizeCallbackFunction>::iterator i = resizeListeners.begin(); i != resizeListeners.end(); ++i) {
+		(*i)((int)size.x, (int)size.y);
 	}
 }

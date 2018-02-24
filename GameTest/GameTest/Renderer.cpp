@@ -1,12 +1,15 @@
 #include "Renderer.h"
 #include <GL/glew.h>
 
-Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
+Renderer::Renderer(SdlWindow &parent) : SDLRenderer(parent)	{
 	projMatrix = Matrix4::Perspective(1, 100, 1.33f, 45.0f);
-
 	viewMatrix = Matrix4::BuildViewMatrix(Vector3(0, 0, 0), Vector3(0, 0, -10));
+}
 
+bool Renderer::Init() {
+	SDLRenderer::Init();
 	glEnable(GL_DEPTH_TEST);
+	return true;
 }
 
 Renderer::~Renderer(void)	{
@@ -33,6 +36,7 @@ void	Renderer::Render(const RenderObject &o) {
 		Render(*(*i));
 	}
 }
+
 
 void	Renderer::UpdateScene(float msec) {
 	for(vector<RenderObject*>::iterator i = renderObjects.begin(); i != renderObjects.end(); ++i ) {

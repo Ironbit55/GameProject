@@ -4,7 +4,16 @@ class WinRenderer :
 	public OGLRenderer
 {
 public:
-	WinRenderer();
+	WinRenderer(Window &window); 
 	~WinRenderer();
+
+	bool Init() override;
+	void SwapBuffers() override;
+	
+private:
+	Window& window;
+	HWND windowHandle;
+	HDC		deviceContext;	//...Device context?
+	HGLRC	renderContext;	//Permanent Rendering Context
 };
 

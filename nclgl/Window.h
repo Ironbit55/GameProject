@@ -22,6 +22,12 @@ Description:Creates and handles the Window, including the initialisation of the 
 #define VC_EXTRALEAN
 #define WINDOWCLASS "WindowClass"
 
+//edit
+//I added the resize callback functionality from graphics to this
+//Author: Ed Curran
+
+typedef void(*ResizeCallbackFunction) (int x, int y);
+
 class OGLRenderer;
 
 class Window	{
@@ -31,9 +37,9 @@ public:
 
 	bool	UpdateWindow();	
 
-	void	SetRenderer(OGLRenderer* r);
-
 	HWND	GetHandle();
+
+	void RegisterResizeCallback(ResizeCallbackFunction func);
 
 	bool	HasInitialised();
 
@@ -49,6 +55,9 @@ public:
 
 protected:
 	void	CheckMessages(MSG &msg);
+
+	void Resize(int width, int height);
+
 	static LRESULT CALLBACK WindowProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam);
 
 	HWND			windowHandle;
@@ -59,13 +68,12 @@ protected:
 
 	GameTimer*	timer;
 
-	OGLRenderer*		renderer;
-
 	bool				forceQuit;
 	bool				init;
 	bool				fullScreen;
 	bool				lockMouse;
 	bool				showMouse;
+	bool				resizable;
 
 	Vector2				position;
 	Vector2				size;
@@ -73,4 +81,6 @@ protected:
 	float				elapsedMS;
 
 	bool				mouseLeftWindow;
+
+	std::vector<ResizeCallbackFunction> resizeListeners;
 };

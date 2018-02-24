@@ -3,6 +3,7 @@
 #include <string>
 #include <stdio.h>
 #include <iostream>
+#include <../../nclgl/Window.h>
 using namespace std;
 
 class SdlWindow
@@ -15,9 +16,7 @@ public:
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
-		if(mainContext){
-			SDL_GL_DeleteContext(mainContext);
-		}
+
 	}
 
 	/*
@@ -25,15 +24,17 @@ public:
 	 */
 	bool init();
 
-	/*
-	 * set up the opengl render context for this window to use
-	 */
-	bool createRenderContext();
+	void registerResizeCallback(ResizeCallbackFunction func);
+
 	/*
 	 * gets the underlying sdl_window
 	 */
 	SDL_Window* getWindow() const { return window; }
-private:
+
+	void resize(const int w, const int h);
+
+	void handleEvent(SDL_Event& e);
+protected:
 	string title;
 	int width, height;
 	bool fullScreen;
@@ -41,8 +42,7 @@ private:
 
 	SDL_Window* window = nullptr;
 
-	// Our opengl context handle
-	SDL_GLContext mainContext;
+	std::vector<ResizeCallbackFunction> resizeListeners;
 
 };
 

@@ -15,38 +15,34 @@ bool SdlWindow::init(){
 	return true;
 }
 
-bool SdlWindow::createRenderContext(){
-	if(!window){
-		printf("Could not create render context! Window is not initialised: \n");
-		return false;
+void SdlWindow::registerResizeCallback(const ResizeCallbackFunction func) {
+	resizeListeners.push_back(func);
+	func(width, height);
+}
+
+void SdlWindow::resize(const int w, const  int h) {
+	width = w;
+	height = h;
+	
+	//call our resize callbacks
+	for (std::vector<ResizeCallbackFunction>::iterator i = resizeListeners.begin(); i != resizeListeners.end(); ++i) {
+		(*i)(width, height);
 	}
+}
 
-	// Set our OpenGL version.
-	// we want the core context: SDL_GL_CONTEXT_CORE so deprecated functions are disabled
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-	//using version 3.2, modern opengl so we have shader etc
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
-	// Turn on double buffering with a 24bit Z buffer.
-	// this is actuially on by default
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	mainContext = SDL_GL_CreateContext(window);
-
-	if (mainContext == NULL){
-		printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
-		return false;
+void SdlWindow::handleEvent(SDL_Event& e){
+	//Window event occured
+	if (e.type == SDL_WINDOWEVENT){
+		switch (e.window.event)
+		{
+			//Get new dimensions and repaint on window size change
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				width = e.window.data1;
+				height = e.window.data2;
+				resize(width, height);
+				break;
+		}
 	}
-
-	// This makes our buffer swap syncronized with the monitor's vertical refresh
-	SDL_GL_SetSwapInterval(1);
-
-	//could initialise glew here?
-
-	//I guess everything is good if we make it here
-	return true;
 }
 
 
