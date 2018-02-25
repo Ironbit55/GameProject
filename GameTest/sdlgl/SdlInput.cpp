@@ -16,5 +16,6 @@ SdlInput::~SdlInput()
 
 void SdlInput::handleEvent(SDL_Event& e){
 	if (inputMapper.addSdlKeyEvent(e)) { return; }
+
 	//handle controller events
 }

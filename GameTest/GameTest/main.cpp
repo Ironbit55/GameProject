@@ -9,6 +9,7 @@
 #include "../sdlgl/SdlInputMapper.h"
 #include "../sdlgl/SdlInput.h"
 #include "../sdlgl/GameController.h"
+#include "../sdlgl/GameControllerContainer.h"
 
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
@@ -28,7 +29,7 @@ bool initSDL() {
 	bool success = true;
 
 	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
 	{
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		success = false;
@@ -102,8 +103,10 @@ int main(int argc, char* args[]) {
 	initInput(inputMapper);
 	SdlInput sdlInput = SdlInput(inputMapper);
 
-	GameController* gameController = new GameController(0);
-	GameController* gameController2 = new GameController(1);
+	GameControllerContainer controllerContainer = GameControllerContainer();
+	/*GameController* gameController = new GameController();
+	GameController* gameController2 = new GameController();*/
+
 
 	Mesh*	m = Mesh::LoadMeshFile("cube.asciimesh");
 	Shader* s = new Shader("basicvert.glsl", "basicFrag.glsl");
@@ -131,33 +134,25 @@ int main(int argc, char* args[]) {
 
 			}
 
-			if(e.type == SDL_CONTROLLERBUTTONDOWN){
-				if(gameController->buttonEventBelongsToController(e)){
-					cout << "button down on controller 0\n";
-				}
 
-				if (gameController2->buttonEventBelongsToController(e)) {
-					cout << "button down on controller 1\n";
-				}
-			}
-
-			if (e.type == SDL_CONTROLLERDEVICEADDED) {
-				cout << "controller added with which id:" + std::to_string(e.cdevice.which) + "\n";
-				
-			}
-
-			if (e.type == SDL_KEYDOWN) {
-				if(e.key.keysym.sym == SDLK_c){
-					cout << "adding controller...";
-					delete gameController;
-					gameController = new GameController(0);
-				}
-			}
-
+			controllerContainer.handleEvent(e);
 			sdlInput.handleEvent(e);
 			w.handleEvent(e);
 		}
+		controllerContainer.update();
 
+		if(controllerContainer.getController(0).buttonTriggered(SDL_CONTROLLER_BUTTON_A)){
+			cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controllerContainer.getController(0).getJoystickId()) + "\n";
+			controllerContainer.getController(0).rumble();
+		}
+		if (controllerContainer.getController(0).buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
+			cout << "Y button down! game controller 1: joystick id = " + std::to_string(controllerContainer.getController(0).getJoystickId()) + "\n";
+		}
+		if (controllerContainer.getController(1).buttonTriggered(SDL_CONTROLLER_BUTTON_X)) {
+			cout << "X button triggered! game controller 2: joystick id = " + std::to_string(controllerContainer.getController(1).getJoystickId()) + "\n";
+			controllerContainer.getController(1).rumble();
+		}
+		
 		inputMapper.dispatch();
 
 		float msec = timer.GetTimedMS();
@@ -189,8 +184,7 @@ int main(int argc, char* args[]) {
 		inputMapper.clearMappedInput();
 	}
 
-	delete gameController;
-	delete gameController2;
+
 	delete m;
 	delete s;
 

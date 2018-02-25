@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameController.h" />
+    <ClInclude Include="GameControllerContainer.h" />
     <ClInclude Include="SdlInput.h" />
     <ClInclude Include="SdlInputMapper.h" />
     <ClInclude Include="SDLRenderer.h" />
@@ -122,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="GameControllerContainer.cpp" />
     <ClCompile Include="SdlInput.cpp" />
     <ClCompile Include="SdlInputMapper.cpp" />
     <ClCompile Include="SDLRenderer.cpp" />

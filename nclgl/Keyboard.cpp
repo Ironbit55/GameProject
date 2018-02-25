@@ -65,7 +65,7 @@ Updates the keyboard state with data received from the OS.
 void Keyboard::Update(RAWINPUT* raw)	{
 	if(isAwake)	{
 		DWORD key = (DWORD)raw->data.keyboard.VKey;
-
+	
 		//We should do bounds checking!
 		if(key < 0 || key > KEYBOARD_MAX)	{
 			return;
