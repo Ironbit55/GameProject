@@ -75,18 +75,15 @@ bool MappedInput::getRange(InputCooked::Ranges rangeId, float& outRange){
 }
 
 void MappedInput::clear(){
-	//could do this with ZeroMemory apparently
-	for (int i = 0; i < InputCooked::getNumActions(); i++){
-		actions[i] = false;
-	}
+	//memset is cross platform right?
+	memset(actions, 0, InputCooked::getNumActions() * sizeof(bool));
+	memset(states, 0, InputCooked::getNumStates() * sizeof(bool));
+	memset(ranges, 0, InputCooked::getNumRanges() * sizeof(bool));
 
-	for (int i = 0; i < InputCooked::getNumStates(); i++) {
-		states[i] = false;
-	}
+	memset(rangeValues, 0, InputCooked::getNumRanges() * sizeof(float));
 
-	for (int i = 0; i < InputCooked::getNumRanges(); i++) {
-		ranges[i] = false;
-		rangeValues[i] = 0.0f;
-	}
+	//for (int i = 0; i < InputCooked::getNumRanges(); i++) {
+	//	rangeValues[i] = 0.0f;
+	//}
 
 }

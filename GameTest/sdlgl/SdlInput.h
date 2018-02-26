@@ -1,15 +1,20 @@
 #pragma once
 #include <SDL.h>
-#include "SdlInputMapper.h"
+#include "SdlInputManager.h"
+#include "GameControllerContainer.h"
 
 class SdlInput
 {
 public:
-	SdlInput(SdlInputMapper& inputMapper);
+	SdlInput(SdlInputManager& inputManager);
 	~SdlInput();
 
+	void update();
 	void handleEvent(SDL_Event &e);
+
+	GameControllerContainer& getControllerContainer() { return controllerContainer; }
 private:
-	SdlInputMapper& inputMapper;
+	SdlInputManager& inputManager;
+	GameControllerContainer controllerContainer;
 };
 

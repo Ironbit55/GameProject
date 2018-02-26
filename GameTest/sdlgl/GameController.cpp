@@ -157,6 +157,10 @@ bool GameController::buttonReleased(const SDL_GameControllerButton button){
 	return buttonWasDownState[button] && !buttonState[button];
 }
 
+int GameController::axisValue(SDL_GameControllerAxis axis){
+	return axisState[axis];
+}
+
 void GameController::printButtonState(){
 	std::cout << "controller " << joystickId << "state: ";
 	for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++) {

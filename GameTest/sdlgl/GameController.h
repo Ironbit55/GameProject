@@ -51,7 +51,11 @@ public:
 	bool buttonHeld(SDL_GameControllerButton button);
 	bool buttonTriggered(SDL_GameControllerButton button);
 	bool buttonReleased(SDL_GameControllerButton button);
+
+	int axisValue(SDL_GameControllerAxis axis);
 	void printButtonState();
+
+	
 private:
 	SDL_GameController* gameController;
 	SDL_Haptic* controllerHaptic;

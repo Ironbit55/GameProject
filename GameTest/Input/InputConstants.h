@@ -3,11 +3,16 @@ struct InputRaw{
 	//our raw input types
 
 	static const int BUTTON_ID = 1000;
-	enum Buttons{
+	enum Buttons {
 		BUTTON_KEY_W = BUTTON_ID,
 		BUTTON_KEY_A,
 		BUTTON_KEY_S,
 		BUTTON_KEY_D,
+
+		BUTTON_CONTROLLER_BUTTON_A,
+		BUTTON_CONTROLLER_BUTTON_B,
+		BUTTON_CONTROLLER_BUTTON_X,
+		BUTTON_CONTROLLER_BUTTON_Y,
 		
 		
 		MAX_BUTTON
@@ -18,6 +23,8 @@ struct InputRaw{
 		AXIS_PAD_X = AXIS_ID,
 		AXIS_PAD_Y,
 		
+		AXIS_CONTROLLER_AXIS_LEFTX,
+		AXIS_CONTROLLER_AXIS_LEFTY,
 		
 		MAX_AXIS
 	};
@@ -51,6 +58,7 @@ struct InputCooked {
 	enum Actions
 	{
 		ACTION_JUMP  = ACTION_ID,
+		ACTION_CONTROLLER_X,
 		
 		
 		MAX_ACTION,
@@ -64,6 +72,8 @@ struct InputCooked {
 		STATE_MOVE_DOWN,
 		STATE_MOVE_RIGHT,
 
+		STATE_CONTROLLER_A,
+		STATE_CONTROLLER_X,
 		
 		MAX_STATE,
 	};
@@ -73,6 +83,9 @@ struct InputCooked {
 	{
 		RANGE_DIRECTION_VERTICAL = RANGE_ID,
 		RANGE_DIRECTION_HORIZONTAL,
+
+		RANGE_CONTROLLER_LEFT_X,
+		RANGE_CONTROLLER_LEFT_Y,
 
 
 		MAX_RANGE,

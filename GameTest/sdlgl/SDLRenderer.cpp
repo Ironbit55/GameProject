@@ -9,7 +9,9 @@ SDLRenderer::~SDLRenderer(){
 	// Delete our OpengL context
 	SDL_GL_DeleteContext(mainContext);
 }
-
+/*
+ * as we are using SDL this actually should be cross platform... hopefully
+ */
 void SDLRenderer::SwapBuffers(){
 	DrawDebug();
 	SDL_GL_SwapWindow(window.getWindow());
@@ -42,6 +44,11 @@ bool SDLRenderer::Init(){
 	// This makes our buffer swap syncronized with the monitor's vertical refresh
 	SDL_GL_SetSwapInterval(1);
 
+	window.registerResizeCallback(BasicResizeFunc); //Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)	
+
+	//could refactor initialising GLEW into core OGLRenderer
+	//in fact everything from here down could be pushed into OGLRenderer as it stands
+
 	glewExperimental = GL_TRUE;	//This forces GLEW to give us function pointers for everything (gets around GLEW using 'old fashioned' methods
 								//for determining whether a OGL context supports a particular function or not
 
@@ -51,17 +58,11 @@ bool SDLRenderer::Init(){
 	}
 
 
-
-
-	window.registerResizeCallback(BasicResizeFunc);//Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)		
-
 	glClearColor(0.392f, 0.584f, 0.96f, 1.0f);
 
 	InitDebugRenderer();
 
 	initialised = true;
-
-	//could initialise glew here?
 
 	//I guess everything is good if we make it here
 	return true;

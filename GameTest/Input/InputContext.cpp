@@ -113,12 +113,12 @@ bool InputContext::mapButtonInput(int buttonId, bool keyRepeat, MappedInput& map
 }
 
 bool InputContext::mapAxesInput(int axisId, float value, MappedInput& mappedInput){
-	if(InputRaw::isAxis(axisId)){
+	if(!InputRaw::isAxis(axisId)){
 		printf("could not map axis, raw input with id: %i is not a valid axis\n", axisId);
 		return false;
 	}
 
-	bool success = false;
+	
 
 	//constructing this iterator will have some performance hit so try to avoid it...
 	std::map<int, int>::iterator i;
@@ -128,9 +128,9 @@ bool InputContext::mapAxesInput(int axisId, float value, MappedInput& mappedInpu
 		//found
 		//add the state this button maps to to our mapped input object
 		mappedInput.addRange(mappedInputId, value);
-		success = true;
+		return true;
 	}
 
-	return success;
+	return false;;
 }
 

@@ -117,6 +117,7 @@
     <ClInclude Include="GameController.h" />
     <ClInclude Include="GameControllerContainer.h" />
     <ClInclude Include="SdlInput.h" />
+    <ClInclude Include="SdlInputManager.h" />
     <ClInclude Include="SdlInputMapper.h" />
     <ClInclude Include="SDLRenderer.h" />
     <ClInclude Include="SdlWindow.h" />
@@ -125,6 +126,7 @@
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="GameControllerContainer.cpp" />
     <ClCompile Include="SdlInput.cpp" />
+    <ClCompile Include="SdlInputManager.cpp" />
     <ClCompile Include="SdlInputMapper.cpp" />
     <ClCompile Include="SDLRenderer.cpp" />
     <ClCompile Include="SdlWindow.cpp" />

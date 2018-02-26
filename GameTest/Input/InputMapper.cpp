@@ -43,17 +43,8 @@ void InputMapper::clearMappedInput(){
 }
 
 void InputMapper::clear(){
-	//coudl zero key state after every tick / poll
-	//shouldn't actually make a difference
-	for (int i = 0; i < InputRaw::getNumButtons(); i++) {
-		buttonState[i] = false;
-		buttonWasDownState[i] = false;
-	}
-
-	for (int i = 0; i < InputRaw::getNumAxes(); i++) {
-		axesState[i] = false;
-		axesValues[i] = 0.0f;
-	}
+	memset(buttonState, 0, InputRaw::getNumButtons() * sizeof(bool));
+	memset(buttonWasDownState, 0, InputRaw::getNumButtons() * sizeof(bool));
 
 	mappedInput.clear();
 }

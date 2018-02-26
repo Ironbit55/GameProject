@@ -112,11 +112,13 @@
   <ItemGroup>
     <ClInclude Include="InputConstants.h" />
     <ClInclude Include="InputContext.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputMapper.h" />
     <ClInclude Include="MappedInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputContext.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InputMapper.cpp" />
     <ClCompile Include="MappedInput.cpp" />
   </ItemGroup>

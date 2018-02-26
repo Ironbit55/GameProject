@@ -10,6 +10,8 @@
 #include "../sdlgl/SdlInput.h"
 #include "../sdlgl/GameController.h"
 #include "../sdlgl/GameControllerContainer.h"
+#include "../Input/InputManager.h"
+#include "../sdlgl/SdlInputManager.h"
 
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
@@ -77,7 +79,7 @@ bool initSDL() {
 /*
  * sdl has a custom main we need to use as entry point 
  */
-bool initInput(InputMapper& mapper) {
+bool initInput(SdlInputManager& inputManager) {
 	InputContext context = InputContext(true);
 
 	
@@ -86,8 +88,25 @@ bool initInput(InputMapper& mapper) {
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_A, InputCooked::States::STATE_MOVE_LEFT);
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_S, InputCooked::States::STATE_MOVE_DOWN);
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_D, InputCooked::States::STATE_MOVE_RIGHT);
+
 	
-	mapper.addInputContext("test", context);
+	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "keyboard", context);
+	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER1);
+
+	InputContext controllerInputContext = InputContext(true);
+
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_A, InputCooked::States::STATE_CONTROLLER_A);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_X, InputCooked::States::STATE_CONTROLLER_X);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_X, InputCooked::Actions::ACTION_CONTROLLER_X);
+	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTX, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X);
+	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTY, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y);
+
+	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "controller", controllerInputContext);
+	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER1);
+
+	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER2, "controller", controllerInputContext);
+	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER2);
+	
 	return true;
 }
 int main(int argc, char* args[]) {
@@ -98,12 +117,11 @@ int main(int argc, char* args[]) {
 	Renderer r(w);
 	r.Init();
 
+	SdlInputManager inputManager;
 	
-	SdlInputMapper inputMapper;
-	initInput(inputMapper);
-	SdlInput sdlInput = SdlInput(inputMapper);
+	initInput(inputManager);
+	SdlInput sdlInput = SdlInput(inputManager);
 
-	GameControllerContainer controllerContainer = GameControllerContainer();
 	/*GameController* gameController = new GameController();
 	GameController* gameController2 = new GameController();*/
 
@@ -134,12 +152,12 @@ int main(int argc, char* args[]) {
 
 			}
 
-
-			controllerContainer.handleEvent(e);
 			sdlInput.handleEvent(e);
 			w.handleEvent(e);
 		}
-		controllerContainer.update();
+		sdlInput.update();
+
+		GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
 
 		if(controllerContainer.getController(0).buttonTriggered(SDL_CONTROLLER_BUTTON_A)){
 			cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controllerContainer.getController(0).getJoystickId()) + "\n";
@@ -153,35 +171,91 @@ int main(int argc, char* args[]) {
 			controllerContainer.getController(1).rumble();
 		}
 		
-		inputMapper.dispatch();
+		inputManager.performMapping();
 
 		float msec = timer.GetTimedMS();
 
 		o.SetModelMatrix(o.GetModelMatrix() * Matrix4::Rotation(0.1f * msec, Vector3(0, 0, 1)));
 
-		if (inputMapper.getMappedInput().getAction(InputCooked::Actions::ACTION_JUMP)) {
+		MappedInput& player1MappedInput = inputManager.getMappedInput(InputActors::INPUT_ACTOR_PLAYER1);
+		if (player1MappedInput.getAction(InputCooked::Actions::ACTION_JUMP)) {
 			cout << "Action Jump";
 		}
 
-		if(inputMapper.getMappedInput().getState(InputCooked::States::STATE_MOVE_UP)){
+		if(player1MappedInput.getState(InputCooked::States::STATE_MOVE_UP)){
 			cout << "Move Up";
 		}
-		if (inputMapper.getMappedInput().getState(InputCooked::States::STATE_MOVE_DOWN)) {
+		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_DOWN)) {
 			cout << "Move Down";
 		}
-		if (inputMapper.getMappedInput().getState(InputCooked::States::STATE_MOVE_LEFT)) {
+		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_LEFT)) {
 			cout << "Move Left";
 		}
-		if (inputMapper.getMappedInput().getState(InputCooked::States::STATE_MOVE_RIGHT)) {
+		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_RIGHT)) {
 			cout << "Move Right";
 		}
+
+
+
+		//controllers test
+
+		//player 1
+		if (player1MappedInput.getState(InputCooked::States::STATE_CONTROLLER_A)) {
+			cout << "Player 1: Controller State A" << endl;
+		}
+
+		if (player1MappedInput.getState(InputCooked::States::STATE_CONTROLLER_X)) {
+			cout << "Player 1: Controller State X" << endl;
+		}
+
+		if (player1MappedInput.getAction(InputCooked::Actions::ACTION_CONTROLLER_X)) {
+			cout << "Player 1: Controller Action X" << endl;
+		}
+
+		float xRange = -1.0f;
+		if (player1MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X, xRange)) {
+			cout << "Player 1: Controller Range LEFTX = " << xRange << endl;
+		}
+
+		//float yRange = -1.0f;
+		//if (player1MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y, yRange)) {
+		//	cout << "Player 1: Controller Range LEFTY = " << yRange << endl;
+		//}
+
+		
+		//player 2
+		MappedInput& player2MappedInput = inputManager.getMappedInput(InputActors::INPUT_ACTOR_PLAYER2);
+
+		if (player2MappedInput.getState(InputCooked::States::STATE_CONTROLLER_A)) {
+			cout << "Player 2: Controller State A" << endl;
+		}
+
+		if (player2MappedInput.getState(InputCooked::States::STATE_CONTROLLER_X)) {
+			cout << "Player 2: Controller State X" << endl;
+		}
+
+		if (player2MappedInput.getAction(InputCooked::Actions::ACTION_CONTROLLER_X)) {
+			cout << "Player 2: Controller Action X" << endl;
+		}
+
+		xRange = -1.0f;
+		if (player2MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X, xRange)) {
+			cout << "Player 2: Controller Range LEFTX = " << xRange << endl;
+		}
+
+		//yRange = -1.0f;
+		//if (player2MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y, yRange)) {
+		//	cout << "Player 2: Controller Range LEFTY = " << yRange << endl;
+		//}
+
+	
 		
 		r.UpdateScene(msec);
 		r.ClearBuffers();
 		r.RenderScene();
 		r.SwapBuffers();
 		
-		inputMapper.clearMappedInput();
+		inputManager.clearMappedInput();
 	}
 
 
