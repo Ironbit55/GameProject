@@ -27,6 +27,9 @@ protected:
 	std::vector<InputContext> inputContexts;
 	MappedInput mappedInput;
 
+	//ToDo: actually don't bother maintaing state here.
+	//just add to mappedInput as we go?
+
 	bool buttonState[InputRaw::getNumButtons()];			//is the button down?
 	bool buttonWasDownState[InputRaw::getNumButtons()];		//was the button down in the previous tick / poll
 	float axesValues[InputRaw::getNumAxes()];				//what is axes value
