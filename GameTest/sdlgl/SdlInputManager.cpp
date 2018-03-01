@@ -90,6 +90,10 @@ void SdlInputManager::addSdlGameControllerState(InputActors actor, GameControlle
 	}
 }
 
+float SdlInputManager::normaliseSdlAxisValue(int value){
+	return 0.0f;
+}
+
 bool SdlInputManager::mapSdlKeyToButton(SDL_Keycode keycode, InputRaw::Buttons& outButtonId) {
 	i = sdlKeyMap.find(keycode);
 

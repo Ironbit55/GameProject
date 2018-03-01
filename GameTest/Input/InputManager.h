@@ -52,6 +52,8 @@ public:
 	InputManager();
 	~InputManager();
 
+	void loadFromFile(std::string fileName);
+
 	void clearRawInput();
 	void clearMappedInput();
 

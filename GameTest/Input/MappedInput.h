@@ -16,6 +16,10 @@ public:
 	bool getState(InputCooked::States stateId);
 	bool getRange(InputCooked::Ranges rangeId, float& outRange);
 
+	bool consumeAction(InputCooked::Actions actionId);
+	bool consumeState(InputCooked::States stateId);
+	bool consumeRange(InputCooked::Ranges rangeId, float& outRange);
+
 	void clear();
 protected:
 	//std::vector<int> actions;

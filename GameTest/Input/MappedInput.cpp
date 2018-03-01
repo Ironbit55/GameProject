@@ -74,6 +74,34 @@ bool MappedInput::getRange(InputCooked::Ranges rangeId, float& outRange){
 	return false;
 }
 
+bool MappedInput::consumeAction(InputCooked::Actions actionId){
+	bool result = actions[actionId - InputCooked::ACTION_ID];
+	//destroy action
+	actions[actionId - InputCooked::ACTION_ID] = false;
+	return result;
+}
+
+bool MappedInput::consumeState(InputCooked::States stateId){
+	bool result = states[stateId - InputCooked::STATE_ID];
+	states[stateId - InputCooked::STATE_ID] = false;
+	return result;
+}
+
+bool MappedInput::consumeRange(InputCooked::Ranges rangeId, float & outRange){
+	int rangeIndex = rangeId - InputCooked::RANGE_ID;
+	if (ranges[rangeIndex]) {
+		outRange = rangeValues[rangeIndex];
+
+		//destroy range
+		ranges[rangeIndex] = false;
+		rangeValues[rangeIndex] = 0.0f;
+
+		return true;
+	}
+
+	return false;
+}
+
 void MappedInput::clear(){
 	//memset is cross platform right?
 	memset(actions, 0, InputCooked::getNumActions() * sizeof(bool));

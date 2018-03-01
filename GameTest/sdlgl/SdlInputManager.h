@@ -33,6 +33,8 @@ public:
 
 	
 	void addSdlGameControllerState(InputActors actor, GameController& controller);
+
+	float normaliseSdlAxisValue(int value);
 protected:
 	bool mapSdlKeyToButton(SDL_Keycode keycode, InputRaw::Buttons& outButtonId);
 	bool mapSdlControllerButtonToButton(SDL_GameControllerButton controllerButton, InputRaw::Buttons& outButtonId);

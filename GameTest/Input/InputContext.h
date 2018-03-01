@@ -17,6 +17,8 @@ public:
 	InputContext(bool active = false) : active(active){}
 	~InputContext();
 
+	bool loadFromFile(std::string fileName);
+
 	void setRawInputs(int rawInputs[MAX_INPUTS]);
 
 	/*
@@ -56,7 +58,10 @@ protected:
 	std::map<int, int> buttonToActionMap;
 	std::map<int, int> buttonToStateMap;
 	std::map<int, int> axisToRangeMap;
-	//std::map<int, int> inputMap;
+
+	std::map<InputRaw::Axes, float> axisToSensitivityMap;
+	
+
 	int rawInputs[MAX_INPUTS];
 	
 
