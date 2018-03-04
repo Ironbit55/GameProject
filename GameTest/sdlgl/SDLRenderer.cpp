@@ -42,7 +42,7 @@ bool SDLRenderer::Init(){
 	}
 
 	// This makes our buffer swap syncronized with the monitor's vertical refresh
-	SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(0);
 
 	window.registerResizeCallback(BasicResizeFunc); //Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)	
 

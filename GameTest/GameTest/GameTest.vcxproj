@@ -121,10 +121,14 @@
     <ClCompile Include="main_sdl.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
+    <ClCompile Include="SpriteRenderable.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="SpriteRenderable.h" />
+    <ClInclude Include="SpriteRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

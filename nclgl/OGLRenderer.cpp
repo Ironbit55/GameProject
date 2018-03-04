@@ -29,8 +29,8 @@ int	OGLRenderer::width = 0;	//Render area width (not quite the same as window wi
 int	OGLRenderer::height = 0;	//Render area height (not quite the same as window height)
 
 void OGLRenderer::BasicResizeFunc(int x, int y) {
-	OGLRenderer::width = x;
-	OGLRenderer::height = y;
+	OGLRenderer::width = max(x, 1);
+	OGLRenderer::height = max(y, 1);
 	glViewport(0, 0, OGLRenderer::width, OGLRenderer::height);
 }
 

@@ -67,6 +67,138 @@ void Mesh::Draw()	{
 		glBindVertexArray(0);	
 }
 
+
+Mesh* Mesh::GenerateSpriteBatch(int maxNumSprites) {
+	Mesh*m = new Mesh();
+	m->type = GL_TRIANGLES;
+	m->maxNumSprites = maxNumSprites;
+
+	//4 unique vertices per quad
+	//but 6 indices per quad as we can't use triangle strips
+	m->numVertices = maxNumSprites * 4;
+	m->numIndices = maxNumSprites * 6;
+
+
+	m->vertices = new Vector3[m->numVertices];
+	m->textureCoords = new Vector2[m->numVertices];
+	m->colours = new Vector4[m->numVertices];
+	m->normals = new Vector3[m->numVertices];
+	m->tangents = new Vector3[m->numVertices];
+	m->indices = new unsigned int[m->numIndices];
+
+	m->BufferData(GL_DYNAMIC_DRAW);
+
+	m->numSpritesFilled = 0;
+	return m;
+}
+
+bool Mesh::addSprite(Matrix4 modelMatrix, Vector4 colour, GLuint spriteTexture) {
+	if (spriteTexture != texture || numSpritesFilled == maxNumSprites) {
+		return false;
+	}
+
+	unsigned int vertexOffset = numSpritesFilled * 4;
+	unsigned int indexOffset = numSpritesFilled * 6;
+
+
+
+	//this is slightly faster than the overloaded matrix * vec3 implementation
+	vertices[vertexOffset + 0] = modelMatrix.getTransformedVec3(Vector3(-1.0f, -1.0f, 0.0f)); //bottom left
+	vertices[vertexOffset + 1] = modelMatrix.getTransformedVec3(Vector3(1.0f, -1.0f, 0.0f)); //bottom right
+	vertices[vertexOffset + 2] = modelMatrix.getTransformedVec3(Vector3(-1.0f, 1.0f, 0.0f)); //top left
+	vertices[vertexOffset + 3] = modelMatrix.getTransformedVec3(Vector3(1.0f, 1.0f, 0.0f)); //top right
+
+	indices[indexOffset + 0] = vertexOffset + 0;	//bottom left
+	indices[indexOffset + 1] = vertexOffset + 1;	//bottom right
+	indices[indexOffset + 2] = vertexOffset + 2;	//top left
+
+	indices[indexOffset + 3] = vertexOffset + 1;	//bottom right
+	indices[indexOffset + 4] = vertexOffset + 3;	//top right
+	indices[indexOffset + 5] = vertexOffset + 2;	//top left
+
+	textureCoords[vertexOffset + 0] = Vector2(0.0f, 1.0f);
+	textureCoords[vertexOffset + 1] = Vector2(1.0f, 1.0f);
+	textureCoords[vertexOffset + 2] = Vector2(0.0f, 0.0f);
+	textureCoords[vertexOffset + 3] = Vector2(1.0f, 0.0f);
+
+
+	for (int i = 0; i < 4; i++) {
+		colours[vertexOffset + i] = colour;
+		normals[vertexOffset + i] = Vector3(0.0f, 0.0f, -1.0f);
+		tangents[vertexOffset + i] = Vector3(1.0f, 0.0f, 0.0f);
+	}
+
+	numSpritesFilled++;
+	return true;
+}
+
+void Mesh::drawSpriteBatch() {
+
+	if (numSpritesFilled == 0) {
+		return;
+	}
+
+	//ovverite buffer data with new sprites data
+	glBindVertexArray(arrayObject);
+
+	int numUsedVertices = numSpritesFilled * 4;
+	int numUsedIndices = numSpritesFilled * 6;
+	//Buffer vertex data
+
+	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
+	glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), vertices, GL_DYNAMIC_DRAW);
+
+
+	//Buffer texture data
+	if (textureCoords) {
+		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TEXTURE_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector2), textureCoords, GL_DYNAMIC_DRAW);
+	}
+
+	//buffer colour data
+	if (colours) {
+		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[COLOUR_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector4), colours, GL_DYNAMIC_DRAW);
+	}
+
+	//Buffer normal data
+	if (normals) {
+		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), normals, GL_DYNAMIC_DRAW);
+	}
+
+	//Buffer tangent data
+	if (tangents) {
+		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TANGENT_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), tangents, GL_DYNAMIC_DRAW);
+	}
+
+	//buffer index data
+	if (indices) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObject[INDEX_BUFFER]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numUsedIndices*sizeof(GLuint), indices, GL_DYNAMIC_DRAW);
+	}
+
+
+
+	GL_BREAKPOINT
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, bumpTexture);
+
+	glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);  //draw triangles by indices
+
+	glBindVertexArray(0);
+}
+
+void Mesh::resetSpriteBatch(GLuint glTexture){
+	numSpritesFilled = 0;
+	texture = glTexture;
+}
+
 Mesh* Mesh::GenerateTriangle()	{
 	Mesh*m = new Mesh();
 	m->numVertices = 3;
@@ -256,6 +388,7 @@ Mesh* Mesh::GenerateQuad()	{
 	m->textureCoords[2] = Vector2(1.0f,	1.0f);
 	m->textureCoords[3] = Vector2(1.0f,	0.0f);
 
+
 	for(int i = 0; i < 4; ++i) {
 		m->colours[i] = Vector4(1.0f, 1.0f,1.0f,1.0f);
 		m->normals[i] = Vector3(0.0f, 0.0f,-1.0f);
@@ -362,7 +495,7 @@ Mesh* Mesh::LoadMeshFile(const string& filename) {
 }
 //end
 
-void	Mesh::BufferData()	{
+void	Mesh::BufferData(GLenum usage)	{
 	//GenerateNormals();
 	//GenerateTangents();
 
@@ -371,7 +504,7 @@ void	Mesh::BufferData()	{
 	//Buffer vertex data
 	glGenBuffers(1, &bufferObject[VERTEX_BUFFER]);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, usage);
 	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 	glEnableVertexAttribArray(VERTEX_BUFFER);
 
@@ -379,7 +512,7 @@ void	Mesh::BufferData()	{
 	if(textureCoords) {
 		glGenBuffers(1, &bufferObject[TEXTURE_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TEXTURE_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector2), textureCoords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector2), textureCoords, usage);
 		glVertexAttribPointer(TEXTURE_BUFFER, 2, GL_FLOAT, GL_FALSE, 0, 0); 
 		glEnableVertexAttribArray(TEXTURE_BUFFER);
 	}
@@ -388,7 +521,7 @@ void	Mesh::BufferData()	{
 	if (colours)	{
 		glGenBuffers(1, &bufferObject[COLOUR_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[COLOUR_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector4), colours, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector4), colours, usage);
 		glVertexAttribPointer(COLOUR_BUFFER, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 		glEnableVertexAttribArray(COLOUR_BUFFER);
 	}
@@ -397,7 +530,7 @@ void	Mesh::BufferData()	{
 	if(normals) {
 		glGenBuffers(1, &bufferObject[NORMAL_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), normals, usage);
 		glVertexAttribPointer(NORMAL_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 		glEnableVertexAttribArray(NORMAL_BUFFER);
 	}
@@ -406,7 +539,7 @@ void	Mesh::BufferData()	{
 	if(tangents) {
 		glGenBuffers(1, &bufferObject[TANGENT_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TANGENT_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), tangents, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), tangents, usage);
 		glVertexAttribPointer(TANGENT_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 		glEnableVertexAttribArray(TANGENT_BUFFER);
 	}
@@ -415,7 +548,7 @@ void	Mesh::BufferData()	{
 	if(indices) {
 		glGenBuffers(1, &bufferObject[INDEX_BUFFER]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObject[INDEX_BUFFER]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices*sizeof(GLuint), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices*sizeof(GLuint), indices, usage);
 	}
 
 	glBindVertexArray(0);

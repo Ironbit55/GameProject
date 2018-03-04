@@ -73,6 +73,33 @@ public:
 
 	Matrix4 GetTransposedRotation();
 
+	//Ed (b5021040) modification
+	//--start---
+
+	Vector3 getTransformedVec3(const Vector3& v){
+		//w = 1 means this results in transforming the point
+		//w = 0 means only rotated?
+		Vector3 vec;
+		vec.x = v.x*values[0] + v.y*values[4] + v.z*values[8] + values[12];
+		vec.y = v.x*values[1] + v.y*values[5] + v.z*values[9] + values[13];
+		vec.z = v.x*values[2] + v.y*values[6] + v.z*values[10] + values[14];
+
+		return vec;
+	}
+
+	Vector3 getRotatedVec3(const Vector3& v) {
+		//w = 0 means only rotated?
+		Vector3 vec;
+
+		vec.x = v.x*values[0] + v.y*values[4] + v.z*values[8];
+		vec.y = v.x*values[1] + v.y*values[5] + v.z*values[9];
+		vec.z = v.x*values[2] + v.y*values[6] + v.z*values[10];
+
+		return vec;
+	}
+
+	//--end---
+
 	//Multiplies 'this' matrix by matrix 'a'. Performs the multiplication in 'OpenGL' order (ie, backwards)
 	inline Matrix4 operator*(const Matrix4 &a) const{	
 		Matrix4 out;

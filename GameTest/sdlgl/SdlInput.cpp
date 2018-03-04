@@ -23,9 +23,14 @@ SdlInput::~SdlInput(){
 
 void SdlInput::update(){
 	controllerContainer.update();
+
+	//loop through controllers and add controler inputs to input manager according
+	//to which controller it is
 	for (int i = 0; i < MAX_CONTROLLERS; i++) {
 		if (controllerContainer.getController(i).isConnected()) {
 			InputActors actor = static_cast<InputActors>(i);
+			//we just set the actor as the index of controller
+			//player1 equals controller with index 1
 			inputManager.addSdlGameControllerState(actor, controllerContainer.getController(i));
 		}
 	}
