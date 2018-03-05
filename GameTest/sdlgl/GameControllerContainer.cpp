@@ -42,7 +42,23 @@ void GameControllerContainer::update(){
 	}
 }
 
-GameController& GameControllerContainer::getController(int index){
+bool GameControllerContainer::getController(int index, GameController& controller){
+	if(index < 0 || index > MAX_CONTROLLERS){
+		return false;
+	}
 	//could only return controller if connected?
-	return controllers[index];
+	controller = controllers[index];
+	return true;
+}
+
+bool GameControllerContainer::connectedController(int index, GameController& outController){
+	if (index < 0 || index > MAX_CONTROLLERS) {
+		return false;
+	}
+	
+	if(!controllers[index].isConnected()){
+		return false;
+	}
+	outController = controllers[index];
+	return true;
 }

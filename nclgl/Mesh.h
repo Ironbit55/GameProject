@@ -54,17 +54,12 @@ public:
 	static Mesh*	TestTriangle(float texRotation);
 	static Mesh*	TestQuad(float texRotation);
 
-	bool addSprite(Matrix4 modelMatrix, Vector4 colour, GLuint spriteTexture);
-
-	void drawSpriteBatch();
-
-	void resetSpriteBatch(GLuint glTexture);
 
 	//Generates a single white quad, going from -1 to 1 on the x and z axis.
 	static Mesh*	GenerateQuad();
 	static Mesh*	GenerateQuadAlt();
 
-	static Mesh*	GenerateSpriteBatch(int maxSprites);
+	
 	//Sets the Mesh's diffuse map. Takes an OpenGL texture 'name'
 	void	SetTexture(GLuint tex)	{texture = tex;}
 	//Gets the Mesh's diffuse map. Returns an OpenGL texture 'name'
@@ -79,8 +74,8 @@ public:
 	void	DrawDebugNormals(float length = 5.0f);
 	void	DrawDebugTangents(float length = 5.0f);
 
-	int numSpritesFilled;
-	int maxNumSprites;
+	//int numSpritesFilled;
+	//int maxNumSprites;
 protected:
 	//Buffers all VBO data into graphics memory. Required before drawing!
 	void	BufferData(GLenum usage = GL_STATIC_DRAW);

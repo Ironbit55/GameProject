@@ -6,6 +6,7 @@ uniform mat4 projMatrix;
 uniform mat4 textureMatrix;
 
 uniform vec4 nodeColour;
+uniform int spriteBatched;
 
 in  vec3 position;
 in  vec2 texCoord;
@@ -17,7 +18,13 @@ out Vertex	{
 } OUT;
 
 void main(void)	{
-	gl_Position		= (projMatrix * viewMatrix * modelMatrix) * vec4(position, 1.0);
 	OUT.texCoord	= (textureMatrix * vec4(texCoord, 0.0, 1.0)).xy;
-	OUT.colour		= mix(colour, nodeColour, 0.5);
+	
+	if(spriteBatched > 0){
+		gl_Position		= (projMatrix * viewMatrix) * vec4(position, 1.0);
+		OUT.colour		=  colour;
+	}else{
+		gl_Position		= (projMatrix * viewMatrix * modelMatrix) * vec4(position, 1.0);
+		OUT.colour		=  nodeColour;
+	}
 }

@@ -60,6 +60,10 @@ bool SDLRenderer::Init(){
 
 	glClearColor(0.392f, 0.584f, 0.96f, 1.0f);
 
+
+	//glEnable(GL_DEBUG_OUTPUT);
+	//glDebugMessageCallback((GLDEBUGPROC)DebugCallback, 0);
+
 	InitDebugRenderer();
 
 	initialised = true;

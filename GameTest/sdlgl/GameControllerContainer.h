@@ -29,7 +29,8 @@ public:
 	void update();
 
 	
-	GameController& getController(int index);
+	bool getController(int index, GameController& outController);
+	bool connectedController(int index, GameController& outController);
 protected:
 	GameController controllers[MAX_CONTROLLERS];
 };

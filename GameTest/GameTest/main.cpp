@@ -1,4 +1,5 @@
 #include <SDL.h>
+
 #include "Renderer.h"
 #include "RenderObject.h"
 #include <stdio.h>
@@ -12,8 +13,9 @@
 #include "../sdlgl/GameControllerContainer.h"
 #include "../Input/InputManager.h"
 #include "../sdlgl/SdlInputManager.h"
-#include "SpriteRenderer.h"
+#include "../IrohRenderer/SpriteRenderer.h"
 
+#pragma comment(lib, "IrohRenderer.lib")
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
@@ -163,17 +165,21 @@ int main(int argc, char* args[]) {
 		spriteRenderer.UpdateScene(msec);
 
 		GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
-
-		if(controllerContainer.getController(0).buttonTriggered(SDL_CONTROLLER_BUTTON_A)){
-			cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controllerContainer.getController(0).getJoystickId()) + "\n";
-			controllerContainer.getController(0).rumble();
+		GameController controller;
+		if (controllerContainer.connectedController(0, controller)) {
+			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_A)) {
+				cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
+				controller.rumble();
+			}
+			if (controller.buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
+				cout << "Y button down! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
+			}
 		}
-		if (controllerContainer.getController(0).buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
-			cout << "Y button down! game controller 1: joystick id = " + std::to_string(controllerContainer.getController(0).getJoystickId()) + "\n";
-		}
-		if (controllerContainer.getController(1).buttonTriggered(SDL_CONTROLLER_BUTTON_X)) {
-			cout << "X button triggered! game controller 2: joystick id = " + std::to_string(controllerContainer.getController(1).getJoystickId()) + "\n";
-			controllerContainer.getController(1).rumble();
+		if (controllerContainer.connectedController(1, controller)) {
+			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_X)) {
+				cout << "X button triggered! game controller 2: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
+				controller.rumble();
+			}
 		}
 		
 		inputManager.performMapping();

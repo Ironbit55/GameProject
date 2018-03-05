@@ -6,8 +6,7 @@
 #include <../../nclgl/Window.h>
 using namespace std;
 
-class SdlWindow
-{
+class SdlWindow{
 public:
 	SdlWindow(const string title, const int width, const int height, const bool fullScreen = false) : title(title), width(width), height(height), fullScreen(fullScreen){}
 

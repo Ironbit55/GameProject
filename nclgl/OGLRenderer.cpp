@@ -14,6 +14,8 @@ _-_-_-_-_-_-_-""  ""
 */
 
 
+//#define OPENGL_DEBUGGING
+
 #include "OGLRenderer.h"
 
 DebugDrawData* OGLRenderer::orthoDebugData			= NULL;
