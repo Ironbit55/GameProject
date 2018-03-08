@@ -23,7 +23,7 @@ bool SpriteRenderer::Init() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	spriteMesh = Mesh::GenerateQuad();
-	spriteBatchMesh = new MeshSpriteBatch(64);
+	spriteBatchMesh = new MeshSpriteBatch(256);
 
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix*viewMatrix);
@@ -33,7 +33,7 @@ bool SpriteRenderer::Init() {
 
 
 	//create a bunch of sprite in contigous memory
-	const int numSprites = 400;
+	const int numSprites = 20000;
 	SpriteRenderable* spritesTemp = new SpriteRenderable[numSprites];
 
 	for (int i = 0; i < numSprites; ++i){
@@ -51,16 +51,16 @@ bool SpriteRenderer::Init() {
 		sprites.push_back(&spritesTemp[i]);
 	}
 
-	//SpriteRenderable* sprite1 = new SpriteRenderable(Vector3(0, 0.0f, -200.0f), Vector3(50.0f, 50.0f, 50.0f), 20.0f);
-	//sprite1->colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	//sprite1->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	//sprites.push_back(sprite1);
+	SpriteRenderable* sprite1 = new SpriteRenderable(Vector3(0, 0.0f, -200.0f), Vector3(50.0f, 50.0f, 50.0f), 20.0f);
+	sprite1->colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	sprite1->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	sprites.push_back(sprite1);
 
-	//SpriteRenderable* sprite2 = new SpriteRenderable(Vector3(-80.0f, 0.0f, -200.0f), Vector3(20.0f, 20.0f, 50.0f));
-	//sprite2->colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	//sprite2->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	//sprites.push_back(sprite2);
-	//
+	SpriteRenderable* sprite2 = new SpriteRenderable(Vector3(-80.0f, 0.0f, -200.0f), Vector3(20.0f, 20.0f, 50.0f));
+	sprite2->colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	sprite2->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	sprites.push_back(sprite2);
+	
 	previousTexture = -1;
 	return true;
 }

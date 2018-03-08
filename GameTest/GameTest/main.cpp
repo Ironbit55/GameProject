@@ -15,7 +15,7 @@
 #include "../sdlgl/SdlInputManager.h"
 #include "../IrohRenderer/SpriteRenderer.h"
 
-#pragma comment(lib, "IrohRenderer.lib")
+#pragma comment(lib, "RendererTemp.lib")
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
@@ -78,6 +78,8 @@ bool initInput(SdlInputManager& inputManager) {
 	
 	return true;
 }
+
+
 
 /*
 * sdl has a custom main we need to use as entry point

@@ -49,6 +49,7 @@ public:
 	bool mapButtonInput(int buttonId, bool keyRepeat, MappedInput& mappedInput);
 
 	//TODO:should apply sensitivity mapping to get final range value
+	//could also apply deadzone here
 	bool mapAxesInput(int axisId, float value, MappedInput& mappedInput);
 
 protected:
@@ -59,7 +60,9 @@ protected:
 	std::map<int, int> buttonToStateMap;
 	std::map<int, int> axisToRangeMap;
 
+	
 	std::map<InputRaw::Axes, float> axisToSensitivityMap;
+	std::map<InputRaw::Axes, float> axisToDeadzoneMap;
 	
 
 	int rawInputs[MAX_INPUTS];
