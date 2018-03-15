@@ -19,6 +19,7 @@ bool MappedInput::addAction(int actionId){
 		return false;
 	}
 
+	empty = false;
 	actions[actionIndex] = true;
 	return true;
 }
@@ -35,6 +36,7 @@ bool MappedInput::addState(int stateId){
 		return false;
 	}
 
+	empty = false;
 	states[stateIndex] = true;
 	return true;
 }
@@ -51,6 +53,7 @@ bool MappedInput::addRange(int rangeId, float rangeValue){
 		return false;
 	}
 
+	empty = false;
 	ranges[rangeIndex] = true;
 	rangeValues[rangeIndex] = rangeValue;
 	return true;
@@ -109,9 +112,6 @@ void MappedInput::clear(){
 	memset(ranges, 0, InputCooked::getNumRanges() * sizeof(bool));
 
 	memset(rangeValues, 0, InputCooked::getNumRanges() * sizeof(float));
-
-	//for (int i = 0; i < InputCooked::getNumRanges(); i++) {
-	//	rangeValues[i] = 0.0f;
-	//}
+	empty = true;
 
 }

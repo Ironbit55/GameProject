@@ -33,7 +33,7 @@ bool SpriteRenderer::Init() {
 
 
 	//create a bunch of sprite in contigous memory
-	const int numSprites = 20000;
+	const int numSprites = 100;
 	SpriteRenderable* spritesTemp = new SpriteRenderable[numSprites];
 
 	for (int i = 0; i < numSprites; ++i){

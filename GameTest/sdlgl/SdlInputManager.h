@@ -7,6 +7,8 @@
  * 
  * This is basically another mapping layer
  * to map from sdl inputs to engine raw inputs
+ * we also normalise axis values from the range sdl gives us to -1f - 1f for
+ * internal use
  */
 
 #pragma once
@@ -14,7 +16,8 @@
 #include "GameController.h"
 #include <SDL.h>
 
-
+const int sdlAxisMaxValue = 32768;
+const float internalAxisMaxValue = 1.0f;
 
 class SdlInputManager :
 	public InputManager
@@ -34,6 +37,9 @@ public:
 	
 	void addSdlGameControllerState(InputActors actor, GameController& controller);
 
+	/*
+	we know sdl game controller axis are in the range -32768 to 32768
+	*/
 	float normaliseSdlAxisValue(int value);
 protected:
 	bool mapSdlKeyToButton(SDL_Keycode keycode, InputRaw::Buttons& outButtonId);

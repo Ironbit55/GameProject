@@ -42,16 +42,24 @@ void GameControllerContainer::update(){
 	}
 }
 
-bool GameControllerContainer::getController(int index, GameController& controller){
-	if(index < 0 || index > MAX_CONTROLLERS){
-		return false;
+GameController& GameControllerContainer::getController(int index) {
+	if (index < 0 || index > MAX_CONTROLLERS) {
+		//oops we're gunno get an exception
 	}
-	//could only return controller if connected?
-	controller = controllers[index];
-	return true;
+
+	return controllers[index];
 }
 
-bool GameControllerContainer::connectedController(int index, GameController& outController){
+//bool GameControllerContainer::getController(int index, GameController* controller){
+//	if(index < 0 || index > MAX_CONTROLLERS){
+//		return false;
+//	}
+//	//could only return controller if connected?
+//	controller = &controllers[index];
+//	return true;
+//}
+
+bool GameControllerContainer::connectedController(int index, GameController* outController){
 	if (index < 0 || index > MAX_CONTROLLERS) {
 		return false;
 	}
@@ -59,6 +67,10 @@ bool GameControllerContainer::connectedController(int index, GameController& out
 	if(!controllers[index].isConnected()){
 		return false;
 	}
-	outController = controllers[index];
+	outController = &controllers[index];
 	return true;
+}
+
+bool GameControllerContainer::controllerIsConnected(int index){
+	return controllers[index].isConnected();
 }

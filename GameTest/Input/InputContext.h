@@ -28,6 +28,13 @@ public:
 	bool addMapping(int rawInputId, int cookedInputId);
 
 	/*
+	please give the positiove value or we're gunno have a bad time
+	*/
+	void addDeadzone(float deadzone) {
+		this->axisDeadzone = deadzone;
+	}
+
+	/*
 	 * these provide ways to add mappings
 	 */
 	bool addActionMapping(InputRaw::Buttons button, InputCooked::Actions action);
@@ -50,6 +57,10 @@ public:
 
 	//TODO:should apply sensitivity mapping to get final range value
 	//could also apply deadzone here
+	/*
+	should be given a normalized axis value between -1 and 1 
+	this will apply deadzone and sensitivity to ti
+	*/
 	bool mapAxesInput(int axisId, float value, MappedInput& mappedInput);
 
 protected:
@@ -63,6 +74,11 @@ protected:
 	
 	std::map<InputRaw::Axes, float> axisToSensitivityMap;
 	std::map<InputRaw::Axes, float> axisToDeadzoneMap;
+
+	//im just gunno use one deadzone for all axes
+	//cus when are you gunno wanna have different deadzones per axis 
+	//that would be dumb
+	float axisDeadzone;
 	
 
 	int rawInputs[MAX_INPUTS];

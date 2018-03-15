@@ -55,6 +55,26 @@ void InputManager::performMapping(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++){
 		if(inputActorsActive[actor]){
 			inputMappers[actor].dispatch();
+
 		}
 	}
+
+	
+	//perform callbacks
+	for (std::map<InputCallback, InputActors>::iterator i = inputListeners.begin(); i != inputListeners.end(); ++i) {
+		InputActors inputActor = i->second;
+		if (inputActorsActive[inputActor]) { //only do callback if actor is active
+			MappedInput& mappedInput = inputMappers[inputActor].getMappedInput();
+			if (!mappedInput.isEmpty()) { //call the callback function only if mappedInput contains something 
+				(i->first)(mappedInput);
+			}
+		}
+		
+	}
+
+	
+}
+
+void InputManager::registerListener(InputActors actor, InputCallback callback){
+	inputListeners.insert(std::make_pair(callback, actor));
 }

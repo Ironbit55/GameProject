@@ -125,7 +125,14 @@ bool InputContext::mapAxesInput(int axisId, float value, MappedInput& mappedInpu
 
 	int mappedInputId = getMappedInputId(axisId, axisToRangeMap, i);
 	if (mappedInputId != -1) {
-		//found
+		//apply deadzone to axis value
+		if (value > -axisDeadzone && value < axisDeadzone) {
+			//within deadzone so
+			//we don't pass it to mapped input but mapping didn't fail
+			return true;
+		}
+		
+
 		//add the state this button maps to to our mapped input object
 		mappedInput.addRange(mappedInputId, value);
 		return true;

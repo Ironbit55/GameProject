@@ -57,8 +57,11 @@ public:
 	void clearRawInput();
 	void clearMappedInput();
 
+	// define our input callback type to call on dispatch
+	typedef void(*InputCallback)(MappedInput& inputs);
+
 	//each actor (input mapper) can still have multiple input contexts
-	//yeah you heard me. This might end up being overkill but
+	//This might end up being overkill but
 	//actors are a seperate concept from input contexts
 	//eg actor 1 may have weapon a equiped and actor 2 weapon b
 	//and so have different input contexts
@@ -89,10 +92,13 @@ public:
 	 * I don't really know how this is gunno work yet
 	 * TODO: figure out how we're gunno implement this
 	 */
-	void registerCallback(InputActors actor);
+	void registerListener(InputActors actor, InputCallback callback);
 
 protected:
 	InputMapper inputMappers[INPUT_ACTOR_MAX];
 	bool inputActorsActive[INPUT_ACTOR_MAX];
+
+	//std::vector<InputCallback> inputListeners;
+	std::map<InputCallback, InputActors> inputListeners;
 };
 

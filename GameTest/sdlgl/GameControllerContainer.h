@@ -28,9 +28,10 @@ public:
 	//need to call this for controllers to collect inputs
 	void update();
 
-	
-	bool getController(int index, GameController& outController);
-	bool connectedController(int index, GameController& outController);
+	GameController& getController(int index);
+	//bool getController(int index, GameController* outController);
+	bool connectedController(int index, GameController* outController);
+	bool controllerIsConnected(int index);
 protected:
 	GameController controllers[MAX_CONTROLLERS];
 };

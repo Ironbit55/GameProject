@@ -84,14 +84,20 @@ void SdlInputManager::addSdlGameControllerState(InputActors actor, GameControlle
 
 		//check we have a mapping for sdl to raw input
 		if(mapSdlControllerAxesToAxes(sdlAxis, rawInputAxis)){
+			float normalisedAxisValue = normaliseSdlAxisValue(controller.axisValue(sdlAxis));
+
 			//raw input axis now set to mapped value
-			addAxisValue(actor, rawInputAxis, controller.axisValue(sdlAxis));
+			addAxisValue(actor, rawInputAxis, normalisedAxisValue);
 		}
 	}
 }
 
 float SdlInputManager::normaliseSdlAxisValue(int value){
-	return 0.0f;
+	int sdlRange = 2 * sdlAxisMaxValue;
+	int internalRange = 2 * internalAxisMaxValue;
+
+	float normalisedValue = (float)value / sdlAxisMaxValue;
+	return normalisedValue;
 }
 
 bool SdlInputManager::mapSdlKeyToButton(SDL_Keycode keycode, InputRaw::Buttons& outButtonId) {

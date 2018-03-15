@@ -14,7 +14,9 @@
 #include "../Input/InputManager.h"
 #include "../sdlgl/SdlInputManager.h"
 #include "../IrohRenderer/SpriteRenderer.h"
+#include "../EntityAttempt/Entity.h"
 
+#pragma comment (lib, "EntityAttempt.lib")
 #pragma comment(lib, "RendererTemp.lib")
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
@@ -70,6 +72,8 @@ bool initInput(SdlInputManager& inputManager) {
 	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTX, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X);
 	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTY, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y);
 
+	controllerInputContext.addDeadzone(0.1f);
+
 	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "controller", controllerInputContext);
 	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER1);
 
@@ -90,32 +94,15 @@ int main(int argc, char* args[]) {
 	SdlWindow w = SdlWindow("game test", SCREEN_WIDTH, SCREEN_HEIGHT, false);
 	w.init();
 	
-
+	
 	SdlInputManager inputManager;
 	
 	initInput(inputManager);
 	SdlInput sdlInput = SdlInput(inputManager);
+	//Entity testEntity;
+	//inputManager.registerListener(InputActors::INPUT_ACTOR_PLAYER1, (testEntity.inputListener));
 
 
-	/*Renderer r(w);
-	r.Init();*/
-
-	/*Mesh*	m = Mesh::LoadMeshFile("cube.asciimesh");
-	Shader* s = new Shader("basicvert.glsl", "basicFrag.glsl");
-
-	if (s->UsingDefaultShader()) {
-		cout << "Warning: Using default shader! Your shader probably hasn't worked..." << endl;
-		cout << "Press any key to continue." << endl;
-		std::cin.get();
-	}
-
-
-
-	RenderObject o(m, s);
-	o.SetModelMatrix(Matrix4::Translation(Vector3(0, 0, -10)) * Matrix4::Scale(Vector3(1, 1, 1)) * Matrix4::Rotation(45, Vector3(1, 0, 0)));
-	o.SetModelMatrix(o.GetModelMatrix() * Matrix4::Scale(Vector3(1, 1, 1)));
-
-	r.AddRenderObject(o);*/
 
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
@@ -167,8 +154,9 @@ int main(int argc, char* args[]) {
 		spriteRenderer.UpdateScene(msec);
 
 		GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
-		GameController controller;
-		if (controllerContainer.connectedController(0, controller)) {
+		//GameController* controllerPtr = nullptr;
+		if (controllerContainer.controllerIsConnected(0)) {
+			GameController& controller = controllerContainer.getController(0);
 			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_A)) {
 				cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
 				controller.rumble();
@@ -176,8 +164,11 @@ int main(int argc, char* args[]) {
 			if (controller.buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
 				cout << "Y button down! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
 			}
+
+			
 		}
-		if (controllerContainer.connectedController(1, controller)) {
+		if (controllerContainer.controllerIsConnected(1)) {
+			GameController& controller = controllerContainer.getController(1);
 			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_X)) {
 				cout << "X button triggered! game controller 2: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
 				controller.rumble();
@@ -230,13 +221,13 @@ int main(int argc, char* args[]) {
 
 		float xRange = -1.0f;
 		if (player1MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X, xRange)) {
-			//cout << "Player 1: Controller Range LEFTX = " << xRange << endl;
+			cout << "Player 1: Controller Range LEFTX = " << xRange << endl;
 		}
 
-		//float yRange = -1.0f;
-		//if (player1MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y, yRange)) {
-		//	cout << "Player 1: Controller Range LEFTY = " << yRange << endl;
-		//}
+		float yRange = -1.0f;
+		if (player1MappedInput.getRange(InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y, yRange)) {
+			cout << "Player 1: Controller Range LEFTY = " << yRange << endl;
+		}
 
 		
 		//player 2

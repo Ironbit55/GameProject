@@ -20,6 +20,10 @@ public:
 	bool consumeState(InputCooked::States stateId);
 	bool consumeRange(InputCooked::Ranges rangeId, float& outRange);
 
+	bool isEmpty() {
+		return empty;
+	}
+
 	void clear();
 protected:
 	//std::vector<int> actions;
@@ -31,5 +35,6 @@ protected:
 	bool states[InputCooked::getNumStates()];
 	bool ranges[InputCooked::getNumRanges()];
 	float rangeValues[InputCooked::getNumRanges()];
+	bool empty;
 };
 

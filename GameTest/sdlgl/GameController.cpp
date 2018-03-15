@@ -9,11 +9,11 @@ GameController::GameController() : gameController(nullptr), controllerHaptic(nul
 
 GameController::~GameController(){
 
-	if (gameController != nullptr) {
-		//this is a bit dangerous... if we copy a game controller and the old one is deleted
-		//it will close the controller the new game controller instance is linked to
-		SDL_GameControllerClose(gameController);
-	}
+	//if (gameController != nullptr) {
+	//	//this is a bit dangerous... if we copy a game controller and the old one is deleted
+	//	//it will close the controller the new game controller instance is linked to
+	//	SDL_GameControllerClose(gameController);
+	//}
 }
 
 bool GameController::open(int index){
