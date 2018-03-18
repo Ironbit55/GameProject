@@ -36,6 +36,15 @@
     <ClInclude Include="SdlInputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SdlDeltaTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SdlFrameCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SdlMixer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SdlWindow.cpp">
@@ -57,6 +66,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SdlInputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SdlDeltaTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SdlFrameCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SdlMixer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

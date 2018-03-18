@@ -15,9 +15,12 @@
 #include "../sdlgl/SdlInputManager.h"
 #include "../IrohRenderer/SpriteRenderer.h"
 #include "../EntityAttempt/Entity.h"
+#include "../sdlgl/SdlDeltaTimer.h"
+#include "../sdlgl/SdlFrameCounter.h"
+#include "../sdlgl/SdlMixer.h"
 
 #pragma comment (lib, "EntityAttempt.lib")
-#pragma comment(lib, "RendererTemp.lib")
+#pragma comment(lib, "IrohRenderer.lib")
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
@@ -27,9 +30,6 @@ const int SCREEN_WIDTH = 1800;
 const int SCREEN_HEIGHT = 1000;
 bool quit = false;
 
-int frames = 0;
-int avgFrames = 0;
-float frameRateTimer = 0.0f;
 
 //Event handler
 SDL_Event e;
@@ -106,18 +106,18 @@ int main(int argc, char* args[]) {
 
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
-	if (spriteRenderer.GetCurrentShader()->UsingDefaultShader()) {
-		cout << "Warning: Using default shader! Your shader probably hasn't worked..." << endl;
-		cout << "Press any key to continue." << endl;
-		std::cin.get();
-	}
+
+	SdlMixer mixer;
+	mixer.loadMusic(0, "../../Audio/sjg.mp3");
+	mixer.playMusic(0);
+
 
 	Camera* camera = spriteRenderer.getCamera();
 
 	// While application is running
 	
-	GameTimer timer = GameTimer();
-	frameRateTimer = timer.GetMS();
+	SdlDeltaTimer timer = SdlDeltaTimer();
+	SdlFrameCounter frameCounter;
 	while (!quit) {
 		//Handle events on queue
 		while (SDL_PollEvent(&e) != 0) {
@@ -131,24 +131,13 @@ int main(int argc, char* args[]) {
 			w.handleEvent(e);
 		}
 
-		float msec = timer.GetTimedMS();
-	
-		frames++;
-
-		if (timer.GetMS() - frameRateTimer > 1000.0f) {
-			std::string s = std::to_string(frames);
-			SDL_SetWindowTitle(w.getWindow(), s.c_str());
-
-			frameRateTimer = timer.GetMS();
-			frames = 0;
-		}
+		float msec = timer.getDeltaTimeMS();
+		timer.updateTime();
+		frameCounter.update(w.getWindow());
 
 
 		spriteRenderer.RenderScene();
 
-		/*if(true){
-			continue;
-		}*/
 
 		sdlInput.update();
 		spriteRenderer.UpdateScene(msec);
@@ -273,33 +262,3 @@ int main(int argc, char* args[]) {
 	return 0;
 }
 
-//
-//
-//int main(int argc, char* args[]) {
-//	initSDL();
-//	SdlWindow sdlWindow = SdlWindow("test", 540, 540);
-//	sdlWindow.init();
-//	sdlWindow.createRenderContext();
-//	// Set color
-//	glClearColor(1.0, 0.0, 0.5, 1.0);
-//
-//	// Clear back buffer
-//	glClear(GL_COLOR_BUFFER_BIT);
-//	// Swap back and front buffer
-//	SDL_GL_SwapWindow(sdlWindow.getWindow());
-//	// While application is running
-//	while (!quit)
-//	{
-//		//Handle events on queue
-//		while (SDL_PollEvent(&e) != 0)
-//		{
-//			//User requests quit
-//			if (e.type == SDL_QUIT)
-//			{
-//				quit = true;
-//			}
-//		}
-//
-//	}
-//	return 0;
-//}

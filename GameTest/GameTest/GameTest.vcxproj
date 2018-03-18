@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\$(Configuration)\;..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\include;..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\lib\x86;..\$(Configuration)\;..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
@@ -83,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\SOIL\$(Configuration)\;..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\include;..\..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\lib\x86;..\..\SOIL\$(Configuration)\;..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\include;..\..\SOIL;..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\lib\x86;$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,18 +120,24 @@
   <ItemGroup>
     <ClInclude Include="GameController.h" />
     <ClInclude Include="GameControllerContainer.h" />
+    <ClInclude Include="SdlDeltaTimer.h" />
+    <ClInclude Include="SdlFrameCounter.h" />
     <ClInclude Include="SdlInput.h" />
     <ClInclude Include="SdlInputManager.h" />
     <ClInclude Include="SdlInputMapper.h" />
+    <ClInclude Include="SdlMixer.h" />
     <ClInclude Include="SDLRenderer.h" />
     <ClInclude Include="SdlWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="GameControllerContainer.cpp" />
+    <ClCompile Include="SdlDeltaTimer.cpp" />
+    <ClCompile Include="SdlFrameCounter.cpp" />
     <ClCompile Include="SdlInput.cpp" />
     <ClCompile Include="SdlInputManager.cpp" />
     <ClCompile Include="SdlInputMapper.cpp" />
+    <ClCompile Include="SdlMixer.cpp" />
     <ClCompile Include="SDLRenderer.cpp" />
     <ClCompile Include="SdlWindow.cpp" />
   </ItemGroup>

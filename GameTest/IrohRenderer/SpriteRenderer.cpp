@@ -16,7 +16,12 @@ bool SpriteRenderer::Init() {
 
 	//do this somewhere else
 	currentShader = new Shader(SHADERDIR"SceneVertex.glsl", SHADERDIR"SceneFragment.glsl");
-	//currentShader = new Shader(SHADERDIR"SceneVertex_spritebatch.glsl", SHADERDIR"SceneFragment.glsl");
+	
+	if (GetCurrentShader()->UsingDefaultShader()) {
+		cout << "Warning: Using default shader! Your shader probably hasn't worked..." << endl;
+		cout << "Press any key to continue." << endl;
+		std::cin.get();
+	}
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -27,6 +32,8 @@ bool SpriteRenderer::Init() {
 
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix*viewMatrix);
+
+	///this is just for testing it doesn't belong here promise
 
 	GLuint dragonTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
 	GLuint raiderTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);

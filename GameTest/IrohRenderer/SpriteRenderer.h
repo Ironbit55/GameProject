@@ -3,7 +3,7 @@
  * Implements: SdlRenderer
  * Author:Ed Curran (b5021040)
  * Description: Used to render sprites. Includes some sprite rendering optimisations
- * Take some ideas from the 2d Renderer used in simulations coursework
+ * Takes some ideas from the 2d Renderer used in simulations coursework
  * 
  */
 
