@@ -28,7 +28,7 @@ MeshSpriteBatch::MeshSpriteBatch(int maxSprites = 256){
 	tangentBufferPtr = nullptr;
 	indexBufferPtr = nullptr;
 
-	//BufferData(GL_STREAM_DRAW);
+	//BufferData(GL_DYNAMIC_DRAW);
 	ImmutableBufferData();
 	
 	numSpritesFilled = 0;
@@ -156,6 +156,13 @@ void MeshSpriteBatch::Draw(){
 	//Buffer vertex data
 
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
+
+	//apperently orphaning the buffer is a good trick to increase performance
+	//however i tested it and got no benefit from it so I dunno
+	//maybe opengl got smart and optimises it out itself these days
+	//or maybe i should do it per frame not per batch or something
+	//glBufferStorage(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_MAP_WRITE_BIT | GL_DYNAMIC_STORAGE_BIT);
+	//glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), vertices);
 
 	//Buffer texture data

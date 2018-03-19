@@ -18,6 +18,7 @@
 #include "../sdlgl/SdlDeltaTimer.h"
 #include "../sdlgl/SdlFrameCounter.h"
 #include "../sdlgl/SdlMixer.h"
+#include "AudioManager.h"
 
 #pragma comment (lib, "EntityAttempt.lib")
 #pragma comment(lib, "IrohRenderer.lib")
@@ -107,10 +108,10 @@ int main(int argc, char* args[]) {
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
 
-	SdlMixer mixer;
-	mixer.loadMusic(0, "../../Audio/sjg.mp3");
-	mixer.playMusic(0);
+	AudioManager audioManager;
+	audioManager.init();
 
+	audioManager.playMusic(MUSIC_LEVEL1);
 
 	Camera* camera = spriteRenderer.getCamera();
 
@@ -176,6 +177,7 @@ int main(int argc, char* args[]) {
 
 		if(player1MappedInput.getState(InputCooked::States::STATE_MOVE_UP)){
 			cout << "Move Up";
+			audioManager.playSoundEffect(EFFECT_JUMP);
 			camera->SetPosition(camera->GetPosition() + (Vector3(0.0f, -1.0f, 0.0f) * 10));
 		}
 		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_DOWN)) {

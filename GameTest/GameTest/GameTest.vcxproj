@@ -73,8 +73,8 @@
     <LibraryPath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\lib\x86;..\$(Configuration)\;..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;..\$(Configuration)\;..\..\SOIL\SLN\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\include;$(ProjectDir)..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\SDL2_mixer-2.0.2\lib\x86;$(ProjectDir)..\..\SDL2-2.0.7\lib\x86;..\$(Configuration)\;..\..\SOIL\SLN\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,7 +105,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -123,12 +123,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
