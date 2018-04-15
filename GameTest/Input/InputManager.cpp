@@ -19,7 +19,7 @@ void InputManager::clearRawInput(){
 
 void InputManager::clearMappedInput(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++) {
-		inputMappers[actor].clearMappedInput();
+		mappedInputs[actor].clear();
 	}
 }
 
@@ -48,13 +48,13 @@ void InputManager::deactivateActor(InputActors actor){
 }
 
 MappedInput& InputManager::getMappedInput(InputActors actor){
-	return inputMappers[actor].getMappedInput();
+	return mappedInputs[actor];
 }
 
 void InputManager::performMapping(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++){
 		if(inputActorsActive[actor]){
-			inputMappers[actor].dispatch();
+			inputMappers[actor].dispatch(mappedInputs[actor]);
 
 		}
 	}
@@ -64,7 +64,7 @@ void InputManager::performMapping(){
 	for (std::map<InputCallback, InputActors>::iterator i = inputListeners.begin(); i != inputListeners.end(); ++i) {
 		InputActors inputActor = i->second;
 		if (inputActorsActive[inputActor]) { //only do callback if actor is active
-			MappedInput& mappedInput = inputMappers[inputActor].getMappedInput();
+			MappedInput& mappedInput = mappedInputs[inputActor];
 			if (!mappedInput.isEmpty()) { //call the callback function only if mappedInput contains something 
 				(i->first)(mappedInput);
 			}

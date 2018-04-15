@@ -40,7 +40,7 @@ bool SpriteRenderer::Init() {
 
 
 	//create a bunch of sprite in contigous memory
-	const int numSprites = 20000;
+	const int numSprites = 200;
 	SpriteRenderable* spritesTemp = new SpriteRenderable[numSprites];
 
 	for (int i = 0; i < numSprites; ++i){
@@ -85,6 +85,8 @@ void SpriteRenderer::RenderScene(){
 
 	DrawSprites();
 
+	//maybe try and use same shader over frames where
+	//possible
 	glUseProgram(0);
 	SwapBuffers();
 
@@ -166,10 +168,13 @@ void SpriteRenderer::emptySpriteBatch(){
 	if(spriteBatchMesh->IsEmpty()){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "spriteBatched"), (int)1);
+	
 	//Matrix4 identityMatrix;
 	//glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"), 1, false, (float*)& identityMatrix);
 	//glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "nodeColour"), 1, (float*)& Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	//tell shader this sprite is in a batch
+	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "spriteBatched"), (int)1);
 	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "useTexture"), (int)spriteBatchMesh->GetTexture());
 
 	spriteBatchMesh->Draw();

@@ -2,7 +2,7 @@
  * Class: MeshSpriteBatch
  * Implements: Mesh
  * Author: Ed Curran (b5021040)
- * Description: A hacky batch implemented using the mesh class
+ * Description: A hacky s[rite batch implemented using the mesh class
  * Represents a specific batch instance. Each instance holds sprites
  * sharing the same texture
  * 
@@ -11,15 +11,15 @@
  * normals, colours, tangents etc
  * 
  * I hacked this together using an instance of a mesh as a batch instance
- * but i didn't see much performance benefit (it was actually worse on my machine)
+ * but i didn't there isn't actually much benefit untill you get to 1000s of sprites
  * 
  * over sorting sprites by texture
  * and reusing the same quad buffer for each draw...
  * (pretty sure thats because im cpu bound. I hope. The batching requires more cpu as we
  * multiply each quad vertex by the sprite model matrix on cpu before sending to gpu)
  * 
- * Then I realised theres basically no way I'm going to be gpu bound at any point
- * with this game so I don't know why I bothered really.
+ * Then I realised theres basically no way this game needs that many sprites 
+ * so I don't know why I bothered really.
  */
 
 #pragma once

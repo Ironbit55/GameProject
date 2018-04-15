@@ -126,12 +126,16 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageReceiver.cpp" />
+    <ClCompile Include="MessagingService.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="MessageReceiver.h" />
+    <ClInclude Include="MessagingService.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
   </ItemGroup>

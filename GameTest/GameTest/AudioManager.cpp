@@ -1,9 +1,12 @@
 #include "AudioManager.h"
 
 //this is the lazy version in absense of file io for now
+//these get read on startup and loaded in to a dictionary
+//which the engine uses during runtime
 LookupEffectFile effectLookup[] =
 {
 	{EFFECT_JUMP, "Jump.wav"},
+	{EFFECT_BOUNCE, "placeholder_bounce.wav" },
 	{EFFECT_MAX, ""},
 };
 
@@ -23,6 +26,37 @@ AudioManager::~AudioManager()
 }
 
 void AudioManager::init(){
+
+	
+	//typedef void(AudioManager::*audioMsgCallbackType)(Message&);
+	//audioMsgCallbackType audioMsgCallbackDummy = &AudioManager::dummy;
+	MessageCallback test = std::bind(&AudioManager::recieveEffectMessage, this, std::placeholders::_1);
+	MessageCallback testDummy = std::bind(&AudioManager::dummy, this, std::placeholders::_1);
+
+	addListener(MESSAGE_AUDIO_EFFECT);
+	addListener(MESSAGE_AUDIO_MUSIC, testDummy);
+
+	Message msg;
+	msg.messageType = MESSAGE_AUDIO_EFFECT;
+	msg.timeUntillDispatch = 0;
+	SoundEffectMsgData msgData;
+	msgData.effect = EFFECT_BOUNCE;
+	msg.dataPayload = &msgData;
+	msg.dataSize = sizeof(msgData);
+	
+
+	pushMessage(msg);
+	
+	////MessagingService::instance().registerListener(MESSAGE_AUDIO_EFFECT, test);
+	//Message msg;
+	//test(msg);
+	//testDummy(msg);
+
+	//std::cout << test.target<void(AudioManager::*)(Message&)>();
+	//std::cout << testDummy.target<void(AudioManager::*)(Message&)>();
+	//std::cout << MessagingService::instance().getAddress(test);
+	//std::cout << MessagingService::instance().getAddress(test);
+
 	//loop through lookup tables and add to map
 	//do we actually need the maps? probably not if we always load everything in one go
 	//if we wanted to load things in on the fly its usefull to be able to look it up

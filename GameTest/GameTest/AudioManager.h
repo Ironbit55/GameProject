@@ -10,9 +10,13 @@
 #include <string>
 #include <map>
 #include "../sdlgl/SdlMixer.h"
+#include <iostream>
+#include "MessageReceiver.h"
+
 
 enum SoundEffect {
 	EFFECT_JUMP,
+	EFFECT_BOUNCE,
 	EFFECT_MAX,
 };
 
@@ -20,6 +24,23 @@ enum Music {
 	MUSIC_LEVEL1,
 	MUSIC_MAX,
 };
+
+enum MusicCommand{
+	COMMAND_PLAY,
+	COMMAND_PAUSE,
+	COMMAND_STOP,
+};
+
+struct SoundEffectMsgData{
+	SoundEffect effect;
+};
+
+struct MusicMsgData {
+	Music music;
+	MusicCommand command;
+};
+
+
 
 typedef struct LookupEffectFile {
 	SoundEffect effectId;
@@ -34,7 +55,7 @@ typedef struct LookupMusicFile {
 
 const std::string MUSIC_DIR = "../../Audio/Music/";
 const std::string SOUND_EFFECT_DIR = "../../Audio/Effects/";
-class AudioManager
+class AudioManager : MessageReceiver
 {
 public:
 	AudioManager();
@@ -51,8 +72,10 @@ public:
 	bool playSoundEffect(SoundEffect effect);
 	bool playMusic(Music music);
 
-	//I could have inherited and i wouldn't have to wrap these but
+	//I could have inherited from SdlMixer and i wouldn't have to wrap these but
 	//inhertence felt wrong in this case
+
+
 	//helper functions to control playing music
 
 	void pauseMusic();
@@ -64,6 +87,52 @@ public:
 	bool playingMusic();
 
 	bool pausedMusic();
+
+protected: 
+
+	void recieveEffectMessage(Message& msg) { 
+		//this better be a MESSAGE_AUDIO_EFFECT
+		SoundEffectMsgData* data = static_cast<SoundEffectMsgData*>(msg.dataPayload);
+		this->playSoundEffect(data->effect);
+	};
+
+	void recieveMusicMessage(Message& msg) {
+		//this better be a MESSAGE_AUDIO_MUSIC
+		MusicMsgData* data = static_cast<MusicMsgData*>(msg.dataPayload);
+		switch (data->command)
+		{
+		case COMMAND_PLAY:
+			this->playMusic(data->music);
+			break;
+		case COMMAND_PAUSE:
+			this->pauseMusic();
+			break;
+		case COMMAND_STOP:
+			this->stopMusic();
+			break;
+		}
+		
+	};
+
+	void onRecieveMessage(Message& msg) {
+		switch (msg.messageType) 
+		{
+			case MESSAGE_AUDIO_EFFECT: 
+				recieveEffectMessage(msg);
+				break;
+			case MESSAGE_AUDIO_MUSIC:
+				recieveMusicMessage(msg);
+				break;
+			default: 
+				break;
+		}
+	};
+
+	void dummy(Message&) {
+		int i = 1;
+		i++;
+		std::cout << "dummy";
+	};
 
 private:
 	std::map<SoundEffect, std::string> effectFileMap;

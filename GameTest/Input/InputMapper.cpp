@@ -10,7 +10,7 @@ InputMapper::~InputMapper()
 {
 }
 
-void InputMapper::dispatch(){
+void InputMapper::dispatch(MappedInput& mappedInput){
 	for (std::vector<InputContext>::iterator it = inputContexts.begin(); it != inputContexts.end(); ++it) {
 		
 		for (int i = 0; i < InputRaw::getNumButtons(); i++) {
@@ -38,15 +38,15 @@ void InputMapper::dispatch(){
 	}
 }
 
-void InputMapper::clearMappedInput(){
-	mappedInput.clear();
-}
-
 void InputMapper::clear(){
 	memset(buttonState, 0, InputRaw::getNumButtons() * sizeof(bool));
 	memset(buttonWasDownState, 0, InputRaw::getNumButtons() * sizeof(bool));
-
-	mappedInput.clear();
+	memset(axesState, 0, InputRaw::getNumAxes() * sizeof(bool));
+	memset(axesValues, 0, InputRaw::getNumAxes() * sizeof(float));
+	//fill up button and axes state from 0 again
+	//this means we don't even have to clear dtate it will just be overwritten
+	buttonStateTail = 0;
+	axesStateTail = 0;
 }
 
 void InputMapper::addButtonDown(InputRaw::Buttons button, bool keyRepeat){

@@ -62,10 +62,7 @@ bool MeshSpriteBatch::AddSprite(Matrix4 modelMatrix, Vector4 colour, GLuint spri
 	textureCoords[vertexOffset + 2] = Vector2(0.0f, 0.0f);
 	textureCoords[vertexOffset + 3] = Vector2(1.0f, 0.0f);
 
-	//we map the buffer and stream vertex data directly into it cus we're cool
-	//like that
-
-
+	
 	for (int i = 0; i < 4; i++) {
 
 		colours[vertexOffset + i] = colour;
@@ -146,6 +143,7 @@ void MeshSpriteBatch::Draw(){
 
 	//ovverite the gl buffer data with new sprites data
 	//using sub data so we don't have to detroy the buffer
+	//and recreate it
 
 
 	glBindVertexArray(arrayObject);
@@ -161,6 +159,7 @@ void MeshSpriteBatch::Draw(){
 	//however i tested it and got no benefit from it so I dunno
 	//maybe opengl got smart and optimises it out itself these days
 	//or maybe i should do it per frame not per batch or something
+
 	//glBufferStorage(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_MAP_WRITE_BIT | GL_DYNAMIC_STORAGE_BIT);
 	//glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), vertices);
@@ -197,7 +196,7 @@ void MeshSpriteBatch::Draw(){
 
 
 
-	GL_BREAKPOINT
+	//GL_BREAKPOINT
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -206,11 +205,6 @@ void MeshSpriteBatch::Draw(){
 	glBindTexture(GL_TEXTURE_2D, bumpTexture);
 
 	glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);  //draw triangles by indices
-
-	//glBindVertexArray(0);
-
-	//empty batch
-	//Begin(0);
 
 	//we don't bother clearing the buffer arrays
 	//we'll just overite them with new data
@@ -260,6 +254,12 @@ void MeshSpriteBatch::Draw(){
 //	//we don't bother clearing the buffer arrays
 //	//we'll just overite them with new data
 //}
+
+/*
+ * I toyed with mapping the buffers and streaming vetex data
+ * straight in to the buffer but it didn't end up working very
+ * well so we don't use it anymore
+ */
 
 void MeshSpriteBatch::flushBuffers() {
 
@@ -354,6 +354,10 @@ void MeshSpriteBatch::mapBuffers() {
 
 }
 
+/*
+ * thought making the buffer immutable might be a little faster...
+ * it doesn't really make any difference
+ */
 void MeshSpriteBatch::ImmutableBufferData(){
 	glBindVertexArray(arrayObject);
 

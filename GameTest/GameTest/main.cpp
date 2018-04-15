@@ -25,6 +25,7 @@
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
+//#pragma comment(lib, "MemoryManagement.lib")
 
 ////Screen dimension constants
 const int SCREEN_WIDTH = 1800;
@@ -103,7 +104,15 @@ int main(int argc, char* args[]) {
 	//Entity testEntity;
 	//inputManager.registerListener(InputActors::INPUT_ACTOR_PLAYER1, (testEntity.inputListener));
 
+	MemoryPool<size_t> pool;
+	size_t* x = pool.allocate();
 
+	*x = 0xDEADBEEF;
+	std::cout << std::hex << *x << std::endl;
+
+	pool.deallocate(x);
+
+	std::vector<int, MemoryPool<int>> stackVector;
 
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
@@ -111,7 +120,32 @@ int main(int argc, char* args[]) {
 	AudioManager audioManager;
 	audioManager.init();
 
-	audioManager.playMusic(MUSIC_LEVEL1);
+	Message msg;
+	msg.messageType = MESSAGE_AUDIO_EFFECT;
+	msg.timeUntillDispatch = 0;
+	SoundEffectMsgData msgData;
+	msgData.effect = EFFECT_JUMP;
+	msg.dataPayload = &msgData;
+	msg.dataSize = sizeof(msgData);
+
+	//audioManager.playMusic(MUSIC_LEVEL1);
+
+	//typedef void(AudioManager::*audioMsgCallbackType)(Message&);
+	//audioMsgCallbackType audioMsgCallbackDummy = &AudioManager::dummy;
+	//Message testMsg;
+	//std::function<void(Message&)>  test = std::bind(&AudioManager::recieveMessage, &audioManager, testMsg);
+	//MessageCallback testDummy = std::bind(audioMsgCallbackDummy, &audioManager, testMsg);
+
+	////MessagingService::instance().registerListener(MESSAGE_AUDIO_EFFECT, test);
+	//Message msg;
+	//test(msg);
+	//testDummy(msg);
+	//
+	//
+	//std::cout << test.target<void(AudioManager::*)(struct Message&)>();
+	//std::cout << testDummy.target<void(AudioManager::*)(Message&)>();
+
+	
 
 	Camera* camera = spriteRenderer.getCamera();
 
@@ -177,7 +211,8 @@ int main(int argc, char* args[]) {
 
 		if(player1MappedInput.getState(InputCooked::States::STATE_MOVE_UP)){
 			cout << "Move Up";
-			audioManager.playSoundEffect(EFFECT_JUMP);
+			//audioManager.playSoundEffect(EFFECT_JUMP);
+			MessagingService::instance().pushMessage(msg);
 			camera->SetPosition(camera->GetPosition() + (Vector3(0.0f, -1.0f, 0.0f) * 10));
 		}
 		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_DOWN)) {
@@ -247,7 +282,8 @@ int main(int argc, char* args[]) {
 		//}
 
 	
-		
+		MessagingService::instance().update(msec);
+		MessagingService::instance().dispatchMessages();
 		
 		//r.UpdateScene(msec);
 		//r.ClearBuffers();

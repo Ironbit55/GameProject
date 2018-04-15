@@ -96,6 +96,12 @@ public:
 
 protected:
 	InputMapper inputMappers[INPUT_ACTOR_MAX];
+
+	//i want these to be in a contigous block
+	//not mixed in with InputMapper objects
+	//so inputmanager is responsible for managing these
+	//and makes calls to the relevent mapped to fill them up
+	MappedInput mappedInputs[INPUT_ACTOR_MAX];
 	bool inputActorsActive[INPUT_ACTOR_MAX];
 
 	//std::vector<InputCallback> inputListeners;

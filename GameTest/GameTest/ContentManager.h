@@ -10,6 +10,8 @@
 * then content manager holds texture and can pass out handles to requested texture
 * this way if texture contained actual texture data it could be loaded in and out of
 * gpu memory.
+* 
+* Todo: alter to use memory pool, we aren't storing real textures so there isn't much point
 */
 
 #pragma once
@@ -34,7 +36,7 @@ public:
 	
 	/*
 	* load texture into opengl, store a handle to the texture in the content manager
-	* link a string name to the handle. which can be used to get the texture in the future
+	* returns a int textureHandle which can which can be used to get the texture in the future
 	*/
 	int loadTexture(string filePath);
 	bool getTexture(int textureHandle, Texture& outTexture);
@@ -42,15 +44,22 @@ public:
 	void free();
 
 protected:
-	//use soil to load texture into opengl and get a instance of texture with
+	//use soil to load texture into opengl and get an instance of texture with
 	//the gl handle set
 	Texture soilLoadTexture(string filePath);
-	//alocate this with memory manager
+	//should alocate this with a memory manager
 	Texture* textures;
 	//maps to the index location of the texture in the textures array
 	//std::map<string, int> nameToTextureHandleMap;
 	string textureDir;
 
+	//stores how full the texture array is
+	//used to assign the texture handle on loadTexture
+	//deleting textures will leave a hole in the array
+	//which we won't be able to use so don't even 
+	//bother allowing to delete texture.
+	//this could all be fixed of course by
+	//using an actual pool allocator
 	int textureIndex;
 };
 

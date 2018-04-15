@@ -32,7 +32,7 @@ void SdlWindow::resize(const int w, const  int h) {
 
 void SdlWindow::handleEvent(SDL_Event& e){
 	//Window event occured
-	if (e.type == SDL_WINDOWEVENT){
+	if (e.type == SDL_WINDOWEVENT) {
 		switch (e.window.event)
 		{
 			//Get new dimensions and repaint on window size change

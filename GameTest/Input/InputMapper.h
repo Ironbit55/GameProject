@@ -7,7 +7,7 @@ class InputMapper{
 public:
 	InputMapper();
 	virtual ~InputMapper();
-	void dispatch();
+	void dispatch(MappedInput& mappedInput);
 	void clearMappedInput();
 	void clear();
 	void addInputContext(std::string name, InputContext& context) { inputContexts.push_back(context); }
@@ -21,18 +21,19 @@ public:
 
 	virtual float normalisedAxisValue(float value);
 
-	MappedInput& getMappedInput() { return mappedInput; }
-
 protected:
 	std::vector<InputContext> inputContexts;
-	MappedInput mappedInput;
+	//MappedInput mappedInput;
 
 	//ToDo: actually don't bother maintaing state here.
 	//just add to mappedInput as we go?
 
 	bool buttonState[InputRaw::getNumButtons()];			//is the button down?
 	bool buttonWasDownState[InputRaw::getNumButtons()];		//was the button down in the previous tick / poll
+	int buttonStateTail;									//when we add a button state its added to the end of the button state
+															//arrays, this records the tail for but button state and was down state
 	float axesValues[InputRaw::getNumAxes()];				//what is axes value
 	bool axesState[InputRaw::getNumAxes()];					//was the axes modified
+	int axesStateTail;
 };
 
