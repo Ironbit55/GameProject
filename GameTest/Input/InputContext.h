@@ -53,7 +53,7 @@ public:
 	 * updates mappedInput according to whether this context has a mapping for the given raw input (button or axis)
 	 * (and whether the raw input should trigger a mapped input)
 	 */
-	bool mapButtonInput(int buttonId, bool keyRepeat, MappedInput& mappedInput);
+	bool mapButtonInput(InputRaw::Buttons button, bool keyRepeat, MappedInput& mappedInput);
 
 	//TODO:should apply sensitivity mapping to get final range value
 	//could also apply deadzone here
@@ -61,7 +61,7 @@ public:
 	should be given a normalized axis value between -1 and 1 
 	this will apply deadzone and sensitivity to ti
 	*/
-	bool mapAxesInput(int axisId, float value, MappedInput& mappedInput);
+	bool mapAxisInput(InputRaw::Axes axis, float value, MappedInput& mappedInput);
 
 protected:
 	//could have two button to actions maps

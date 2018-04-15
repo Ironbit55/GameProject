@@ -36,6 +36,9 @@ void InputManager::addButtonUp(InputActors actor, InputRaw::Buttons button){
 }
 
 void InputManager::addAxisValue(InputActors actor, InputRaw::Axes axis, float value){
+	if(actor == INPUT_ACTOR_MAX){
+		printf("LOL");
+	}
 	inputMappers[actor].addAxisValue(axis, value);
 }
 

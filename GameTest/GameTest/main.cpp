@@ -290,6 +290,7 @@ int main(int argc, char* args[]) {
 		//r.RenderScene();
 		//r.SwapBuffers();
 		
+		inputManager.clearRawInput();
 		inputManager.clearMappedInput();
 	}
 

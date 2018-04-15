@@ -70,12 +70,20 @@ int InputContext::getMappedInputId(int rawInputId, std::map<int, int>& map, std:
 	}
 }
 
+//int InputContext::getMappedAction(InputRaw::Buttons buttonId) {
+//	std::map<InputRaw::Buttons, InputCooked::Actions>::iterator& it = buttonToActionMap.find(buttonId);
+//
+//	if (it == buttonToActionMap.end()) {	/* Not found */
+//		return -1;
+//	}
+//	
+//	return it->second;
+//	
+//
+//}
 
-bool InputContext::mapButtonInput(int buttonId, bool keyRepeat, MappedInput& mappedInput){
-	if(!InputRaw::isButton(buttonId)){
-		printf("could not map button, raw input with id: %i is not a valid button\n", buttonId);
-		return false;
-	}
+
+bool InputContext::mapButtonInput(InputRaw::Buttons button, bool keyRepeat, MappedInput& mappedInput){
 
 	int mappedInputId = -1;
 	bool success = false;
@@ -86,7 +94,8 @@ bool InputContext::mapButtonInput(int buttonId, bool keyRepeat, MappedInput& map
 	
 	//check if button maps to state
 
-	mappedInputId = getMappedInputId(buttonId, buttonToStateMap, i);
+	
+	mappedInputId = getMappedInputId(button, buttonToStateMap, i);
 	if(mappedInputId != -1){
 		//found
 		//add the state this button maps to to our mapped input object
@@ -99,7 +108,7 @@ bool InputContext::mapButtonInput(int buttonId, bool keyRepeat, MappedInput& map
 
 	if(!keyRepeat){
 		//check if button maps to action
-		mappedInputId = getMappedInputId(buttonId, buttonToActionMap, i);
+		mappedInputId = getMappedInputId(button, buttonToActionMap, i);
 		if (mappedInputId != -1) {
 			//found
 			//add the action this button maps to to our mapped input object
@@ -112,18 +121,12 @@ bool InputContext::mapButtonInput(int buttonId, bool keyRepeat, MappedInput& map
 
 }
 
-bool InputContext::mapAxesInput(int axisId, float value, MappedInput& mappedInput){
-	if(!InputRaw::isAxis(axisId)){
-		printf("could not map axis, raw input with id: %i is not a valid axis\n", axisId);
-		return false;
-	}
-
-	
+bool InputContext::mapAxisInput(InputRaw::Axes axis, float value, MappedInput& mappedInput){
 
 	//constructing this iterator will have some performance hit so try to avoid it...
 	std::map<int, int>::iterator i;
 
-	int mappedInputId = getMappedInputId(axisId, axisToRangeMap, i);
+	int mappedInputId = getMappedInputId(axis, axisToRangeMap, i);
 	if (mappedInputId != -1) {
 		//apply deadzone to axis value
 		if (value > -axisDeadzone && value < axisDeadzone) {
