@@ -57,38 +57,19 @@ void SdlInputManager::addSdlGameControllerState(InputActors actor, GameControlle
 	//if we got access to the raw state data of the controller we could just
 	//map that directly into button state...
 
-	//loop through all buttons
-	for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++){
-		//should definetely be in enum bounds
-		SDL_GameControllerButton sdlButton = static_cast<SDL_GameControllerButton>(i);
-		InputRaw::Buttons rawInputButton;
+	for (auto it = sdlGameControllerButtonMap.begin(); it != sdlGameControllerButtonMap.end(); ++it) {
+		SDL_GameControllerButton sdlButton = it->first;
+		InputRaw::Buttons rawInputButton = it->second;
 
-		//check sdlButton has a mapping
-		if(mapSdlControllerButtonToButton(sdlButton, rawInputButton)){
-			//rawInputButton now the mapped value
-
-			//add button down and up event based on state of the controller button
-			if(controller.buttonDown(sdlButton)){
-				//key repeat if button is held (means button was down previous frame)
-				addButtonDown(actor, rawInputButton, controller.buttonHeld(sdlButton));
-			}else if (controller.buttonReleased(sdlButton)) {
-				addButtonUp(actor, rawInputButton);
-			}
-		}
+		addButton(actor, rawInputButton, controller.buttonDown(sdlButton), controller.buttonHeld(sdlButton));
 	}
 
-	//loop through all axes
-	for (int i = SDL_CONTROLLER_AXIS_LEFTX; i < SDL_CONTROLLER_AXIS_MAX; i++) {
-		SDL_GameControllerAxis sdlAxis = static_cast<SDL_GameControllerAxis>(i);
-		InputRaw::Axes rawInputAxis;
+	for (auto it = sdlGameControllerAxesMap.begin(); it != sdlGameControllerAxesMap.end(); ++it) {
+		SDL_GameControllerAxis sdlAxis = it->first;
+		InputRaw::Axes rawInputAxis = it->second;
 
-		//check we have a mapping for sdl to raw input
-		if(mapSdlControllerAxesToAxes(sdlAxis, rawInputAxis)){
-			float normalisedAxisValue = normaliseSdlAxisValue(controller.axisValue(sdlAxis));
-
-			//raw input axis now set to mapped value
-			addAxisValue(actor, rawInputAxis, normalisedAxisValue);
-		}
+		float normalisedAxisValue = normaliseSdlAxisValue(controller.axisValue(sdlAxis));
+		addAxisValue(actor, rawInputAxis, normalisedAxisValue);
 	}
 }
 

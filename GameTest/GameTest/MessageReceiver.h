@@ -6,7 +6,7 @@ class MessageReceiver
 {
 public:
 	MessageReceiver(){
-		baseMessageCallback = std::bind(&MessageReceiver::onRecieveMessage, this, std::placeholders::_1);
+		baseMessageCallback = std::bind(&MessageReceiver::onreceiveMessage, this, std::placeholders::_1);
 	};
 	//deregister callbacks
 	virtual ~MessageReceiver(){
@@ -30,7 +30,7 @@ protected:
 				//insertion succesfull
 				return true;
 			}
-			//listener for this message has already been registered by this reciever
+			//listener for this message has already been registered by this receiver
 
 		}
 
@@ -71,8 +71,8 @@ protected:
 	}
 
 	/*
-	 * 	kepp listener in recievers map, but deregister from messaging service
-	 * 	so will no longer recieve messages
+	 * 	kepp listener in receivers map, but deregister from messaging service
+	 * 	so will no longer receive messages
 	 * 	use this as just a little optimisation to save memory allocations
 	 */
 	bool disableListener(MessageType msgType){
@@ -104,7 +104,7 @@ protected:
 
 	}
 
-	virtual void onRecieveMessage(Message& msg) {};
+	virtual void onreceiveMessage(Message& msg) {};
 
 
 	//not actually neccesary really but maybe helpfull

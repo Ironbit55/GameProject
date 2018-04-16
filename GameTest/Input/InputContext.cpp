@@ -7,18 +7,6 @@
 
 InputContext::~InputContext(){}
 
-void InputContext::setRawInputs(int rawInputs[MAX_INPUTS]){
-	//copy passed in array into our member array
-	//can't decide if this is the best way to do it or not
-	//alternative is have member array be pointer or reference
-	//but I mostly want the input context to handle its own memory footprint
-	//can create a bucket of InputContexts etc
-	for (int i = 0; i < MAX_INPUTS; i++){
-		this->rawInputs[i] = rawInputs[i];
-	}
-
-}
-
 bool InputContext::addMapping(int rawInputId, int cookedInputId){
 	if(InputRaw::isButton(rawInputId)){
 		if(InputCooked::isAction(cookedInputId)){
@@ -83,42 +71,88 @@ int InputContext::getMappedInputId(int rawInputId, std::map<int, int>& map, std:
 //}
 
 
-bool InputContext::mapButtonInput(InputRaw::Buttons button, bool keyRepeat, MappedInput& mappedInput){
-
-	int mappedInputId = -1;
+bool InputContext::mapButtonInput(InputRaw::Buttons button, bool buttonDown, bool buttonWasDown, MappedInput& mappedInput){
 	bool success = false;
+	int mappedInputId = -1;
+
 
 	//constructing this iterator will have some performance hit so try to avoid it...
 	std::map<int, int>::iterator i;
 
-	
 	//check if button maps to state
-
-	
 	mappedInputId = getMappedInputId(button, buttonToStateMap, i);
 	if(mappedInputId != -1){
 		//found
 		//add the state this button maps to to our mapped input object
-		mappedInput.addState(mappedInputId);
+		mappedInput.addState(mappedInputId, buttonDown);
 		success = true;
 	}
 
-	//action is only fired if button pressed and no keyRepeat
-	//so only gets fired when button first pressed, or released?
+	//check if button maps to action
+	mappedInputId = getMappedInputId(button, buttonToActionMap, i);
+	if (mappedInputId != -1) {
+		//found
 
-	if(!keyRepeat){
-		//check if button maps to action
-		mappedInputId = getMappedInputId(button, buttonToActionMap, i);
-		if (mappedInputId != -1) {
-			//found
-			//add the action this button maps to to our mapped input object
-			mappedInput.addAction(mappedInputId);
-			success = true;
-		}
+		//action is only fired if button pressed and no keyRepeat
+		//so only gets fired when button first pressed, what about released?
+		//add the action this button maps to to our mapped input object
+		mappedInput.addAction(mappedInputId, (buttonDown && !buttonWasDown));
+		//could map button up (buttonWasDown && !buttonDown)
+		//to action here
+		success = true;
 	}
+	
 
 	return success;
 
+}
+
+void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, MappedInput& mappedInput){
+	
+	//should check for button up event first
+
+	//map buttons to actions
+	for (auto it = buttonToActionMap.begin(); it != buttonToActionMap.end(); ++it) {
+		int buttonIndex = it->first - InputRaw::BUTTON_ID;
+		int actionId = it->second;
+
+		//button can be mapped to action if button just pressed (buttonDown, wasUp)
+		bool map = (buttonStateDown[buttonIndex] && !buttonStateWasDown[buttonIndex]);
+		mappedInput.addAction(actionId, map);
+
+		//this disables button down events triggering for this button
+		//for other input contexts in this frame
+		//although it means button up could trigger...
+		buttonStateWasDown[buttonIndex] = (buttonStateWasDown[buttonIndex] && map);
+
+	}
+
+	//map buttons to states
+	for (auto it = buttonToStateMap.begin(); it != buttonToStateMap.end(); ++it) {
+		int buttonIndex = it->first - InputRaw::BUTTON_ID;
+		int stateId = it->second;
+		
+		//button can be mapped to state if button is down
+		bool map = buttonStateDown[buttonIndex];
+		mappedInput.addState(stateId, map);
+
+		//button can only be mapped once. so if its been mapped before can't map it again
+		buttonStateDown[buttonIndex] = (buttonStateDown[buttonIndex] && map);
+	}
+}
+
+void InputContext::mapAxes(bool* axisState, float* axisValues, MappedInput& mappedInput) {
+	for (auto it = axisToRangeMap.begin(); it != axisToRangeMap.end(); ++it) {
+		int axisIndex = it->first - InputRaw::AXIS_ID;
+		int rangeId = it->second;
+
+		//apply deadzone to axis value
+		bool inDeadzone = (axisValues[axisIndex] > -axisDeadzone && axisValues[axisIndex] < axisDeadzone);
+		bool map = axisState[axisIndex] && !inDeadzone;
+		
+		//add the state this button maps to to our mapped input object
+		mappedInput.addRange(rangeId, axisValues[axisIndex], map);
+	}
 }
 
 bool InputContext::mapAxisInput(InputRaw::Axes axis, float value, MappedInput& mappedInput){
@@ -143,4 +177,5 @@ bool InputContext::mapAxisInput(InputRaw::Axes axis, float value, MappedInput& m
 
 	return false;;
 }
+
 

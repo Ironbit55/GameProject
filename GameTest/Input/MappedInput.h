@@ -8,9 +8,9 @@ public:
 	MappedInput();
 	
 
-	bool addAction(int actionId);
-	bool addState(int stateId);
-	bool addRange(int rangeId, float rangeValue);
+	bool addAction(int actionId, bool state = true);
+	bool addState(int stateId, bool state = true);
+	bool addRange(int rangeId, float rangeValue, bool state = true);
 
 	bool getAction(InputCooked::Actions actionId);
 	bool getState(InputCooked::States stateId);

@@ -7,7 +7,7 @@ MappedInput::MappedInput(){
 }
 
 
-bool MappedInput::addAction(int actionId){
+bool MappedInput::addAction(int actionId, bool state){
 	if(!InputCooked::isAction(actionId)){
 		printf("could not add action input to MappedInput, cookedInput id: %i is not a valid action\n", actionId);
 		return false;
@@ -19,12 +19,12 @@ bool MappedInput::addAction(int actionId){
 		return false;
 	}
 
-	empty = false;
-	actions[actionIndex] = true;
+	empty = (empty || !state);
+	actions[actionIndex] = state;
 	return true;
 }
 
-bool MappedInput::addState(int stateId){
+bool MappedInput::addState(int stateId, bool state){
 	if (!InputCooked::isState(stateId)) {
 		printf("could not add state input to MappedInput, cookedInput id: %i is not a valid state\n", stateId);
 		return false;
@@ -36,25 +36,26 @@ bool MappedInput::addState(int stateId){
 		return false;
 	}
 
-	empty = false;
-	states[stateIndex] = true;
+	empty = (empty || !state);
+	states[stateIndex] = state;
 	return true;
 }
 
-bool MappedInput::addRange(int rangeId, float rangeValue){
+bool MappedInput::addRange(int rangeId, float rangeValue, bool state){
 	if (!InputCooked::isRange(rangeId)) {
 		printf("could not add range input to MappedInput, cookedInput id: %i is not a valid range\n", rangeId);
 		return false;
 	}
+
 	//gets an index between 0 and max number of actions
 	int rangeIndex = rangeId - InputCooked::RANGE_ID;
-	if (actions[rangeIndex]) {
+	if (ranges[rangeIndex]) {
 		printf("range input with id: %i already exists in MappedInput\n", rangeId);
 		return false;
 	}
 
-	empty = false;
-	ranges[rangeIndex] = true;
+	empty = (empty || state);
+	ranges[rangeIndex] = state;
 	rangeValues[rangeIndex] = rangeValue;
 	return true;
 }

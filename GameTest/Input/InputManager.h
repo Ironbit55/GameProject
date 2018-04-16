@@ -1,5 +1,6 @@
 #pragma once
 #include "InputMapper.h"
+#include "../GameTest/MessagingService.h"
 
 /*
  * Author: Ed Curran (b15021040)
@@ -9,7 +10,7 @@
  * raw input can be pushed to the input manager and marked as belonging to a particular input actor
  * Each actor then maps its raw input into an InputMapped instance
  * Can then access the mapped input belonging to a particular actor 
- * callbacks can be registered to recieve the mapped input from a particular actor (or combination of actors if i get round to that)
+ * callbacks can be registered to receive the mapped input from a particular actor (or combination of actors if i get round to that)
  * 
  * In reality this is basically just a wrapper around a collection of InputMappers
  * with each InputMapper corrosponding to an Actor
@@ -46,6 +47,28 @@ enum InputActors{
 	INPUT_ACTOR_MAX,
 };
 
+//const std::map<InputActors, MessageType> ACTOR_TO_MESSAGE_MAP = {
+//	{ INPUT_ACTOR_PLAYER1, MESSAGE_INPUT_PLAYER1 },
+//	{ INPUT_ACTOR_PLAYER2, MESSAGE_INPUT_PLAYER2 },
+//	{ INPUT_ACTOR_PLAYER3, MESSAGE_INPUT_PLAYER3 },
+//	{ INPUT_ACTOR_PLAYER4, MESSAGE_INPUT_PLAYER4 }
+//};
+
+const std::map<MessageType, InputActors> MESSAGE_TO_ACTOR_MAP = {
+	{ MESSAGE_INPUT_PLAYER1, INPUT_ACTOR_PLAYER1 },
+	{ MESSAGE_INPUT_PLAYER2, INPUT_ACTOR_PLAYER2 },
+	{ MESSAGE_INPUT_PLAYER3, INPUT_ACTOR_PLAYER3 },
+	{ MESSAGE_INPUT_PLAYER4, INPUT_ACTOR_PLAYER4 }
+};
+
+
+struct InputMsgData {
+	//InputManager manages the memory of the mapped inputs
+	//so just use a pointer to it
+	InputActors actor;
+	MappedInput* input;
+};
+
 class InputManager
 {
 public:
@@ -74,6 +97,7 @@ public:
 	 * Send raw input to actors
 	 */
 
+	void addButton(InputActors actor, InputRaw::Buttons button, bool buttonDown, bool buttonWasDown);
 	void addButtonDown(InputActors actor, InputRaw::Buttons button, bool keyRepeat);
 	void addButtonUp(InputActors actor, InputRaw::Buttons button);
 	void addAxisValue(InputActors actor, InputRaw::Axes axis, float value);

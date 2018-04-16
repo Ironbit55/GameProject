@@ -9,6 +9,7 @@ struct InputRaw{
 		BUTTON_KEY_S,
 		BUTTON_KEY_D,
 
+
 		BUTTON_CONTROLLER_BUTTON_A,
 		BUTTON_CONTROLLER_BUTTON_B,
 		BUTTON_CONTROLLER_BUTTON_X,
@@ -17,6 +18,10 @@ struct InputRaw{
 		
 		MAX_BUTTON
 	};
+
+	static int getButtonIndex (Buttons button) {
+		return button - BUTTON_ID;
+	}
 
 	static const int AXIS_ID = 2000;
 	enum Axes{
@@ -28,6 +33,11 @@ struct InputRaw{
 		
 		MAX_AXIS
 	};
+
+	static int getAxisIndex(Axes axis) {
+		return axis - AXIS_ID;
+	}
+
 	static const int END_ID = 3000;
 
 
@@ -63,6 +73,7 @@ struct InputCooked {
 		
 		MAX_ACTION,
 	};
+
 
 	static const int STATE_ID = 4000;
 	enum States

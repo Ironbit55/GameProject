@@ -90,13 +90,13 @@ public:
 
 protected: 
 
-	void recieveEffectMessage(Message& msg) { 
+	void receiveEffectMessage(Message& msg) { 
 		//this better be a MESSAGE_AUDIO_EFFECT
 		SoundEffectMsgData* data = static_cast<SoundEffectMsgData*>(msg.dataPayload);
 		this->playSoundEffect(data->effect);
 	};
 
-	void recieveMusicMessage(Message& msg) {
+	void receiveMusicMessage(Message& msg) {
 		//this better be a MESSAGE_AUDIO_MUSIC
 		MusicMsgData* data = static_cast<MusicMsgData*>(msg.dataPayload);
 		switch (data->command)
@@ -114,14 +114,14 @@ protected:
 		
 	};
 
-	void onRecieveMessage(Message& msg) {
+	void onreceiveMessage(Message& msg) {
 		switch (msg.messageType) 
 		{
 			case MESSAGE_AUDIO_EFFECT: 
-				recieveEffectMessage(msg);
+				receiveEffectMessage(msg);
 				break;
 			case MESSAGE_AUDIO_MUSIC:
-				recieveMusicMessage(msg);
+				receiveMusicMessage(msg);
 				break;
 			default: 
 				break;

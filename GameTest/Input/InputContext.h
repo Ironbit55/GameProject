@@ -19,7 +19,6 @@ public:
 
 	bool loadFromFile(std::string fileName);
 
-	void setRawInputs(int rawInputs[MAX_INPUTS]);
 
 	/*
 	 * detects the type of the raw and cooked input
@@ -44,24 +43,22 @@ public:
 	bool addRangeMapping(InputRaw::Axes axis, InputCooked::Ranges range);
 
 	int getMappedInputId(int rawInputId, std::map<int, int>& map, std::map<int, int>::iterator& i);
-	int getMappedAction(InputRaw::Buttons buttonId);
-	int getMappedState(InputRaw::Buttons buttonId);
-	int getMappedRange(InputRaw::Axes axisId);
 
 	
 	/*
 	 * updates mappedInput according to whether this context has a mapping for the given raw input (button or axis)
 	 * (and whether the raw input should trigger a mapped input)
 	 */
-	bool mapButtonInput(InputRaw::Buttons button, bool keyRepeat, MappedInput& mappedInput);
+	bool mapButtonInput(InputRaw::Buttons button, bool buttonDown, bool buttonWasDown, MappedInput& mappedInput);
+	void mapButtons(bool* buttonDown, bool* buttonWasDown, MappedInput& mappedInput);
 
 	//TODO:should apply sensitivity mapping to get final range value
-	//could also apply deadzone here
 	/*
 	should be given a normalized axis value between -1 and 1 
 	this will apply deadzone and sensitivity to ti
 	*/
 	bool mapAxisInput(InputRaw::Axes axis, float value, MappedInput& mappedInput);
+	void mapAxes(bool* axes, float* values, MappedInput& mappedInput);
 
 protected:
 	//could have two button to actions maps
@@ -80,10 +77,7 @@ protected:
 	//that would be dumb
 	float axisDeadzone;
 	
-
-	int rawInputs[MAX_INPUTS];
 	
-
 	bool active;
 };
 

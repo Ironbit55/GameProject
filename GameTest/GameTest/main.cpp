@@ -101,18 +101,8 @@ int main(int argc, char* args[]) {
 	
 	initInput(inputManager);
 	SdlInput sdlInput = SdlInput(inputManager);
-	//Entity testEntity;
+	Entity testEntity;
 	//inputManager.registerListener(InputActors::INPUT_ACTOR_PLAYER1, (testEntity.inputListener));
-
-	MemoryPool<size_t> pool;
-	size_t* x = pool.allocate();
-
-	*x = 0xDEADBEEF;
-	std::cout << std::hex << *x << std::endl;
-
-	pool.deallocate(x);
-
-	std::vector<int, MemoryPool<int>> stackVector;
 
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
@@ -127,24 +117,6 @@ int main(int argc, char* args[]) {
 	msgData.effect = EFFECT_JUMP;
 	msg.dataPayload = &msgData;
 	msg.dataSize = sizeof(msgData);
-
-	//audioManager.playMusic(MUSIC_LEVEL1);
-
-	//typedef void(AudioManager::*audioMsgCallbackType)(Message&);
-	//audioMsgCallbackType audioMsgCallbackDummy = &AudioManager::dummy;
-	//Message testMsg;
-	//std::function<void(Message&)>  test = std::bind(&AudioManager::recieveMessage, &audioManager, testMsg);
-	//MessageCallback testDummy = std::bind(audioMsgCallbackDummy, &audioManager, testMsg);
-
-	////MessagingService::instance().registerListener(MESSAGE_AUDIO_EFFECT, test);
-	//Message msg;
-	//test(msg);
-	//testDummy(msg);
-	//
-	//
-	//std::cout << test.target<void(AudioManager::*)(struct Message&)>();
-	//std::cout << testDummy.target<void(AudioManager::*)(Message&)>();
-
 	
 
 	Camera* camera = spriteRenderer.getCamera();

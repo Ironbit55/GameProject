@@ -8,10 +8,18 @@ public:
 	InputMapper();
 	virtual ~InputMapper();
 	void dispatch(MappedInput& mappedInput);
-	void clearMappedInput();
+	
 	void clear();
-	void addInputContext(std::string name, InputContext& context) { inputContexts.push_back(context); }
+	void addInputContext(std::string name, InputContext& context){
+		inputContexts.push_back(context);
+		activeContexts.push_back(true);
+		inputContextMap[name] = inputContexts.size() - 1;
+	}
+	
+	void enableInputContext(std::string name);
+	void disableInputContext(std::string name);
 
+	void addButton(InputRaw::Buttons button, bool down, bool wasDown);
 	void addButtonDown(InputRaw::Buttons button, bool keyRepeat);
 	void addButtonUp(InputRaw::Buttons button);
 
@@ -22,23 +30,19 @@ public:
 	virtual float normalisedAxisValue(float value);
 
 protected:
+	std::map<std::string, int> inputContextMap;
 	std::vector<InputContext> inputContexts;
-	//MappedInput mappedInput;
+	std::vector<bool> activeContexts;
 
 	//ToDo: actually don't bother maintaing state here.
 	//just add to mappedInput as we go?
 
-	InputRaw::Buttons buttonState[InputRaw::getNumButtons()];			//is the button down?
-	//the index for was down state will point to a button in the above array
-	bool buttonStateWasDown[InputRaw::getNumButtons()];		//was the button down in the previous tick / poll
-	bool buttonStateUp[InputRaw::getNumButtons()];
-	int buttonStateTail;									//when we add a button state its added to the end of the button state
-															//arrays, this records the tail for but button state and was down state
+	bool buttonStateDown[InputRaw::getNumButtons()];		//is the button down?
+	bool buttonStateWasDown[InputRaw::getNumButtons()];	   //was the button down in the previous tick / poll
+									
 	
-	InputRaw::Axes axesState[InputRaw::getNumAxes()];		//was the axes modified
-	//index of axes values will point to axis in axesState array
-	//so if looping through axes state, can use index to find value from axesValue
-	float axesStateValues[InputRaw::getNumAxes()];				//what is axes value
-	int axesStateTail;
+	bool axesState[InputRaw::getNumAxes()];				//was the axis modified
+	float axesStateValues[InputRaw::getNumAxes()];		//what is axis value
+	
 };
 
