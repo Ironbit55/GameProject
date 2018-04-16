@@ -25,6 +25,7 @@
 #pragma comment(lib, "Input.lib")
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
+#pragma comment(lib, "Box2D.lib")
 //#pragma comment(lib, "MemoryManagement.lib")
 
 ////Screen dimension constants
