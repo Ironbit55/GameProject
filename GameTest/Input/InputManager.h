@@ -78,6 +78,7 @@ public:
 	void loadFromFile(std::string fileName);
 
 	void clearRawInput();
+	void swapRawInput();
 	void clearMappedInput();
 
 	// define our input callback type to call on dispatch
@@ -97,8 +98,9 @@ public:
 	 * Send raw input to actors
 	 */
 
-	void addButton(InputActors actor, InputRaw::Buttons button, bool buttonDown, bool buttonWasDown);
-	void addButtonDown(InputActors actor, InputRaw::Buttons button, bool keyRepeat);
+	void setButtonState(InputActors actor, InputRaw::Buttons button, bool buttonDown, bool buttonWasDown);
+	void addButton(InputActors actor, InputRaw::Buttons button, bool buttonDown);
+	void addButtonDown(InputActors actor, InputRaw::Buttons button);
 	void addButtonUp(InputActors actor, InputRaw::Buttons button);
 	void addAxisValue(InputActors actor, InputRaw::Axes axis, float value);
 

@@ -25,6 +25,7 @@ bool MappedInput::addAction(int actionId, bool state){
 }
 
 bool MappedInput::addState(int stateId, bool state){
+	//these ifs should be rare cases so shouldn't be a problem
 	if (!InputCooked::isState(stateId)) {
 		printf("could not add state input to MappedInput, cookedInput id: %i is not a valid state\n", stateId);
 		return false;
@@ -112,7 +113,7 @@ void MappedInput::clear(){
 	memset(states, 0, InputCooked::getNumStates() * sizeof(bool));
 	memset(ranges, 0, InputCooked::getNumRanges() * sizeof(bool));
 
-	memset(rangeValues, 0, InputCooked::getNumRanges() * sizeof(float));
+	//memset(rangeValues, 0, InputCooked::getNumRanges() * sizeof(float));
 	empty = true;
 
 }

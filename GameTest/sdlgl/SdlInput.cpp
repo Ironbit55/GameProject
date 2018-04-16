@@ -22,7 +22,7 @@ SdlInput::~SdlInput(){
 }
 
 void SdlInput::update(){
-	controllerContainer.update();
+	//controllerContainer.update();
 
 	//loop through controllers and add controler inputs to input manager according
 	//to which controller it is
@@ -36,11 +36,20 @@ void SdlInput::update(){
 			inputManager.addSdlGameControllerState(actor, controllerContainer.getController(i));
 		}
 	}
+
+	
+	//sdl inputManager will grab current keyboard state from sdl and
+	//and inputMappers handle tracking state for wasDownState etc
+	//keyboard input only goes to player1 because i say so
+	inputManager.addSdlKeyboardState(INPUT_ACTOR_PLAYER1);
 }
 
 void SdlInput::handleEvent(SDL_Event& e){
+		
 	//keyboard input only goes to player1
-	if (inputManager.addSdlKeyEvent(InputActors::INPUT_ACTOR_PLAYER1, e)) { return; }
+	/*if (inputManager.addSdlKeyEvent(InputActors::INPUT_ACTOR_PLAYER1, e)) { return; }*/
+
+	//handle controller events like connect and disconnect
+	//button presses are done with polling
 	if (controllerContainer.handleEvent(e)) { return; }
-	//handle controller events
 }

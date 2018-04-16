@@ -15,6 +15,12 @@ void InputManager::clearRawInput(){
 	}
 }
 
+void InputManager::swapRawInput(){
+	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++) {
+		inputMappers[actor].swap();
+	}
+}
+
 void InputManager::clearMappedInput(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++) {
 		mappedInputs[actor].clear();
@@ -25,12 +31,16 @@ void InputManager::addInputContext(InputActors actor, std::string contextName, I
 	inputMappers[actor].addInputContext(contextName, context);
 }
 
-void InputManager::addButton(InputActors actor, InputRaw::Buttons button, bool buttonDown, bool buttonWasDown) {
-	inputMappers[actor].addButton(button, buttonDown, buttonWasDown);
+void InputManager::setButtonState(InputActors actor, InputRaw::Buttons button, bool buttonDown, bool buttonWasDown){
+	inputMappers[actor].setButtonState(button, buttonDown, buttonWasDown);
 }
 
-void InputManager::addButtonDown(InputActors actor, InputRaw::Buttons button, bool keyRepeat){
-	inputMappers[actor].addButtonDown(button, keyRepeat);
+void InputManager::addButton(InputActors actor, InputRaw::Buttons button, bool buttonDown) {
+	inputMappers[actor].addButton(button, buttonDown);
+}
+
+void InputManager::addButtonDown(InputActors actor, InputRaw::Buttons button){
+	inputMappers[actor].addButtonDown(button);
 }
 
 void InputManager::addButtonUp(InputActors actor, InputRaw::Buttons button){
@@ -38,9 +48,6 @@ void InputManager::addButtonUp(InputActors actor, InputRaw::Buttons button){
 }
 
 void InputManager::addAxisValue(InputActors actor, InputRaw::Axes axis, float value){
-	if(actor == INPUT_ACTOR_MAX){
-		printf("LOL");
-	}
 	inputMappers[actor].addAxisValue(axis, value);
 }
 
@@ -51,6 +58,8 @@ void InputManager::activateActor(InputActors actor){
 void InputManager::deactivateActor(InputActors actor){
 	inputActorsActive[actor] = false;
 }
+
+
 
 MappedInput& InputManager::getMappedInput(InputActors actor){
 	return mappedInputs[actor];
@@ -85,7 +94,7 @@ void InputManager::performMapping(){
 		InputActors inputActor = i->second;
 
 		if (!inputActorsActive[inputActor] || mappedInputs[inputActor].isEmpty()) {
-			//don't need to send message if this actor isn't valid
+			//don't need to send message if this actor isn't active
 			//don't need to send input message containing empty input
 			continue;
 		}
@@ -96,23 +105,8 @@ void InputManager::performMapping(){
 		msgData.actor = inputActor;
 
 		MessagingService::instance().pushMessage(msg);
-
 	}
 
-	//perform callbacks
-	//or actually don't use messages instead
-	//for (std::map<InputCallback, InputActors>::iterator i = inputListeners.begin(); i != inputListeners.end(); ++i) {
-	//	InputActors inputActor = i->second;
-	//	if (inputActorsActive[inputActor]) { //only do callback if actor is active
-	//		MappedInput& mappedInput = mappedInputs[inputActor];
-	//		if (!mappedInput.isEmpty()) { //call the callback function only if mappedInput contains something 
-	//			(i->first)(mappedInput);
-	//		}
-	//	}
-	//	
-	//}
-
-	
 }
 
 void InputManager::registerListener(InputActors actor, InputCallback callback){

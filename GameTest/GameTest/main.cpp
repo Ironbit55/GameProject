@@ -152,23 +152,23 @@ int main(int argc, char* args[]) {
 		GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
 		//GameController* controllerPtr = nullptr;
 		if (controllerContainer.controllerIsConnected(0)) {
-			GameController& controller = controllerContainer.getController(0);
-			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_A)) {
-				cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
-				controller.rumble();
-			}
-			if (controller.buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
-				cout << "Y button down! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
-			}
+			//GameController& controller = controllerContainer.getController(0);
+			//if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_A)) {
+			//	cout << "A button triggered! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
+			//	controller.rumble();
+			//}
+			//if (controller.buttonDown(SDL_CONTROLLER_BUTTON_Y)) {
+			//	cout << "Y button down! game controller 1: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
+			//}
 
 			
 		}
 		if (controllerContainer.controllerIsConnected(1)) {
-			GameController& controller = controllerContainer.getController(1);
+			/*GameController& controller = controllerContainer.getController(1);
 			if (controller.buttonTriggered(SDL_CONTROLLER_BUTTON_X)) {
 				cout << "X button triggered! game controller 2: joystick id = " + std::to_string(controller.getJoystickId()) + "\n";
 				controller.rumble();
-			}
+			}*/
 		}
 		
 		inputManager.performMapping();
@@ -177,27 +177,30 @@ int main(int argc, char* args[]) {
 
 		MappedInput& player1MappedInput = inputManager.getMappedInput(InputActors::INPUT_ACTOR_PLAYER1);
 		if (player1MappedInput.getAction(InputCooked::Actions::ACTION_JUMP)) {
+			audioManager.playSoundEffect(EFFECT_JUMP);
 			cout << "Action Jump";
 			
 		}
 
+		float speed = 400;
 		if(player1MappedInput.getState(InputCooked::States::STATE_MOVE_UP)){
 			cout << "Move Up";
 			//audioManager.playSoundEffect(EFFECT_JUMP);
-			MessagingService::instance().pushMessage(msg);
-			camera->SetPosition(camera->GetPosition() + (Vector3(0.0f, -1.0f, 0.0f) * 10));
+			//MessagingService::instance().pushMessage(msg);
+			camera->SetPosition(camera->GetPosition() + Vector3(0.0f, -1.0f, 0.0f) * speed * (msec / 1000));
 		}
+
 		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_DOWN)) {
 			cout << "Move Down";
-			camera->SetPosition(camera->GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * 10);
+			camera->SetPosition(camera->GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * speed * (msec / 1000));
 		}
 		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_LEFT)) {
 			cout << "Move Left";
-			camera->SetPosition(camera->GetPosition() + Vector3(-1.0f, 0.0f, 0.0f) * 10);
+			camera->SetPosition(camera->GetPosition() + Vector3(-1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 		}
 		if (player1MappedInput.getState(InputCooked::States::STATE_MOVE_RIGHT)) {
 			cout << "Move Right";
-			camera->SetPosition(camera->GetPosition() + Vector3(1.0f, 0.0f, 0.0f) * 10);
+			camera->SetPosition(camera->GetPosition() + Vector3(1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 		}
 
 
@@ -214,6 +217,12 @@ int main(int argc, char* args[]) {
 		}
 
 		if (player1MappedInput.getAction(InputCooked::Actions::ACTION_CONTROLLER_X)) {
+			GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
+			//GameController* controllerPtr = nullptr;
+			if (controllerContainer.controllerIsConnected(0)) {
+				GameController& controller = controllerContainer.getController(0);
+				controller.rumble();
+			}
 			cout << "Player 1: Controller Action X" << endl;
 		}
 
@@ -262,7 +271,7 @@ int main(int argc, char* args[]) {
 		//r.RenderScene();
 		//r.SwapBuffers();
 		
-		inputManager.clearRawInput();
+		inputManager.swapRawInput();
 		inputManager.clearMappedInput();
 	}
 

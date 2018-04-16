@@ -37,7 +37,7 @@ bool SdlInputMapper::addSdlKeyUp(SDL_Keycode keycode){
 bool SdlInputMapper::addSdlKeyDown(SDL_Keycode keycode, bool keyRepeat){
 	InputRaw::Buttons buttonId;
 	if (mapSdlKeyToButton(keycode, buttonId)) {
-		addButtonDown(buttonId, keyRepeat);
+		addButtonDown(buttonId);
 		return true;
 	}
 	return false;

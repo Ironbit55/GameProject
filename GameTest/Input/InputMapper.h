@@ -10,6 +10,7 @@ public:
 	void dispatch(MappedInput& mappedInput);
 	
 	void clear();
+	void swap();
 	void addInputContext(std::string name, InputContext& context){
 		inputContexts.push_back(context);
 		activeContexts.push_back(true);
@@ -19,8 +20,9 @@ public:
 	void enableInputContext(std::string name);
 	void disableInputContext(std::string name);
 
-	void addButton(InputRaw::Buttons button, bool down, bool wasDown);
-	void addButtonDown(InputRaw::Buttons button, bool keyRepeat);
+	void setButtonState(InputRaw::Buttons button, bool down, bool wasDown);
+	void addButton(InputRaw::Buttons button, bool down);
+	void addButtonDown(InputRaw::Buttons button);
 	void addButtonUp(InputRaw::Buttons button);
 
 	//should convert raw value to normalised internal value based on some selected (ideally data driven) strategy

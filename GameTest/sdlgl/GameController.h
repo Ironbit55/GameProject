@@ -8,11 +8,10 @@
  * as a result we need to maintain the state of the controller and store it
  * so we have the information to tell when buttons are being held
  * 
- * could do this either by using events to build up our controller state
- * or poll each button every frame
+ * I originally made this class keep track of the controller state
+ * however as InputMapper tracks state it isn't neccesary to do it here so
+ * we just update InputManager with current state everyframe 
  * 
- * If we use events we still need to swap current button state to wasDown button state
- * every frame so might as well go with polling 
  */
 
 #pragma once
@@ -47,10 +46,16 @@ public:
 	void swapState();
 	void clearState();
 
+	//these use internal state. so don't use unless calling
+	//update on controller
 	bool buttonDown(SDL_GameControllerButton button);
 	bool buttonHeld(SDL_GameControllerButton button);
 	bool buttonTriggered(SDL_GameControllerButton button);
 	bool buttonReleased(SDL_GameControllerButton button);
+
+	//this just pulls current state directly from sdl internals
+	bool getButton(SDL_GameControllerButton button);
+	int getAxis(SDL_GameControllerAxis axis);
 
 	int axisValue(SDL_GameControllerAxis axis);
 	void printButtonState();

@@ -157,6 +157,15 @@ bool GameController::buttonReleased(const SDL_GameControllerButton button){
 	return buttonWasDownState[button] && !buttonState[button];
 }
 
+bool GameController::getButton(SDL_GameControllerButton button){
+	return SDL_GameControllerGetButton(gameController, button);
+}
+
+int GameController::getAxis(SDL_GameControllerAxis axis){
+	return SDL_GameControllerGetAxis(gameController, axis);
+}
+
+
 int GameController::axisValue(SDL_GameControllerAxis axis){
 	return axisState[axis];
 }

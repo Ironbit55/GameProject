@@ -47,65 +47,6 @@ bool InputContext::addRangeMapping(InputRaw::Axes axis, InputCooked::Ranges rang
 	return axisToRangeMap.insert(std::make_pair(axis, range)).second;
 }
 
-int InputContext::getMappedInputId(int rawInputId, std::map<int, int>& map, std::map<int, int>::iterator& i){
-	i = map.find(rawInputId);
-
-	if (i == map.end()){	/* Not found */
-		return -1;
-	}else { //found
-		//return the mapped value
-		return i->second;
-	}
-}
-
-//int InputContext::getMappedAction(InputRaw::Buttons buttonId) {
-//	std::map<InputRaw::Buttons, InputCooked::Actions>::iterator& it = buttonToActionMap.find(buttonId);
-//
-//	if (it == buttonToActionMap.end()) {	/* Not found */
-//		return -1;
-//	}
-//	
-//	return it->second;
-//	
-//
-//}
-
-
-bool InputContext::mapButtonInput(InputRaw::Buttons button, bool buttonDown, bool buttonWasDown, MappedInput& mappedInput){
-	bool success = false;
-	int mappedInputId = -1;
-
-
-	//constructing this iterator will have some performance hit so try to avoid it...
-	std::map<int, int>::iterator i;
-
-	//check if button maps to state
-	mappedInputId = getMappedInputId(button, buttonToStateMap, i);
-	if(mappedInputId != -1){
-		//found
-		//add the state this button maps to to our mapped input object
-		mappedInput.addState(mappedInputId, buttonDown);
-		success = true;
-	}
-
-	//check if button maps to action
-	mappedInputId = getMappedInputId(button, buttonToActionMap, i);
-	if (mappedInputId != -1) {
-		//found
-
-		//action is only fired if button pressed and no keyRepeat
-		//so only gets fired when button first pressed, what about released?
-		//add the action this button maps to to our mapped input object
-		mappedInput.addAction(mappedInputId, (buttonDown && !buttonWasDown));
-		//could map button up (buttonWasDown && !buttonDown)
-		//to action here
-		success = true;
-	}
-	
-
-	return success;
-
-}
 
 void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, MappedInput& mappedInput){
 	
@@ -120,12 +61,13 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 		bool map = (buttonStateDown[buttonIndex] && !buttonStateWasDown[buttonIndex]);
 		mappedInput.addAction(actionId, map);
 
-		//this disables button down events triggering for this button
+		//hacky way to disable button down events triggering for this button
 		//for other input contexts in this frame
 		//although it means button up could trigger...
 		buttonStateWasDown[buttonIndex] = (buttonStateWasDown[buttonIndex] && map);
 
 	}
+
 
 	//map buttons to states
 	for (auto it = buttonToStateMap.begin(); it != buttonToStateMap.end(); ++it) {
@@ -134,6 +76,9 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 		
 		//button can be mapped to state if button is down
 		bool map = buttonStateDown[buttonIndex];
+		if (map == true) {
+			printf("what");
+		}
 		mappedInput.addState(stateId, map);
 
 		//button can only be mapped once. so if its been mapped before can't map it again
@@ -155,27 +100,6 @@ void InputContext::mapAxes(bool* axisState, float* axisValues, MappedInput& mapp
 	}
 }
 
-bool InputContext::mapAxisInput(InputRaw::Axes axis, float value, MappedInput& mappedInput){
 
-	//constructing this iterator will have some performance hit so try to avoid it...
-	std::map<int, int>::iterator i;
-
-	int mappedInputId = getMappedInputId(axis, axisToRangeMap, i);
-	if (mappedInputId != -1) {
-		//apply deadzone to axis value
-		if (value > -axisDeadzone && value < axisDeadzone) {
-			//within deadzone so
-			//we don't pass it to mapped input but mapping didn't fail
-			return true;
-		}
-		
-
-		//add the state this button maps to to our mapped input object
-		mappedInput.addRange(mappedInputId, value);
-		return true;
-	}
-
-	return false;;
-}
 
 

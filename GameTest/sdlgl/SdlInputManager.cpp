@@ -45,7 +45,7 @@ bool SdlInputManager::addSdlKeyUp(InputActors actor, SDL_Keycode keycode){
 bool SdlInputManager::addSdlKeyDown(InputActors actor, SDL_Keycode keycode, bool keyRepeat){
 	InputRaw::Buttons buttonId;
 	if (mapSdlKeyToButton(keycode, buttonId)) {
-		addButtonDown(actor, buttonId, keyRepeat);
+		addButtonDown(actor, buttonId);
 		return true;
 	}
 	return false;
@@ -53,23 +53,40 @@ bool SdlInputManager::addSdlKeyDown(InputActors actor, SDL_Keycode keycode, bool
 
 void SdlInputManager::addSdlGameControllerState(InputActors actor, GameController& controller){
 
-	//this is a weird way of doing it
-	//if we got access to the raw state data of the controller we could just
-	//map that directly into button state...
-
+	//map buttons
 	for (auto it = sdlGameControllerButtonMap.begin(); it != sdlGameControllerButtonMap.end(); ++it) {
 		SDL_GameControllerButton sdlButton = it->first;
 		InputRaw::Buttons rawInputButton = it->second;
 
-		addButton(actor, rawInputButton, controller.buttonDown(sdlButton), controller.buttonHeld(sdlButton));
+
+		addButton(actor, rawInputButton, controller.getButton(sdlButton));
 	}
 
+	//map axes
 	for (auto it = sdlGameControllerAxesMap.begin(); it != sdlGameControllerAxesMap.end(); ++it) {
 		SDL_GameControllerAxis sdlAxis = it->first;
 		InputRaw::Axes rawInputAxis = it->second;
 
-		float normalisedAxisValue = normaliseSdlAxisValue(controller.axisValue(sdlAxis));
+		
+		float normalisedAxisValue = normaliseSdlAxisValue(controller.getAxis(sdlAxis));
 		addAxisValue(actor, rawInputAxis, normalisedAxisValue);
+	}
+}
+
+void SdlInputManager::addSdlKeyboardState(InputActors actor){
+	
+	//grab current keyboard state from sdl
+	const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+	for (auto it = sdlKeyMap.begin(); it != sdlKeyMap.end(); ++it) {
+		SDL_Keycode sdlKey = it->first;
+		InputRaw::Buttons rawInputButton = it->second;
+
+		//SDL keyboardState uses scancodes as index,
+		//scan codes are the physical keys wheras keycodes are values the keys are
+		//mapped to. e.g USUALLY key (scancode) a maps to character (keycode) a but not neccesarily
+		SDL_Scancode sdlScanCode = SDL_GetScancodeFromKey(sdlKey);
+		
+		addButton(actor, rawInputButton, keyboardState[sdlScanCode]);
 	}
 }
 
@@ -80,6 +97,11 @@ float SdlInputManager::normaliseSdlAxisValue(int value){
 	float normalisedValue = (float)value / sdlAxisMaxValue;
 	return normalisedValue;
 }
+
+
+
+
+//don't use these anymore
 
 bool SdlInputManager::mapSdlKeyToButton(SDL_Keycode keycode, InputRaw::Buttons& outButtonId) {
 	i = sdlKeyMap.find(keycode);

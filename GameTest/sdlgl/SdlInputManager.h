@@ -36,6 +36,10 @@ public:
 
 	
 	void addSdlGameControllerState(InputActors actor, GameController& controller);
+	void addSdlKeyboardState(InputActors actor);
+	//i'll implement this when if i actually need to use a mouse,
+	//it should be easy tbh
+	void addSdlMouseState(InputActors actor);
 
 	/*
 	we know sdl game controller axis are in the range -32768 to 32768
