@@ -44,7 +44,7 @@ bool SpriteRenderer::Init() {
 	SpriteRenderable* spritesTemp = new SpriteRenderable[numSprites];
 
 	for (int i = 0; i < numSprites; ++i){
-		spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8), -200.0f), Vector3(5.0f, 5.0f, 5.0f), 0.0f);
+		spritesTemp[i] = SpriteRenderable(Vector2((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8)), -200.0f, Vector3(5.0f, 5.0f, 5.0f), 0.0f);
 		//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
 		if (i % 2 == 0) {
 			spritesTemp[i].glTexture = dragonTexture;
@@ -58,12 +58,12 @@ bool SpriteRenderer::Init() {
 		sprites.push_back(&spritesTemp[i]);
 	}
 
-	SpriteRenderable* sprite1 = new SpriteRenderable(Vector3(0, 0.0f, -200.0f), Vector3(50.0f, 50.0f, 50.0f), 20.0f);
+	SpriteRenderable* sprite1 = new SpriteRenderable(Vector2(0, 0.0f), -200.0f, Vector3(50.0f, 50.0f, 50.0f), 20.0f);
 	sprite1->colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 	sprite1->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
 	sprites.push_back(sprite1);
 
-	SpriteRenderable* sprite2 = new SpriteRenderable(Vector3(-80.0f, 0.0f, -200.0f), Vector3(20.0f, 20.0f, 50.0f));
+	SpriteRenderable* sprite2 = new SpriteRenderable(Vector2(-80.0f, 0.0f), -200.0f, Vector3(20.0f, 20.0f, 50.0f));
 	sprite2->colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
 	sprite2->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
 	sprites.push_back(sprite2);
@@ -132,7 +132,7 @@ void SpriteRenderer::DrawSprites(){
 void SpriteRenderer::DrawSprite(SpriteRenderable* sprite){
 
 	
-	Matrix4 modelMatrix = Matrix4::Translation(sprite->position) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
+	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
 	spriteMesh->SetTexture(sprite->glTexture);
 
 	
@@ -154,7 +154,7 @@ void SpriteRenderer::DrawSprite(SpriteRenderable* sprite){
 //takes like 4-6 sprites per batch to be worth it.
 void SpriteRenderer::DrawSpriteSpriteBatch(SpriteRenderable* sprite){
 
-	Matrix4 modelMatrix = Matrix4::Translation(sprite->position) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
+	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
 
 	
 	if (!spriteBatchMesh->AddSprite(modelMatrix, sprite->colour, sprite->glTexture)) {
@@ -211,8 +211,8 @@ bool SpriteRenderer::updateBatchSize(vector<SpriteRenderable*>::iterator startSp
 
 void SpriteRenderer::BuildSpriteLists(){
 	for (vector<SpriteRenderable*>::iterator spriteI = sprites.begin(); spriteI != sprites.end(); ++spriteI) {
-
-		if (frameFrustum.InsideFrustum((*spriteI)->position, 48.0f)) {
+		
+		if (frameFrustum.InsideFrustum(Vector3((*spriteI)->position.x, (*spriteI)->position.y, (*spriteI)->depth), 48.0f)) {
 			if((*spriteI)->colour.w < 0.98f){
 				transparentSpriteList.push_back(*spriteI);
 			}else{

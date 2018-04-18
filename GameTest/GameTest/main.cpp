@@ -122,6 +122,34 @@ int main(int argc, char* args[]) {
 
 	Camera* camera = spriteRenderer.getCamera();
 
+	//test
+	MemoryPool<int, 4096> intTestPool;
+	int *test[30];
+	for (int i = 0; i < 30; i++){
+		int* ptr = intTestPool.allocate();
+		*ptr = i;
+		test[i] = ptr;
+	}
+
+	intTestPool.deallocate(test[4]);
+	intTestPool.deallocate(test[10]);
+	intTestPool.deallocate(test[15]);
+	intTestPool.deallocate(test[7]);
+	intTestPool.deallocate(test[1]);
+	intTestPool.deallocate(test[29]);
+
+	int* freeSlot = intTestPool.firstFree();
+	for (int* i = intTestPool.first(); i != nullptr; i = intTestPool.next(i, freeSlot)){
+		cout << (*i);
+	}
+
+	int first = 10;
+
+	int* firstPtr = new int(5);
+	cout << (*firstPtr);
+	firstPtr = &first;
+	cout << (*firstPtr);
+
 	// While application is running
 	
 	SdlDeltaTimer timer = SdlDeltaTimer();

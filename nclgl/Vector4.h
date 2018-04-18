@@ -12,6 +12,7 @@ _-_-_-_-_-_-_-""  ""
 */
 #pragma once
 
+#include "Vector2.h"
 #include "Vector3.h"
 
 class Vector4	{

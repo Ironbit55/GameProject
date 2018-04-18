@@ -42,7 +42,8 @@ void PhysicsSystem::update(float dt){
 	//	dt = std::min (dt, MAX_STEPS * FIXED_TIMESTEP)
 	// but it allows above calculations of fixedTimestepAccumulator_ and
 	// fixedTimestepAccumulatorRatio_ to remain unchanged.
-	const int nStepsClamped = std::min(nSteps, MAX_STEPS);
+	
+	const int nStepsClamped = min(nSteps, MAX_STEPS);
 	for (int i = 0; i < nStepsClamped; ++i)
 	{
 		// In singleStep_() the CollisionManager could fire custom
@@ -69,25 +70,65 @@ void PhysicsSystem::singleStep(float dt){
 void PhysicsSystem::smoothStates(){
 	const float oneMinusRatio = 1.f - fixedTimestepAccumulatorRatio;
 
-	for (b2Body* b = world->GetBodyList(); b != NULL; b = b->GetNext())
-	{
+	for (PhysicsComponent* component = componentList; component != NULL; component = component->listNext) {
+		b2Body* b = component->body;
+
+
+		if (b->GetType() == b2_staticBody) {
+			continue;
+		}
+
+		//update physics component with new smoothed values using previous values
+		component->smoothedPosition =
+			fixedTimestepAccumulatorRatio * b->GetPosition() +
+			oneMinusRatio * component->previousPosition;
+		component->smoothedAngle =
+			fixedTimestepAccumulatorRatio * b->GetAngle() +
+			oneMinusRatio * component->previousAngle;
+	}
+
+	//for (b2Body* b = world->GetBodyList(); b != NULL; b = b->GetNext()){
+
+	//	//if we kept track of dynamic components we wouldn't have to do this...
+	//	if (b->GetType() == b2_staticBody)
+	//	{
+	//		continue;
+	//	}
+
+	//	PhysicsComponent & c = PhysicsComponent::b2BodyToPhysicsComponent(b);
+	//	c.smoothedPosition =
+	//		fixedTimestepAccumulatorRatio * b->GetPosition() +
+	//		oneMinusRatio * c.previousPosition;
+	//	c.smoothedAngle =
+	//		fixedTimestepAccumulatorRatio * b->GetAngle() +
+	//		oneMinusRatio * c.previousAngle;
+	//}
+}
+
+void PhysicsSystem::resetSmoothStates(){
+
+
+	for (PhysicsComponent* component = componentList; component != NULL; component = component->listNext) {
+		b2Body* b = component->body;
+
+		if (b->GetType() == b2_staticBody) {
+			continue;
+		}
+
+		component->smoothedPosition = b->GetPosition();
+		component->smoothedAngle = b->GetAngle();
+
 		if (b->GetType() == b2_staticBody)
 		{
 			continue;
 		}
 
-		PhysicsComponent & c = PhysicsComponent::b2BodyToPhysicsComponent(b);
-		c.smoothedPosition =
-			fixedTimestepAccumulatorRatio * b->GetPosition() +
-			oneMinusRatio * c.previousPosition;
-		c.smoothedAngle =
-			fixedTimestepAccumulatorRatio * b->GetAngle() +
-			oneMinusRatio * c.previousAngle;
+		
+		component->smoothedPosition = b->GetPosition();
+		component->smoothedAngle = b->GetAngle();
 	}
-}
 
-void PhysicsSystem::resetSmoothStates(){
-	for (b2Body * b = world->GetBodyList(); b != NULL; b = b->GetNext())
+	/*for (b2Body * b = world->GetBodyList(); b != NULL; b = b->GetNext())
 	{
 		if (b->GetType() == b2_staticBody)
 		{
@@ -97,6 +138,55 @@ void PhysicsSystem::resetSmoothStates(){
 		PhysicsComponent & c = PhysicsComponent::b2BodyToPhysicsComponent(b);
 		c.smoothedPosition = b->GetPosition();
 		c.smoothedAngle = b->GetAngle();
+	}*/
+
+}
+
+
+PhysicsComponent* PhysicsSystem::createComponent(const b2BodyDef* bodyDef, const b2PolygonShape* polygon){
+	PhysicsComponent* component = physicsComponentsPool.allocate();
+	
+	//only neccesary if component has non default constructor
+	//PhysicsComponent* component = physicsComponentsPool.newElement();
+	
+
+	// Add to component linked list.
+	component->listPrev = nullptr;
+
+	//insert at head
+	component->listNext = componentList;
+	if (componentList)
+	{
+		componentList->listPrev = component;
+	}
+	componentList = component;
+	++componentCount;
+
+	world->CreateBody(bodyDef);
+	return component;
+
+}
+
+void PhysicsSystem::deleteComponent(PhysicsComponent* component){
+	world->DestroyBody(component->body);
+
+	// Remove component from list.
+	if (component->listPrev) {
+		//link prev component to next component
+		component->listPrev->listNext = component->listNext;
 	}
 
+	if (component->listNext) {
+		//link next component to prev
+		component->listNext->listPrev = component->listPrev;
+	}
+
+	//if head, change head to next
+	if (component == componentList){
+		componentList = component->listNext;
+	}
+
+	--componentCount;
+	
+	physicsComponentsPool.deleteElement(component);
 }

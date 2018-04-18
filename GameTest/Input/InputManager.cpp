@@ -69,7 +69,6 @@ void InputManager::performMapping(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++){
 		if(inputActorsActive[actor]){
 			inputMappers[actor].dispatch(mappedInputs[actor]);
-
 		}
 	}
 
@@ -88,10 +87,10 @@ void InputManager::performMapping(){
 
 	//map from input actor to message type
 	//send message with mapped type
-	for (auto i = MESSAGE_TO_ACTOR_MAP.begin(); i != MESSAGE_TO_ACTOR_MAP.end(); ++i) {
+	for (auto i = ACTOR_TO_MESSAGE_MAP.begin(); i != ACTOR_TO_MESSAGE_MAP.end(); ++i) {
 		
-		MessageType inputMessageType = i->first;
-		InputActors inputActor = i->second;
+		InputActors inputActor = i->first;
+		MessageType inputMessageType = i->second;
 
 		if (!inputActorsActive[inputActor] || mappedInputs[inputActor].isEmpty()) {
 			//don't need to send message if this actor isn't active

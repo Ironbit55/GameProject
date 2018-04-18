@@ -141,6 +141,7 @@
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="TransformComponents.h" />
     <ClInclude Include="TransformManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

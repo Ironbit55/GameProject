@@ -11,11 +11,15 @@ bool InputContext::addMapping(int rawInputId, int cookedInputId){
 	if(InputRaw::isButton(rawInputId)){
 		if(InputCooked::isAction(cookedInputId)){
 			//add to buttonToAction map
-			return buttonToActionMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			buttonToActionPairs.push_back(MappedInputPair(rawInputId, cookedInputId));
+			//return buttonToActionMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			return true;
 		}
 		if(InputCooked::isState(cookedInputId)){
 			//add to buttonToState map
-			return buttonToStateMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			buttonToStatePairs.push_back(MappedInputPair(rawInputId, cookedInputId));
+			//return buttonToStateMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			return true;
 		}
 
 		//shouldn't have any other combination with button
@@ -23,7 +27,9 @@ bool InputContext::addMapping(int rawInputId, int cookedInputId){
 	if(InputRaw::isAxis(rawInputId)){
 		if(InputCooked::isRange(cookedInputId)){
 			//add to axisToRange map
-			return axisToRangeMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			axisToRangePairs.push_back(MappedInputPair(rawInputId, cookedInputId));
+			//return axisToRangeMap.insert(std::make_pair(rawInputId, cookedInputId)).second;
+			return true;
 		}
 
 		//shouldn't be any more combinations
@@ -34,17 +40,23 @@ bool InputContext::addMapping(int rawInputId, int cookedInputId){
 
 bool InputContext::addActionMapping(InputRaw::Buttons button, InputCooked::Actions action){
 	//should return false if can't insert (beccause duplicate value)
-	return buttonToActionMap.insert(std::make_pair(button, action)).second;
+	buttonToActionPairs.push_back(MappedInputPair(button, action));
+	//return buttonToActionMap.insert(std::make_pair(button, action)).second;
+	return true;
 }
 
 bool InputContext::addStateMapping(InputRaw::Buttons button, InputCooked::States state){
 	//should return false if can't insert (beccause duplicate value)
-	return buttonToStateMap.insert(std::make_pair(button, state)).second;
+	buttonToStatePairs.push_back(MappedInputPair(button, state));
+	return true;
+	//return buttonToStateMap.insert(std::make_pair(button, state)).second;
 }
 
 bool InputContext::addRangeMapping(InputRaw::Axes axis, InputCooked::Ranges range){
 	//should return false if can't insert (beccause duplicate value)
-	return axisToRangeMap.insert(std::make_pair(axis, range)).second;
+	axisToRangePairs.push_back(MappedInputPair(axis, range));
+	return true;
+	//return axisToRangeMap.insert(std::make_pair(axis, range)).second;
 }
 
 
@@ -53,9 +65,12 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 	//should check for button up event first
 
 	//map buttons to actions
-	for (auto it = buttonToActionMap.begin(); it != buttonToActionMap.end(); ++it) {
-		int buttonIndex = it->first - InputRaw::BUTTON_ID;
-		int actionId = it->second;
+	//map collection isn't contigious :/
+	//if all we need is to iterate like this could use containing button - action pair
+	//would be more cache friendly
+	for (auto it = buttonToActionPairs.begin(); it != buttonToActionPairs.end(); ++it) {
+		int buttonIndex = it->rawInputId -InputRaw::BUTTON_ID;
+		int actionId = it->cookedInputId;
 
 		//button can be mapped to action if button just pressed (buttonDown, wasUp)
 		bool map = (buttonStateDown[buttonIndex] && !buttonStateWasDown[buttonIndex]);
@@ -70,9 +85,9 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 
 
 	//map buttons to states
-	for (auto it = buttonToStateMap.begin(); it != buttonToStateMap.end(); ++it) {
-		int buttonIndex = it->first - InputRaw::BUTTON_ID;
-		int stateId = it->second;
+	for (auto it = buttonToStatePairs.begin(); it != buttonToStatePairs.end(); ++it) {
+		int buttonIndex = it->rawInputId - InputRaw::BUTTON_ID;
+		int stateId = it->cookedInputId;
 		
 		//button can be mapped to state if button is down
 		bool map = buttonStateDown[buttonIndex];
@@ -87,9 +102,9 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 }
 
 void InputContext::mapAxes(bool* axisState, float* axisValues, MappedInput& mappedInput) {
-	for (auto it = axisToRangeMap.begin(); it != axisToRangeMap.end(); ++it) {
-		int axisIndex = it->first - InputRaw::AXIS_ID;
-		int rangeId = it->second;
+	for (auto it = axisToRangePairs.begin(); it != axisToRangePairs.end(); ++it) {
+		int axisIndex = it->rawInputId - InputRaw::AXIS_ID;
+		int rangeId = it->cookedInputId;
 
 		//apply deadzone to axis value
 		bool inDeadzone = (axisValues[axisIndex] > -axisDeadzone && axisValues[axisIndex] < axisDeadzone);

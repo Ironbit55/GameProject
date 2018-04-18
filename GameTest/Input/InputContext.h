@@ -5,7 +5,12 @@
  * used to fill a MappedInput instance with result of cooking raw inputs
  * in this context
  */
+struct MappedInputPair{
+	MappedInputPair(int rawInputId, int cookedInputId) : rawInputId(rawInputId), cookedInputId(cookedInputId){}
 
+	int rawInputId;
+	int cookedInputId;
+};
 #pragma once
 #include <map>
 #include "InputConstants.h"
@@ -64,9 +69,22 @@ protected:
 	//could have two button to actions maps
 	//one to trigger action on initial button down
 	//and one to trigger on button release
-	std::map<int, int> buttonToActionMap;
-	std::map<int, int> buttonToStateMap;
-	std::map<int, int> axisToRangeMap;
+
+	//originally i used maps, but then I changes the design a lot
+	//to try and follow data oriented design
+	//so I was only using the map to iterate through it
+	//then i realised map isn't stored in contingious block
+	//which is bad on cache for iteration, would be better to use
+	//use something like a vector
+
+	//std::map<int, int> buttonToActionMap;
+	//std::map<int, int> buttonToStateMap;
+	//std::map<int, int> axisToRangeMap;
+
+	
+	std::vector<MappedInputPair> buttonToActionPairs;
+	std::vector<MappedInputPair> buttonToStatePairs;
+	std::vector<MappedInputPair> axisToRangePairs;
 
 	
 	std::map<InputRaw::Axes, float> axisToSensitivityMap;

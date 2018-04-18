@@ -11,6 +11,12 @@ class Entity : MessageReceiver
 public:
 	Entity(){
 		registerInput(INPUT_ACTOR_PLAYER1);
+
+		//create callback to this instances onInputMessage
+		//this is the callback attached to input messages
+		//and this way we don't use virtual function from MessageReciever
+		//apperently some people think virtual function calls are the devil
+		inputMessageCallback = std::bind(&Entity::onInputMessage, this, std::placeholders::_1);
 	};
 	~Entity() {};
 
@@ -18,31 +24,23 @@ public:
 
 	void update();
 
-	void onreceiveMessage(Message& msg) override{
 
-		//check whether this is an input message
-		//by seeing if the type of message matches any
-		//mesage types defined in message actor map
-		auto i = MESSAGE_TO_ACTOR_MAP.find(msg.messageType);
-		if(i != MESSAGE_TO_ACTOR_MAP.end()){
-			
-			InputActors inputActor = i->second;
+	void onInputMessage(Message& msg){
+		//we are going to trust this is always an input message
+		InputMsgData* data = static_cast<InputMsgData*>(msg.dataPayload);
+		InputActors inputActor = data->actor;
 
-			InputMsgData* data = static_cast<InputMsgData*>(msg.dataPayload);
-			handleInput(inputActor, data->input);
-		}
+		handleInput(inputActor, data->input);
+
 	}
 
 	bool registerInput(InputActors inputActor){
 
-		//check this input actor is mapped to a message
-		//inputActor is on the wrong side of the map but register input
-		//gets called less than onreceiveMessage which needs it this way round
-		for (auto i = MESSAGE_TO_ACTOR_MAP.begin(); i != MESSAGE_TO_ACTOR_MAP.end(); ++i) {
-			if (inputActor == i->second) {
-				//it is mapped so register for message actor is mapped to
-				return addListener(i->first);
-			}
+		//find message type mapped to 
+		auto i = ACTOR_TO_MESSAGE_MAP.find(inputActor);
+		if (i != ACTOR_TO_MESSAGE_MAP.end()) {
+			//add listener to this message type
+			return addListener(i->second, inputMessageCallback);;
 		}
 
 		return false;
@@ -51,19 +49,13 @@ public:
 
 	
 	bool disableInput(InputActors inputActor) {
-
-		for (auto i = MESSAGE_TO_ACTOR_MAP.begin(); i != MESSAGE_TO_ACTOR_MAP.end(); ++i) {
-			if (inputActor == i->second) {
-				//input actor has message mapping
-
-				//may not be registered for this kind of message
-				//but will just return false and do nothing in that case so its fine
-				return this->disableListener(i->first);
-			}
+		//find message type mapped to 
+		auto i = ACTOR_TO_MESSAGE_MAP.find(inputActor);
+		if (i != ACTOR_TO_MESSAGE_MAP.end()) {
+			//add listener to this message type
+			return this->disableListener(i->second);
 		}
-
 		return false;
-
 	}
 
 	//gets called when received a message containing the input for a actor
@@ -88,6 +80,7 @@ protected:
 	vector<Entity> children;
 
 private:
+	MessageCallback inputMessageCallback;
 
 };
 

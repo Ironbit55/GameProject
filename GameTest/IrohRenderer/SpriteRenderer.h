@@ -17,6 +17,9 @@
 using namespace std;
 
 const int MIN_BATCH_SIZE = 6;
+const int MAX_NUM_SPRITES = 20000;
+const int MAX_NUM_TRANSPARENT_SPRITES = 2000;
+const int MAX_NUM_OPAQUE_SPRITES = 18000;
 
 class SpriteRenderer :
 	public SDLRenderer
@@ -36,20 +39,20 @@ public:
 	static bool compareByTexture(SpriteRenderable* a, SpriteRenderable* b) { return a->glTexture < b->glTexture; }
 
 	static bool compareByDepthAndTexture(SpriteRenderable* a, SpriteRenderable* b) {
-		if (fabs(a->position.z - b->position.z) < epsilon) {
+		if (fabs(a->depth - b->depth) < epsilon) {
 			//depth is equal
 			return a->glTexture < b->glTexture;
 		} else {
-			return a->position.z < b->position.z;
+			return a->depth < b->depth;
 		}
 	}
 
 	static bool compareByDepthAndTextureReverse(SpriteRenderable* a, SpriteRenderable* b) {
-		if (fabs(a->position.z - b->position.z) < epsilon) {
+		if (fabs(a->depth - b->depth) < epsilon) {
 			//depth is equal
 			return a->glTexture > b->glTexture;
 		} else {
-			return a->position.z > b->position.z;
+			return a->depth > b->depth;
 		}
 	}
 	
@@ -62,6 +65,10 @@ protected:
 
 	vector<SpriteRenderable*> transparentSpriteList;
 	vector<SpriteRenderable*> opaqueSpriteList;
+	
+	/*array<SpriteRenderable, MAX_NUM_SPRITES> sprites;
+	array<SpriteRenderable, MAX_NUM_TRANSPARENT_SPRITES> transparentSpriteList;
+	array<SpriteRenderable, MAX_NUM_OPAQUE_SPRITES> opaqueSpriteList;*/
 
 	void clearSpriteLists();
 
