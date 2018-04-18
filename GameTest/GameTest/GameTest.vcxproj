@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
+    <ClCompile Include="FeedbackEngine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageReceiver.cpp" />
     <ClCompile Include="MessagingService.cpp" />
@@ -132,10 +133,12 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="TransformManager.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="FeedbackEngine.h" />
     <ClInclude Include="MessageReceiver.h" />
     <ClInclude Include="MessagingService.h" />
     <ClInclude Include="PhysicsSystem.h" />
@@ -143,6 +146,7 @@
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="TransformComponents.h" />
     <ClInclude Include="TransformManager.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

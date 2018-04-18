@@ -14,12 +14,14 @@
 #include <vector>
 #include "TransformComponents.h"
 
-const float FIXED_TIMESTEP = 1.f / 60.f;
+const float FIXED_TIMESTEP = 1.f / 60.0f;
 const int VELOCITY_ITERATIONS = 8;
 const int POSITION_ITERATIONS = 3;
 // Maximum number of steps, to avoid degrading to an halt.
 const int MAX_STEPS = 5;
-const float SCALE = 30.0f;
+const float SCALE = 20.0f;
+
+const int MAX_NUM_PHYSICS_COMPONENTS = 10000;
 
 struct PhysicsComponent{
 	b2Vec2 smoothedPosition;
@@ -29,13 +31,12 @@ struct PhysicsComponent{
 	float smoothedAngle;
 	float previousAngle;
 
-	SimpleTransform* transform;
-
 	//store pointer to body this component is attached to
 	b2Body* body;
 
-	PhysicsComponent* listNext;
-	PhysicsComponent* listPrev;
+	//store pointer to parent transform
+	SimpleTransform* transform;
+
 };
 
 class PhysicsSystem
@@ -45,9 +46,15 @@ public:
 	~PhysicsSystem();
 
 	void update(float dt);
+
+	b2Vec2 scaleVec2(Vector2 vec2){
+		return b2Vec2(vec2.x / SCALE, vec2.y / SCALE);
+	}
 	
 
-	PhysicsComponent* createComponent(const b2BodyDef* bodyDef, const b2PolygonShape* polygon);;
+	PhysicsComponent* createComponent(SimpleTransform* transform, b2BodyDef& bodyDef, b2FixtureDef& fixtureDef);;
+	PhysicsComponent* createComponentBox(SimpleTransform* transform, Vector2 box);
+	PhysicsComponent* createComponentCircle(SimpleTransform* transform, float radius);;
 	void deleteComponent(PhysicsComponent* body);
 
 protected:
@@ -60,6 +67,8 @@ protected:
 	void smoothStates();
 	void resetSmoothStates();
 
+	void updateTransforms();
+
 	b2World* world;
 
 	//PhysicsComponent* b2BodyToPhysicsComponent(b2Body* b) {
@@ -70,7 +79,7 @@ protected:
 
 private:
 	
-
+	int numComponents;
 
 
 	float fixedTimestepAccumulatorRatio;
@@ -80,7 +89,7 @@ private:
 	
 	//i want to use custom allocator to store physics components
 	//but i don't have a vector implementation for it
-	MemoryPool<PhysicsComponent, 4096> physicsComponentsPool;
+	MemoryPool<PhysicsComponent, MAX_NUM_PHYSICS_COMPONENTS * sizeof(PhysicsComponent)> physicsComponentsPool;
 
 
 

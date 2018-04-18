@@ -15,6 +15,11 @@
 #include "PhysicsSystem.h"
 #include "IrohRenderer/RenderSystem.h"
 
+struct TransformMapItem {
+	SimpleTransform* transform;
+	RenderComponent* renderComponent;
+	PhysicsComponent* physicsComponent;
+};
 
 class TransformManager
 {
@@ -30,8 +35,8 @@ public:
 	//returns handle
 	SimpleTransform* createTransform(SimpleTransform& trasform);
 	
-	PhysicsComponent* attachRigidBody(SimpleTransform* objectTransform, const b2BodyDef* body, const b2PolygonShape* polygon);
-	RenderComponent* attachRenderComponent(SimpleTransform* objectTransform, RenderComponent& renderable);
+	PhysicsComponent* attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body, b2FixtureDef& fixtureDef);
+	RenderComponent* attachRenderComponent(SimpleTransform* objectTransform, SpriteRenderable& renderable);
 
 	
 

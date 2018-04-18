@@ -2,7 +2,13 @@
 
 
 
-SdlInput::SdlInput(SdlInputManager& inputManager) : inputManager(inputManager){
+SdlInput::SdlInput(SdlInputManager& inputManager) : inputManager(inputManager) {};
+
+
+SdlInput::~SdlInput(){
+}
+
+void SdlInput::loadMappings(){
 	inputManager.addSdlKeyMapping(SDLK_w, InputRaw::Buttons::BUTTON_KEY_W);
 	inputManager.addSdlKeyMapping(SDLK_a, InputRaw::Buttons::BUTTON_KEY_A);
 	inputManager.addSdlKeyMapping(SDLK_s, InputRaw::Buttons::BUTTON_KEY_S);
@@ -15,10 +21,6 @@ SdlInput::SdlInput(SdlInputManager& inputManager) : inputManager(inputManager){
 
 	inputManager.addSdlGameControllerAxesMapping(SDL_CONTROLLER_AXIS_LEFTX, InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTX);
 	inputManager.addSdlGameControllerAxesMapping(SDL_CONTROLLER_AXIS_LEFTY, InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTY);
-}
-
-
-SdlInput::~SdlInput(){
 }
 
 void SdlInput::update(){

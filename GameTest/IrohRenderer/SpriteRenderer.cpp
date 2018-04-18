@@ -3,16 +3,20 @@
 #include "MeshSpriteBatch.h"
 
 
-SpriteRenderer::SpriteRenderer(SdlWindow &parent) : SDLRenderer(parent) {
+SpriteRenderer::SpriteRenderer(SdlWindow &parent) : SDLRenderer(parent), spriteListCount(0), previousTexture(-1){
+	spriteList = new array<SpriteRenderable*, MAX_NUM_SPRITES>;
 
+	
+	//spriteListAll = new SpriteRenderable[5];
 
 }
 
 bool SpriteRenderer::Init() {
 	SDLRenderer::Init();
 
-	projMatrix = Matrix4::Orthographic(-1.0f, 10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
-	camera = new Camera(0.0f, 0.0f, Vector3(0, 0, 750.0f));
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//do this somewhere else
 	currentShader = new Shader(SHADERDIR"SceneVertex.glsl", SHADERDIR"SceneFragment.glsl");
@@ -23,50 +27,66 @@ bool SpriteRenderer::Init() {
 		std::cin.get();
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	spriteMesh = Mesh::GenerateQuad();
 	spriteBatchMesh = new MeshSpriteBatch(256);
+	camera = new Camera(0.0f, 0.0f, Vector3(0, 0, 750.0f));
 
+	projMatrix = Matrix4::Orthographic(-1.0f, 10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix*viewMatrix);
 
+	/*spriteMesh = Mesh::GenerateQuad();
+	spriteBatchMesh = new MeshSpriteBatch(256);*/
+
+
+
 	///this is just for testing it doesn't belong here promise
 
-	GLuint dragonTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	GLuint raiderTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	//GLuint dragonTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	//GLuint raiderTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
 
 
 	//create a bunch of sprite in contigous memory
-	const int numSprites = 200;
-	SpriteRenderable* spritesTemp = new SpriteRenderable[numSprites];
+	//const int numSprites = 35000;
+	//int i;
+	//for (i = 0; i < numSprites; ++i){
+	//	spriteListAll[i] = SpriteRenderable(Vector2((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8)), -200.0f, Vector3(5.0f, 5.0f, 5.0f), 0.0f);
+	//	
+	//	//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
+	//	if (i % 2 == 0) {
+	//		spriteListAll[i].glTexture = dragonTexture;
+	//		spriteListAll[i].colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	//	}else{
+	//		spriteListAll[i].glTexture = raiderTexture;
+	//		spriteListAll[i].colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	//	}
 
-	for (int i = 0; i < numSprites; ++i){
-		spritesTemp[i] = SpriteRenderable(Vector2((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8)), -200.0f, Vector3(5.0f, 5.0f, 5.0f), 0.0f);
-		//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
-		if (i % 2 == 0) {
-			spritesTemp[i].glTexture = dragonTexture;
-			spritesTemp[i].colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-		}else{
-			spritesTemp[i].glTexture = raiderTexture;
-			spritesTemp[i].colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-		}
+	//	//spriteListTail++;
+	//	spriteListAllCount++;
+	//	//sprites.push_back(&spritesTemp[i]);
+	//}
 
+	//SpriteRenderable sprite1 = SpriteRenderable(Vector2(0.0f, 0.0f), -200.0f, Vector3(50.0f, 50.0f, 50.0f), 20.0f);
+	//sprite1.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	//sprite1.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	//
+	//spriteListAll[i] = sprite1;
+	//i++;
+	//spriteListAllCount++;
+	////addSprite(&spriteListAll[i]);
+	////addSprite(sprite1);
+	////sprites.push_back(sprite1);
 
-		sprites.push_back(&spritesTemp[i]);
-	}
-
-	SpriteRenderable* sprite1 = new SpriteRenderable(Vector2(0, 0.0f), -200.0f, Vector3(50.0f, 50.0f, 50.0f), 20.0f);
-	sprite1->colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	sprite1->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	sprites.push_back(sprite1);
-
-	SpriteRenderable* sprite2 = new SpriteRenderable(Vector2(-80.0f, 0.0f), -200.0f, Vector3(20.0f, 20.0f, 50.0f));
-	sprite2->colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	sprite2->glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	sprites.push_back(sprite2);
+	//SpriteRenderable sprite2 = SpriteRenderable(Vector2(-80.0f, 0.0f), -200.0f, Vector3(20.0f, 20.0f, 50.0f));
+	//sprite2.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	//sprite2.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	//
+	//spriteListAll[i] = sprite2;
+	//spriteListAllCount++;
+	//i++;
+	
+	//addSprite(&sprite2);
+	//sprites.push_back(sprite2);
 	
 	previousTexture = -1;
 	return true;
@@ -74,6 +94,8 @@ bool SpriteRenderer::Init() {
 
 
 SpriteRenderer::~SpriteRenderer(){
+	//delete[] spriteListAll;
+	delete spriteList;
 }
 
 void SpriteRenderer::RenderScene(){
@@ -89,50 +111,57 @@ void SpriteRenderer::RenderScene(){
 	//possible
 	glUseProgram(0);
 	SwapBuffers();
-
-	clearSpriteLists();
 }
 
 
-void SpriteRenderer::clearSpriteLists(){
-	transparentSpriteList.clear();
-	opaqueSpriteList.clear();
-}
+
 
 void SpriteRenderer::DrawSprites(){
 	
-	//spriteBatchMesh->Begin(0);
-	previousTexture = 0;
+	previousTexture = -1;
+	spriteBatchMesh->Begin(0);
+	
 	int batchSize = -1;
-	for (vector<SpriteRenderable*>::iterator i = opaqueSpriteList.begin(); i != opaqueSpriteList.end(); ++i) {
+
+	std::array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator transparentListTail = spriteTail();
+	//draw all opaque then all transparent
+	//loop front to back
+	for (auto it = spriteList->begin(); it != spriteTail(); ++it) {
+		//rare case
+		if((*it)->colour.w < 0.93){
+			transparentListTail = it;
+			break;
+		}
+
 		
-		DrawSprite(*i);
 		//if  batch size greater than or equal to min match size than use spritebatch
 		//otherwise just draw em.
 
-		updateBatchSize(i, opaqueSpriteList.end(), batchSize);
-		
-		if(batchSize >= MIN_BATCH_SIZE){
-			DrawSpriteSpriteBatch(*i);
-		}else{
-			DrawSprite(*i);
-		}
+		updateBatchSize(it, spriteTail(), batchSize);
 
+		if (batchSize >= MIN_BATCH_SIZE) {
+			DrawSpriteSpriteBatch((*it));
+		} else {
+			DrawSprite((*it));
+		}
 	}
 
 	emptySpriteBatch();
-	//theres basiicaly no way transparent sprites are gunno be ordered enough to do batching
-	for (vector<SpriteRenderable*>::iterator i = transparentSpriteList.begin(); i != transparentSpriteList.end(); ++i) {
-		DrawSprite(*i);
+	//loop back to front
+	auto it = spriteTail();
+	while(it != transparentListTail){
+		--it;
+		DrawSprite((*it));
 	}
 
-	//emptySpriteBatch();
+	emptySpriteBatch();
+
 }
 
 void SpriteRenderer::DrawSprite(SpriteRenderable* sprite){
 
 	
-	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
+	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * Matrix4::Rotation(sprite->rotation, Vector3(0, 0, 1)) * Matrix4::Scale(sprite->scale);
 	spriteMesh->SetTexture(sprite->glTexture);
 
 	
@@ -154,7 +183,7 @@ void SpriteRenderer::DrawSprite(SpriteRenderable* sprite){
 //takes like 4-6 sprites per batch to be worth it.
 void SpriteRenderer::DrawSpriteSpriteBatch(SpriteRenderable* sprite){
 
-	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * sprite->qRotation.ToMatrix() * Matrix4::Scale(sprite->scale);
+	Matrix4 modelMatrix = Matrix4::Translation(Vector3(sprite->position.x, sprite->position.y, sprite->depth)) * Matrix4::Rotation(sprite->rotation, Vector3(0, 0, 1)) * Matrix4::Scale(sprite->scale);
 
 	
 	if (!spriteBatchMesh->AddSprite(modelMatrix, sprite->colour, sprite->glTexture)) {
@@ -180,8 +209,8 @@ void SpriteRenderer::emptySpriteBatch(){
 	spriteBatchMesh->Draw();
 }
 
-bool SpriteRenderer::updateBatchSize(vector<SpriteRenderable*>::iterator startSprite,
-	vector<SpriteRenderable*>::iterator iteratorEnd, int& batchSizeOut){
+bool SpriteRenderer::updateBatchSize(array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator startSprite,
+	array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator iteratorEnd, int& batchSizeOut){
 	
 	if ((*startSprite)->glTexture == previousTexture) {
 		return false;
@@ -192,11 +221,11 @@ bool SpriteRenderer::updateBatchSize(vector<SpriteRenderable*>::iterator startSp
 
 	//iterate MIN_MATCH_SIZE sprites ahead. if the end isn't before then
 	if (iteratorEnd - startSprite > MIN_BATCH_SIZE) {
-		vector<SpriteRenderable*>::iterator i = startSprite + 1;
-		while (i < (startSprite + MIN_BATCH_SIZE)) {
+		auto i = startSprite + 1;
+		while ((i < (startSprite + MIN_BATCH_SIZE)) && (*i)->colour.w > MIN_OPACITY) {
 			
 			//once we find a sprite with a different texture we know our batch size
-			if ((*startSprite)->glTexture != (*startSprite)->glTexture) {
+			if ((*i)->glTexture != (*startSprite)->glTexture) {
 				break;
 			}
 
@@ -209,20 +238,34 @@ bool SpriteRenderer::updateBatchSize(vector<SpriteRenderable*>::iterator startSp
 	return true;
 }
 
-void SpriteRenderer::BuildSpriteLists(){
-	for (vector<SpriteRenderable*>::iterator spriteI = sprites.begin(); spriteI != sprites.end(); ++spriteI) {
-		
-		if (frameFrustum.InsideFrustum(Vector3((*spriteI)->position.x, (*spriteI)->position.y, (*spriteI)->depth), 48.0f)) {
-			if((*spriteI)->colour.w < 0.98f){
-				transparentSpriteList.push_back(*spriteI);
-			}else{
-				opaqueSpriteList.push_back(*spriteI);
-			}
-		}
+bool SpriteRenderer::updateBatchSizeTransparent(array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator startSprite,
+	array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator iteratorEnd, int& batchSizeOut) {
+
+	if ((*startSprite)->glTexture == previousTexture) {
+		return false;
 	}
 
-	std::sort(opaqueSpriteList.begin(), opaqueSpriteList.end(), compareByDepthAndTexture);
-	std::sort(transparentSpriteList.begin(), transparentSpriteList.end(), compareByDepthAndTextureReverse);
+	//we have started a new block of sprites 
+	batchSizeOut = 1;
+
+	//iterate MIN_MATCH_SIZE sprites ahead. if the end isn't before then
+	if (startSprite - iteratorEnd > MIN_BATCH_SIZE) {
+		auto i = startSprite - 1;
+		while (i > (startSprite - MIN_BATCH_SIZE)) {
+
+			//once we find a sprite with a different texture we know our batch size
+			if (((*i)->glTexture != (*startSprite)->glTexture)) {
+				break;
+			}
+
+			--i;
+			batchSizeOut++;
+		}
+	}
+}
+
+void SpriteRenderer::BuildSpriteLists(){
+	std::sort(spriteList->begin(), spriteTail(), compareByDepthAndTexturePtr);
 }
 
 void SpriteRenderer::UpdateScene(float mse){

@@ -13,13 +13,15 @@
 #include "SpriteRenderable.h"
 #include "../../nclgl/Frustum.h"
 #include "MeshSpriteBatch.h"
+#include <array>
 
 using namespace std;
 
 const int MIN_BATCH_SIZE = 6;
-const int MAX_NUM_SPRITES = 20000;
+const int MAX_NUM_SPRITES = 40000;
 const int MAX_NUM_TRANSPARENT_SPRITES = 2000;
 const int MAX_NUM_OPAQUE_SPRITES = 18000;
+const float MIN_OPACITY = 0.93;
 
 class SpriteRenderer :
 	public SDLRenderer
@@ -27,6 +29,8 @@ class SpriteRenderer :
 public:
 	SpriteRenderer(SdlWindow &parent);
 	~SpriteRenderer();
+
+	SpriteRenderer(const SpriteRenderer &r);
 
 	bool Init() override;
 
@@ -38,7 +42,16 @@ public:
 
 	static bool compareByTexture(SpriteRenderable* a, SpriteRenderable* b) { return a->glTexture < b->glTexture; }
 
-	static bool compareByDepthAndTexture(SpriteRenderable* a, SpriteRenderable* b) {
+	static bool compareByDepthAndTexture(SpriteRenderable a, SpriteRenderable b) {
+		if (fabs(a.depth - b.depth) < epsilon) {
+			//depth is equal
+			return a.glTexture < b.glTexture;
+		} else {
+			return a.depth < b.depth;
+		}
+	}
+
+	static bool compareByDepthAndTexturePtr(SpriteRenderable* a, SpriteRenderable* b) {
 		if (fabs(a->depth - b->depth) < epsilon) {
 			//depth is equal
 			return a->glTexture < b->glTexture;
@@ -55,35 +68,67 @@ public:
 			return a->depth > b->depth;
 		}
 	}
+
+	void clearSprites() {
+		spriteListCount = 0;
+	}
+
+	bool addSpriteToDrawList(SpriteRenderable* sprite) {
+		if (frameFrustum.InsideFrustum2d(sprite->position, 48.0f)) {
+			addSprite(sprite);
+			return true;
+		}
+		return false;
+	}
+
+	void addSprite(SpriteRenderable* sprite) {
+		(*spriteList)[spriteListCount] = sprite;
+		spriteListCount++;
+	}
 	
 protected:
 	Camera*	camera;
 	Frustum frameFrustum;
+	
 	Mesh* spriteMesh;
 	MeshSpriteBatch* spriteBatchMesh;
-	vector<SpriteRenderable*> sprites;
-
-	vector<SpriteRenderable*> transparentSpriteList;
-	vector<SpriteRenderable*> opaqueSpriteList;
 	
-	/*array<SpriteRenderable, MAX_NUM_SPRITES> sprites;
-	array<SpriteRenderable, MAX_NUM_TRANSPARENT_SPRITES> transparentSpriteList;
-	array<SpriteRenderable, MAX_NUM_OPAQUE_SPRITES> opaqueSpriteList;*/
-
-	void clearSpriteLists();
-
+	std::array <SpriteRenderable*, MAX_NUM_SPRITES>* spriteList;
+	int spriteListCount;
+	
 	GLuint previousTexture;
 
-	void	DrawSprites();
+	//vector<SpriteRenderable*> sprites;
+
+	//vector<SpriteRenderable*> transparentSpriteList;
+	//vector<SpriteRenderable*> opaqueSpriteList;
+
+
+	//SpriteRenderable* spriteListAll;
+	//int spriteListAllCount;
+	
+
+	/*array<SpriteRenderable, MAX_NUM_TRANSPARENT_SPRITES> transparentSpriteList;
+	array<SpriteRenderable, MAX_NUM_OPAQUE_SPRITES> opaqueSpriteList;*/
+
+
+	std::array <SpriteRenderable*, MAX_NUM_SPRITES>::iterator spriteTail(){
+		return spriteList->begin() + spriteListCount;
+	}
+
+	void DrawSprites();
 	void DrawSprite(SpriteRenderable* sprite);
 	void DrawSpriteSpriteBatch(SpriteRenderable* sprite);
 	void emptySpriteBatch();
+
 
 	/*
 	 * identify blocks of sprites sharing the same texture
 	and count how large the block is
 	 */
-	bool updateBatchSize(vector<SpriteRenderable*>::iterator startSprite, vector<SpriteRenderable*>::iterator iteratorEnd, int& batchSizeOut);
+	bool updateBatchSize(array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator startSprite, array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator iteratorEnd, int& batchSizeOut);
+	bool updateBatchSizeTransparent(array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator startSprite,
+		array<SpriteRenderable*, MAX_NUM_SPRITES>::iterator iteratorEnd, int& batchSizeOut);
 
 	void	BuildSpriteLists();
 

@@ -73,7 +73,7 @@
     <LibraryPath>..\$(Configuration)\;..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(ProjectDir)..\..\SDL2-2.0.7\include;$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

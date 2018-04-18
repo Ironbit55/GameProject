@@ -68,8 +68,8 @@ noexcept
   firstSlot_ = memoryPool.firstSlot_;
   memoryPool.firstSlot_ = nullptr;
   currentSlot_ = memoryPool.currentSlot_;
-  lastSlot_ = memoryPool.lastSlot;
-  freeSlots_ = memoryPool.freeSlots;
+  lastSlot_ = memoryPool.lastSlot_;
+  freeSlots_ = memoryPool.freeSlots_;
   
 }
 
@@ -94,7 +94,7 @@ noexcept
 	firstSlot_ = memoryPool.firstSlot_;
     currentSlot_ = memoryPool.currentSlot_;
     lastSlot_ = memoryPool.lastSlot_;
-    freeSlots_ = memoryPool.freeSlots;
+    freeSlots_ = memoryPool.freeSlots_;
   }
   return *this;
 }

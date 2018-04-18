@@ -10,23 +10,26 @@ TransformManager::~TransformManager()
 }
 
 SimpleTransform* TransformManager::createTransform(SimpleTransform& transform){
-	SimpleTransform* t = transformPool.allocate();
-	t = &transform;
+	SimpleTransform* t = transformPool.newElement(transform);
+	
 	return t;
 }
 
-PhysicsComponent* TransformManager::attachRigidBody(SimpleTransform* objectTransform, const b2BodyDef* body, const b2PolygonShape* polygon){
-	PhysicsComponent* p = physicsSystem.createComponent(body, polygon);
+PhysicsComponent* TransformManager::attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body, b2FixtureDef& fixtureDef){
+	PhysicsComponent* p = physicsSystem.createComponent(objectTransform, body, fixtureDef);
 	p->transform = objectTransform;
 
 	return p;
 
 }
 
-RenderComponent* TransformManager::attachRenderComponent(SimpleTransform* objectTransform, RenderComponent& renderable){
-	renderable.transform = objectTransform;
-	return renderSystem.createRenderComponent(renderable);
+RenderComponent* TransformManager::attachRenderComponent(SimpleTransform* objectTransform, SpriteRenderable& renderable){
+	
+	/*r.transform = objectTransform;
+	r.sprite = renderable;*/
+	return renderSystem.createRenderComponent(objectTransform, renderable);
 }
+
 
 void TransformManager::destroyTransform(SimpleTransform* transform){
 	transformPool.deallocate(transform);

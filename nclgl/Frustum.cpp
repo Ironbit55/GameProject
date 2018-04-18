@@ -10,12 +10,56 @@ bool Frustum::InsideFrustum(SceneNode &n) {
 }
 
 bool Frustum::InsideFrustum(Vector3 position, float boundingRadius){
-	for (int p = 0; p < 6; ++p) {
+	for (int p = 0; p < 4; ++p) {
 		if (!planes[p].SphereInPlane(position, boundingRadius)) {
 			return false; // scenenode is outside this plane !
 		}
 	}
 	return true; // Scenenode is inside every plane ...
+}
+
+bool Frustum::InsideFrustum2d(Vector2 position, float boundingRadius){
+	//if (position.x + boundingRadius < (-planes[0].GetDistance() * planes[0].GetNormal().x)){
+	//	//outside rectange frustrum on right side
+	//	return false;
+	//}
+
+	//if (position.x - boundingRadius > (planes[1].GetDistance() * planes[1].GetNormal().x)) {
+	//	//outside left
+	//	return false;
+	//}
+
+	//if (position.y + boundingRadius > (planes[2].GetDistance() * planes[2].GetNormal().y)) {
+	//	//outside bottom
+	//	return false;
+	//}
+
+	//if (position.y - boundingRadius < (planes[3].GetDistance() * planes[3].GetNormal().y)) {
+	//	//outside top
+	//	return false;
+	//}
+
+	if (position.x - boundingRadius > (+planes[0].GetDistance())) {
+		//outside rectange frustrum on right side
+		return false;
+	}
+
+	if (position.x + boundingRadius < (-planes[1].GetDistance())) {
+		//outside left
+		return false;
+	}
+
+	if (position.y + boundingRadius < (-planes[2].GetDistance())) {
+		//outside bottom
+		return false;
+	}
+
+	if (position.y - boundingRadius > (planes[3].GetDistance())) {
+		//outside top
+		return false;
+	}
+
+	return true;
 }
 
 void Frustum::FromMatrix(const Matrix4 & mat) {

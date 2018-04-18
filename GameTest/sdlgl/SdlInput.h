@@ -21,6 +21,8 @@ public:
 	SdlInput(SdlInputManager& inputManager);
 	~SdlInput();
 
+	void loadMappings();
+
 	void update();
 	void handleEvent(SDL_Event &e);
 

@@ -19,6 +19,9 @@
 #include "../sdlgl/SdlFrameCounter.h"
 #include "../sdlgl/SdlMixer.h"
 #include "AudioManager.h"
+#include "IrohRenderer/RenderSystem.h"
+#include "PhysicsSystem.h"
+#include "TransformManager.h"
 
 #pragma comment (lib, "EntityAttempt.lib")
 #pragma comment(lib, "IrohRenderer.lib")
@@ -102,11 +105,72 @@ int main(int argc, char* args[]) {
 	
 	initInput(inputManager);
 	SdlInput sdlInput = SdlInput(inputManager);
+	sdlInput.loadMappings();
 	Entity testEntity;
 	//inputManager.registerListener(InputActors::INPUT_ACTOR_PLAYER1, (testEntity.inputListener));
 
+	
 	SpriteRenderer spriteRenderer(w);
 	spriteRenderer.Init();
+
+	RenderSystem renderSystem(spriteRenderer);
+	PhysicsSystem physicsSystem;
+	TransformManager transformManager(renderSystem, physicsSystem);
+
+	GLuint dragonTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	GLuint raiderTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	
+
+	SimpleTransform transform(0.0f, 100.0f, 0.0f);
+	SpriteRenderable sprite1 = SpriteRenderable(Vector2(0.0f, 0.0f), -200.0f, Vector3(50.0f, 50.0f, 50.0f), 20.0f);
+	sprite1.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f); 
+	sprite1.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	SimpleTransform* t1 = transformManager.createTransform(transform);
+	RenderComponent* r1 = transformManager.attachRenderComponent(t1, sprite1);
+	PhysicsComponent* p1 = physicsSystem.createComponentBox(t1, Vector2(50, 50));
+
+	//addSprite(&spriteListAll[i]);
+	//addSprite(sprite1);
+	//sprites.push_back(sprite1);
+	transform = SimpleTransform(-300.0f, 0.0f, 0.0f);
+	SpriteRenderable sprite2 = SpriteRenderable(Vector2(0.0f, 0.0f), -200.0f, Vector3(20.0f, 20.0f, 50.0f));
+	sprite2.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	sprite2.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+	SimpleTransform* t2 = transformManager.createTransform(transform);
+	RenderComponent* r2 = transformManager.attachRenderComponent(t2, sprite2);
+	PhysicsComponent* p2 = physicsSystem.createComponentBox(t2, Vector2(20, 20));
+
+	int numSprites = 100;
+	
+	for (int i = 0; i < numSprites; ++i) {
+
+		SpriteRenderable sprite = SpriteRenderable(Vector2(0.0f, 0.0f), -200.0f, Vector3(5.0f, 5.0f, 5.0f), 0.0f);
+		SimpleTransform transform((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8), 0.0f);
+
+		//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
+		if (i % 2 == 0) {
+			sprite.glTexture = dragonTexture;
+			sprite.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+		} else {
+			sprite.glTexture = raiderTexture;
+			sprite.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+		}
+
+		//spriteListTail++;
+		SimpleTransform* transformResult = transformManager.createTransform(transform);
+		renderSystem.createRenderComponent(transformResult, sprite);
+		PhysicsComponent* p = physicsSystem.createComponentBox(transformResult, Vector2(5, 5));
+		//sprites.push_back(&spritesTemp[i]);
+	}
+
+	
+
+	//transformManager.destroyRenderComponent(r2);
+	//transformManager.destroyTransform(t2);
+	//transformManager.destroyRenderComponent(r1);
+	//transformManager.destroyTransform(t1);
+
+
 
 	AudioManager audioManager;
 	audioManager.init();
@@ -152,6 +216,7 @@ int main(int argc, char* args[]) {
 
 	// While application is running
 	
+	
 	SdlDeltaTimer timer = SdlDeltaTimer();
 	SdlFrameCounter frameCounter;
 	while (!quit) {
@@ -171,12 +236,17 @@ int main(int argc, char* args[]) {
 		timer.updateTime();
 		frameCounter.update(w.getWindow());
 
-
-		spriteRenderer.RenderScene();
-
-
+		physicsSystem.update(msec);
 		sdlInput.update();
-		spriteRenderer.UpdateScene(msec);
+
+
+		//renderSystem.updateTransforms();
+		renderSystem.update(msec);
+		renderSystem.renderScene();
+		//spriteRenderer.UpdateScene(msec);
+		//spriteRenderer.RenderScene();
+
+		
 
 		GameControllerContainer& controllerContainer = sdlInput.getControllerContainer();
 		//GameController* controllerPtr = nullptr;
