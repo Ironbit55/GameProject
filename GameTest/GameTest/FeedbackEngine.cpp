@@ -4,7 +4,7 @@
 
 FeedbackEngine::FeedbackEngine(int screenWidth, int screenHeight, int maxNumTextures = 24) : 
 		window("game test", screenWidth, screenHeight, false),
-		renderer(window), renderSystem(renderer), physicsSystem(), transformManager(renderSystem, physicsSystem), contentManager(maxNumTextures),
+		renderer(window), renderSystem(renderer), physicsSystem(), transformManager(renderSystem, physicsSystem), contentManager(maxNumTextures, TEXTUREDIR),
 		sdlInput(inputManager)
 {
 	deltaTimeMs = 0;
@@ -38,7 +38,7 @@ void FeedbackEngine::update(){
 
 	world->update(*(renderer.getCamera()));
 	physicsSystem.update(deltaTimeMs);
-	renderSystem.update(deltaTimeMs);
+	renderSystem.update(deltaTimeMs, contentManager);
 	
 	renderSystem.renderScene();
 

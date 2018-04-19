@@ -23,7 +23,7 @@ public:
 
 	void updateTransforms();
 	
-	void update(float msec);
+	void update(float msec, ContentManager& contentManager);
 
 	void renderScene();
 protected:

@@ -36,9 +36,9 @@ void RenderSystem::updateTransforms(){
 	}
 }
 
-void RenderSystem::update(float msec) {
+void RenderSystem::update(float msec, ContentManager& contentManager) {
 	updateTransforms();
-	renderer.UpdateScene(msec);
+	renderer.UpdateScene(msec, contentManager);
 }
 
 void RenderSystem::renderScene(){

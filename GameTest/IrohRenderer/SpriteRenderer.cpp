@@ -268,7 +268,23 @@ void SpriteRenderer::BuildSpriteLists(){
 	std::sort(spriteList->begin(), spriteTail(), compareByDepthAndTexturePtr);
 }
 
-void SpriteRenderer::UpdateScene(float mse){
+void SpriteRenderer::UpdateScene(float msec, ContentManager& contentManager){
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix*viewMatrix);
+
+	BuildSpriteLists();
+
+	for (int i = 0; i < spriteListCount; ++i) {
+		//set gl texture of sprite
+		Texture tex;
+		bool success = contentManager.getTexture((*spriteList)[i]->textureId, tex);
+		if (success) {
+			(*spriteList)[i]->glTexture = tex.glHandle;
+		}
+		else {
+			printf("renderer could not load texture id: " + (*spriteList)[i]->textureId);
+			//load to some placeholder texture
+			(*spriteList)[i]->glTexture = 0;
+		}
+	}
 }

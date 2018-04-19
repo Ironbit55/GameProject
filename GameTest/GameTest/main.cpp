@@ -14,7 +14,7 @@
 #include "../Input/InputManager.h"
 #include "../sdlgl/SdlInputManager.h"
 #include "../IrohRenderer/SpriteRenderer.h"
-#include "../EntityAttempt/Entity.h"
+#include "../EntityAttempt/EntityInterface.h"
 #include "../sdlgl/SdlDeltaTimer.h"
 #include "../sdlgl/SdlFrameCounter.h"
 #include "../sdlgl/SdlMixer.h"
@@ -50,7 +50,7 @@ int main(int argc, char* args[]) {
 	FeedbackEngine engine(SCREEN_WIDTH, SCREEN_HEIGHT, 32);
 	engine.initialise();
 
-	Entity testEntity;
+	//Entity testEntity;
 
 	World* world = engine.createWorld();
 	engine.start();

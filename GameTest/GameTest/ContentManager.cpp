@@ -14,8 +14,9 @@ ContentManager::~ContentManager()
 
 int ContentManager::loadTexture(string filePath){
 	textures[textureIndex] = soilLoadTexture(filePath);
-	textureIndex++;
-	return textureIndex;
+	//textureIndex++;
+	//return current texturIndex, then increments
+	return textureIndex++;
 }
 
 bool ContentManager::getTexture(int textureHandle, Texture& outTexture){

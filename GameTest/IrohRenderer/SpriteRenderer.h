@@ -10,6 +10,7 @@
 #pragma once
 #include "../sdlgl/SDLRenderer.h"
 #include "../../nclgl/Camera.h"
+#include "../GameTest/ContentManager.h"
 #include "SpriteRenderable.h"
 #include "../../nclgl/Frustum.h"
 #include "MeshSpriteBatch.h"
@@ -35,7 +36,9 @@ public:
 	bool Init() override;
 
 	//sprite container?
-	virtual void UpdateScene(float msec);
+	//updates view and frustrum,
+	//sorts sprites and loads texture from content manager
+	virtual void UpdateScene(float msec, ContentManager& contentManager);
 	virtual void RenderScene();
 
 	Camera* getCamera() { return camera; }
