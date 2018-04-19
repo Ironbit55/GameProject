@@ -9,6 +9,13 @@ InputManager::~InputManager()
 {
 }
 
+void InputManager::loadMappings(){
+	//should load from file
+	//loadMappingsFromFile("");
+
+
+}
+
 void InputManager::clearRawInput(){
 	for (int actor = 0; actor < InputActors::INPUT_ACTOR_MAX; actor++) {
 		inputMappers[actor].clear();

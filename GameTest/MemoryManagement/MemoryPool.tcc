@@ -196,6 +196,7 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type n)
 
 
 		if (freeSlots_ == nullptr) {
+			reinterpret_cast<slot_pointer_>(p)->next = nullptr;
 			freeSlots_ = reinterpret_cast<slot_pointer_>(p);
 			//freeSlots_->next = freeSlotsTail_;
 			freeSlotsTail_ = freeSlots_;

@@ -126,6 +126,7 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="FeedbackEngine.cpp" />
+    <ClCompile Include="InputReceiver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageReceiver.cpp" />
     <ClCompile Include="MessagingService.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="FeedbackEngine.h" />
+    <ClInclude Include="InputReceiver.h" />
     <ClInclude Include="MessageReceiver.h" />
     <ClInclude Include="MessagingService.h" />
     <ClInclude Include="PhysicsSystem.h" />

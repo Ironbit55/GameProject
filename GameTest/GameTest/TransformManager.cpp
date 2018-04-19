@@ -15,12 +15,12 @@ SimpleTransform* TransformManager::createTransform(SimpleTransform& transform){
 	return t;
 }
 
-PhysicsComponent* TransformManager::attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body, b2FixtureDef& fixtureDef){
+PhysicsComponent* TransformManager::attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body,
+	b2FixtureDef& fixtureDef) {
 	PhysicsComponent* p = physicsSystem.createComponent(objectTransform, body, fixtureDef);
 	p->transform = objectTransform;
 
 	return p;
-
 }
 
 RenderComponent* TransformManager::attachRenderComponent(SimpleTransform* objectTransform, SpriteRenderable& renderable){

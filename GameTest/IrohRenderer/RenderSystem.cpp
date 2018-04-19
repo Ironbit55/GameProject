@@ -31,6 +31,7 @@ void RenderSystem::updateTransforms(){
 	for (RenderComponent* r = renderComponentPool.first(); r != nullptr; r = renderComponentPool.next(r, freeSlot)) {
 		r->sprite.position = r->transform->position;
 		r->sprite.rotation = r->transform->rotation;
+		r->sprite.scale = Vector3(r->transform->scale.x, r->transform->scale.y, r->sprite.scale.z);
 		renderer.addSpriteToDrawList(&(r->sprite));
 	}
 }

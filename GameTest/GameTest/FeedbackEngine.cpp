@@ -17,12 +17,14 @@ void FeedbackEngine::initialise(){
 	initialiseSdl();
 	window.init();
 	audioManager.init();
+	initInput();
 	sdlInput.loadMappings();
+	renderer.Init();
 }
 
 
 World* FeedbackEngine::createWorld(){
-	world = new World(transformManager);
+	world = new World(transformManager, *renderer.getCamera());
 	return world;
 }
 
@@ -30,10 +32,14 @@ void FeedbackEngine::update(){
 	deltaTimeMs = timer.getDeltaTimeMS();
 	timer.updateTime();
 	frameCounter.update(window.getWindow());
+
+	sdlInput.update();
 	inputManager.performMapping();
 
+	world->update(*(renderer.getCamera()));
 	physicsSystem.update(deltaTimeMs);
 	renderSystem.update(deltaTimeMs);
+	
 	renderSystem.renderScene();
 
 	MessagingService::instance().update(deltaTimeMs);
@@ -49,7 +55,8 @@ void FeedbackEngine::handleSdlEvent(SDL_Event e) {
 }
 
 void FeedbackEngine::start(){
-
+	world->loadContent(contentManager);
+	world->initialise();
 }
 
 void FeedbackEngine::end(){

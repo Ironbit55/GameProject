@@ -1,8 +1,5 @@
 #include "InputContext.h"
-
-
-
-
+#include <iostream>
 
 
 InputContext::~InputContext(){}
@@ -76,6 +73,7 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 		bool map = (buttonStateDown[buttonIndex] && !buttonStateWasDown[buttonIndex]);
 		mappedInput.addAction(actionId, map);
 
+
 		//hacky way to disable button down events triggering for this button
 		//for other input contexts in this frame
 		//although it means button up could trigger...
@@ -91,9 +89,6 @@ void InputContext::mapButtons(bool* buttonStateDown, bool* buttonStateWasDown, M
 		
 		//button can be mapped to state if button is down
 		bool map = buttonStateDown[buttonIndex];
-		if (map == true) {
-			printf("what");
-		}
 		mappedInput.addState(stateId, map);
 
 		//button can only be mapped once. so if its been mapped before can't map it again

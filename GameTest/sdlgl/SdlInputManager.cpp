@@ -1,5 +1,5 @@
 #include "SdlInputManager.h"
-
+#include <iostream>
 
 
 SdlInputManager::SdlInputManager(){
@@ -58,6 +58,9 @@ void SdlInputManager::addSdlGameControllerState(InputActors actor, GameControlle
 		SDL_GameControllerButton sdlButton = it->first;
 		InputRaw::Buttons rawInputButton = it->second;
 
+		if(controller.getButton(sdlButton)){
+			std::cout << "test";
+		}
 
 		addButton(actor, rawInputButton, controller.getButton(sdlButton));
 	}

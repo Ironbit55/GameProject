@@ -190,16 +190,16 @@ void PhysicsSystem::updateTransforms(){
 	for (PhysicsComponent* component = physicsComponentsPool.first(); component != nullptr; component = physicsComponentsPool.next(component, freeSlot)) {
 		component->transform->position = Vector2(component->body->GetPosition().x  * SCALE, component->body->GetPosition().y * SCALE);
 
-		float angle = component->body->GetAngle();
-		/*while (angle <= 0) {
+		float angle = RadToDeg(component->body->GetAngle());
+		while (angle <= 0) {
 			angle += 360;
 		}
 		while (angle > 360) {
 			angle -= 360;
-		}*/
+		}
 
 		//need to normalise this
-		component->transform->rotation = component->body->GetAngle();
+		component->transform->rotation = angle;
 	}
 }
 
@@ -215,7 +215,8 @@ PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2B
 	}
 	numComponents++;
 	PhysicsComponent* component = physicsComponentsPool.allocate();
-	bodyDef.position = scaleVec2(transform->position);
+	
+	bodyDef.position = scaleVec2(transform->getOrigin());
 	component->body = world->CreateBody(&bodyDef);
 	component->body->CreateFixture(&fixtureDef);
 	component->transform = transform;
@@ -250,7 +251,7 @@ PhysicsComponent* PhysicsSystem::createComponentBox(SimpleTransform* transform, 
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = scaleVec2(transform->position);
+	bodyDef.position = scaleVec2(transform->getOrigin());
 
 	b2PolygonShape dynamicBox;
 	dynamicBox.SetAsBox(box.x / SCALE, box.y / SCALE);
@@ -270,7 +271,7 @@ PhysicsComponent* PhysicsSystem::createComponentCircle(SimpleTransform* transfor
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = scaleVec2(transform->position);
+	bodyDef.position = scaleVec2(transform->getOrigin());
 
 	b2CircleShape circle;
 	circle.m_radius = radius / SCALE;

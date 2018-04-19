@@ -21,7 +21,7 @@ const int POSITION_ITERATIONS = 3;
 const int MAX_STEPS = 5;
 const float SCALE = 20.0f;
 
-const int MAX_NUM_PHYSICS_COMPONENTS = 10000;
+const int MAX_NUM_PHYSICS_COMPONENTS = 2000;
 
 struct PhysicsComponent{
 	b2Vec2 smoothedPosition;

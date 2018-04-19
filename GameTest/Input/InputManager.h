@@ -67,7 +67,9 @@ public:
 	InputManager();
 	~InputManager();
 
-	void loadFromFile(std::string fileName);
+	void loadMappings();
+
+	void loadMappingsFromFile(std::string fileName);
 
 	void clearRawInput();
 	void swapRawInput();

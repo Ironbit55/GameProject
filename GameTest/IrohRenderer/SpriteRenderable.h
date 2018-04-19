@@ -13,6 +13,8 @@ class SpriteRenderable
 public:
 	SpriteRenderable(Vector2 position = Vector2(), float depth = 200.0f, Vector3 scale = Vector3(10.0f, 10.0f, 10.0f), float rotationDeg = 0.0f) :
 			position(position), depth(depth), scale(scale), colour(1, 1, 1, 1), glTexture(0), rotation(rotationDeg) {}
+	SpriteRenderable(GLuint tex, float depth = -200.0f, Vector4 colour = Vector4(1, 1, 1, 1), float rotation = 0.0f) : position(), depth(depth), scale(), colour(colour),
+		glTexture(tex), rotation(rotation) {};
 	~SpriteRenderable() {};
 
 	Vector2 position;

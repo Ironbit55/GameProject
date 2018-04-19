@@ -29,10 +29,16 @@ public:
 
 	~TransformManager();
 
-	//why are we using handles?
-	//its simple pointers scare me
+	PhysicsSystem& getPhysicsSystem(){
+		return physicsSystem;
+	}
 
-	//returns handle
+	RenderSystem& getRenderSystem(){
+		return renderSystem;
+	}
+
+
+	//should return id
 	SimpleTransform* createTransform(SimpleTransform& trasform);
 	
 	PhysicsComponent* attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body, b2FixtureDef& fixtureDef);

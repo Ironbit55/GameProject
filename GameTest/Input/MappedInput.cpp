@@ -19,7 +19,7 @@ bool MappedInput::addAction(int actionId, bool state){
 		return false;
 	}
 
-	empty = (empty || !state);
+	empty = (empty && !state);
 	actions[actionIndex] = state;
 	return true;
 }
@@ -37,7 +37,7 @@ bool MappedInput::addState(int stateId, bool state){
 		return false;
 	}
 
-	empty = (empty || !state);
+	empty = (empty && !state);
 	states[stateIndex] = state;
 	return true;
 }
