@@ -24,7 +24,7 @@ void FeedbackEngine::initialise(){
 
 
 World* FeedbackEngine::createWorld(){
-	world = new World(transformManager, *renderer.getCamera());
+	world = new World(transformManager, contentManager, *renderer.getCamera());
 	return world;
 }
 
@@ -60,7 +60,7 @@ void FeedbackEngine::start(){
 }
 
 void FeedbackEngine::end(){
-	//make sure everything shuts
+	//make sure everything shuts down
 }
 
 bool FeedbackEngine::initialiseSdl(){

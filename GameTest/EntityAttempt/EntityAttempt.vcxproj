@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)..\..\SDL2-2.0.7\include;$(SolutionDir);..\..\SOIL;$(ProjectDir)..\..\GLEW\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\$(Configuration)\;..\..\SOIL\$(Configuration)\;$(ProjectDir)..\..\GLEW\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,12 +122,14 @@
     <ClInclude Include="EntityContainer.h" />
     <ClInclude Include="EntityInterface.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="PlayerEntity.h" />
     <ClInclude Include="WallEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntityContainer.cpp" />
     <ClCompile Include="EntityInterface.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="WallEntity.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -21,8 +21,8 @@ AudioManager::AudioManager()
 }
 
 
-AudioManager::~AudioManager()
-{
+AudioManager::~AudioManager() {
+	deleteAllListeners();
 }
 
 void AudioManager::init(){

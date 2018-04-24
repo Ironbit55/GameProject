@@ -217,6 +217,7 @@ PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2B
 	PhysicsComponent* component = physicsComponentsPool.allocate();
 	
 	bodyDef.position = scaleVec2(transform->getOrigin());
+	bodyDef.angle = DegToRad(transform->rotation);
 	component->body = world->CreateBody(&bodyDef);
 	component->body->CreateFixture(&fixtureDef);
 	component->transform = transform;
@@ -287,7 +288,7 @@ PhysicsComponent* PhysicsSystem::createComponentCircle(SimpleTransform* transfor
 void PhysicsSystem::deleteComponent(PhysicsComponent* component){
 	numComponents--;
 	world->DestroyBody(component->body);
-	physicsComponentsPool.destroy(component);
+	physicsComponentsPool.deallocate(component);
 
 	// Remove component from list.
 	//if (component->listPrev) {

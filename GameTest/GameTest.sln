@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EntityAttempt", "EntityAttempt\EntityAttempt.vcxproj", "{7F032BB5-19D3-418B-8D57-13268E2CF1B0}"
 	ProjectSection(ProjectDependencies) = postProject
-		{3DD6B28D-D7C4-4D82-BCD7-5923B4A86BD4} = {3DD6B28D-D7C4-4D82-BCD7-5923B4A86BD4}
+		{56235000-87AB-459F-B072-1A626CC3DFCE} = {56235000-87AB-459F-B072-1A626CC3DFCE}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IrohRenderer", "IrohRenderer\IrohRenderer.vcxproj", "{13679BC9-6B4C-40D4-8DC9-800B93F94471}"

@@ -12,11 +12,14 @@ ContentManager::~ContentManager()
 {
 }
 
-int ContentManager::loadTexture(string filePath){
-	textures[textureIndex] = soilLoadTexture(filePath);
-	//textureIndex++;
-	//return current texturIndex, then increments
-	return textureIndex++;
+int ContentManager::loadTexture(string textureName, string filePath){
+	auto it = loadedTextureMap.find(textureName);
+	if (loadedTextureMap.find(textureName) != loadedTextureMap.end()) {
+		return it->second;
+	}else{
+		textures[textureIndex] = soilLoadTexture(filePath);
+		return textureIndex++;
+	}
 }
 
 bool ContentManager::getTexture(int textureHandle, Texture& outTexture){
@@ -33,6 +36,8 @@ void ContentManager::free(){
 	delete textures;
 	textureIndex = 0;
 }
+
+
 
 Texture ContentManager::soilLoadTexture(string filePath){
 	Texture texture;

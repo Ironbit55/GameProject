@@ -11,6 +11,8 @@
 * this way if texture contained actual texture data it could be loaded in and out of
 * gpu memory.
 * 
+* Todo: read in a file containing map of texture name to file path, so that textures can be loaded just by name
+* 
 * Todo: alter to use memory pool, we aren't storing real textures so there isn't much point
 */
 
@@ -36,9 +38,12 @@ public:
 	
 	/*
 	* load texture into opengl, store a handle to the texture in the content manager
+	* use texture name to assign the loaded texture a name, this means when 
+	* the same texture is loaded multuple times it will return a local copy
 	* returns a int textureHandle which can which can be used to get the texture in the future
+	* 
 	*/
-	int loadTexture(string filePath);
+	int loadTexture(string textureName, string filePath);
 	bool getTexture(int textureHandle, Texture& outTexture);
 
 	void free();
@@ -61,5 +66,8 @@ protected:
 	//this could all be fixed of course by
 	//using an actual pool allocator
 	int textureIndex;
+
+	//this is only used on start up so the memory allocation shouldn't matter
+	std::map <string, int> loadedTextureMap;
 };
 

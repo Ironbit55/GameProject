@@ -1,3 +1,13 @@
+/*
+ * Author: Edward Curarn
+ * Class: MessageReceiver
+ * 
+ * Used to register callbacks to be called on messages of certain types by the messaging service
+ * 
+ * Derived classes must remember to call deleteAllListeners() on destruct
+ * this isn't done virtually because it breaks my horrible entity system
+ */
+
 #pragma once
 #include <unordered_map>
 #include "MessagingService.h"

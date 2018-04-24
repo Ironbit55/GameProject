@@ -2,32 +2,57 @@
 #include "MessageReceiver.h"
 #include "AudioManager.h"
 
-World::~World()
-{
+World::~World() {
+	deleteAllListeners();
+}
+
+void World::loadContent(ContentManager& contentManager) {
+	dragonTextureId = contentManager.loadTexture("dragon", "dragon.png");
+	raiderTextureId = contentManager.loadTexture("raider", "raider.png");
+	wallTextureId = contentManager.loadTexture("wall", "floortile.png");
+
+	//load content manager content if we had file to read in from...
+	//entityManager.loadContent(contentManager);
 }
 
 void World::initialise(){
-	bool test = registerInput(INPUT_ACTOR_PLAYER1);
+	//bool test = registerInput(INPUT_ACTOR_PLAYER1);
 
 
 	SimpleTransform transform(60.0f, 600.0f, 50.0f, 50.0f, -90.0f);
 	SpriteRenderable sprite1 = SpriteRenderable(dragonTextureId, -200.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	/*sprite1.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 	sprite1.glTexture = dragonTexture;*/
-	SimpleTransform* t1 = transformManager.createTransform(transform);
-	RenderComponent* r1 = transformManager.attachRenderComponent(t1, sprite1);
-	PhysicsComponent* p1 = transformManager.getPhysicsSystem().createComponentBox(t1, Vector2(50, 50));
+
+	//SimpleTransform* t1 = transformManager.createTransform(transform);
+	//RenderComponent* r1 = transformManager.attachRenderComponent(t1, sprite1);
+	//PhysicsComponent* p1 = transformManager.getPhysicsSystem().createComponentBox(t1, Vector2(50, 50));
 
 
 	transform = SimpleTransform(-300.0f, 0.0f, 20.0f, 20.0f, 0.0f);
 	SpriteRenderable sprite2 = SpriteRenderable(raiderTextureId , -200.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 	/*sprite2.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
 	sprite2.glTexture = raiderTexture;*/
-	SimpleTransform* t2 = transformManager.createTransform(transform);
-	RenderComponent* r2 = transformManager.attachRenderComponent(t2, sprite2);
-	PhysicsComponent* p2 = transformManager.getPhysicsSystem().createComponentBox(t2, Vector2(20, 20));
 
-	transform = SimpleTransform(-300.0f, -300.0f, 400.0f, 10.0f, 0.0f);
+	//SimpleTransform* t2 = transformManager.createTransform(transform);
+	//RenderComponent* r2 = transformManager.attachRenderComponent(t2, sprite2);
+	//PhysicsComponent* p2 = transformManager.getPhysicsSystem().createComponentBox(t2, Vector2(20, 20));
+
+
+	//ground wall
+	EntityInterface* wallGround = entityManager.createWall(Vector2(-300.0f, -300.0f), 0.0f);
+	//left wall
+	EntityInterface* wallLeft = entityManager.createWall(Vector2(100.0f, -150.0f), 90.0f);
+	//right wall
+	EntityInterface* wallRight = entityManager.createWall(Vector2(-700.0f, -150.0f), 90.0f);
+	//entityManager.createWall(Vector2(-300.0f, -300.0f), 0.0f);
+	//entityManager.addToDelete(wallGround);
+	entityManager.addToDelete(wallLeft);
+	//entityManager.addToDelete(wallRight);
+
+	//EntityInterface* player1 = entityManager.createPlayer(INPUT_ACTOR_PLAYER1, Vector2(-200.0f, -150.0f), 0.0f);
+
+	/*transform = SimpleTransform(-300.0f, -300.0f, 400.0f, 10.0f, 0.0f);
 	SpriteRenderable tileSprite = SpriteRenderable(wallTextureId);
 	SimpleTransform* groundT = transformManager.createTransform(transform);
 	RenderComponent* groundR = transformManager.attachRenderComponent(groundT, tileSprite);
@@ -55,9 +80,9 @@ void World::initialise(){
 	transform = SimpleTransform(-700.0f, -150.0f, 400.0f, 10.0f, 0.0f);
 	SimpleTransform* wallRightT = transformManager.createTransform(transform);
 	RenderComponent* wallRightR = transformManager.attachRenderComponent(wallRightT, tileSprite);
-	PhysicsComponent* wallRightP = transformManager.getPhysicsSystem().createComponent(wallRightT, groundBodyDef, groundFixtureDef);
+	PhysicsComponent* wallRightP = transformManager.getPhysicsSystem().createComponent(wallRightT, groundBodyDef, groundFixtureDef);*/
 
-	int numSprites = 1000;
+	int numSprites = 50;
 
 	for (int i = 0; i < numSprites; ++i) {
 		SimpleTransform transform((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8), 5.0f, 5.0f, 0.0f);
@@ -84,7 +109,7 @@ void World::initialise(){
 	//transformManager.destroyRenderComponent(r1);
 	//transformManager.destroyTransform(t1);
 
-
+	//entityManager.initialise(transformManager);
 
 
 	Message msg;
@@ -94,12 +119,6 @@ void World::initialise(){
 	msgData.effect = EFFECT_JUMP;
 	msg.dataPayload = &msgData;
 	msg.dataSize = sizeof(msgData);
-}
-
-void World::loadContent(ContentManager& contentManager) {
-	dragonTextureId = contentManager.loadTexture("dragon.png");
-	raiderTextureId = contentManager.loadTexture("raider.png");
-	wallTextureId = contentManager.loadTexture("floortile.png");
 }
 
 void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
@@ -112,6 +131,10 @@ void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
 			break;
 	}
 
+}
+
+void World::update(Camera& camera){
+	entityManager.update(transformManager);
 }
 
 void World::controlCameraInput(MappedInput* mappedInput){
