@@ -88,7 +88,7 @@ void World::initialise(){
 	RenderComponent* wallRightR = transformManager.attachRenderComponent(wallRightT, tileSprite);
 	PhysicsComponent* wallRightP = transformManager.getPhysicsSystem().createComponent(wallRightT, groundBodyDef, groundFixtureDef);*/
 
-	int numSprites = 1000;
+	int numSprites = 50;
 
 	for (int i = 0; i < numSprites; ++i) {
 		SimpleTransform transform((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8), 5.0f, 5.0f, 0.0f);
@@ -119,12 +119,16 @@ void World::initialise(){
 
 
 	Message msg;
-	msg.messageType = MESSAGE_AUDIO_EFFECT;
+	msg.messageType = MESSAGE_AUDIO_MUSIC;
 	msg.timeUntillDispatch = 0;
-	SoundEffectMsgData msgData;
-	msgData.effect = EFFECT_JUMP;
+
+	MusicMsgData msgData;
+	msgData.command = MusicCommand::COMMAND_PLAY;
+	msgData.music = MUSIC_LEVEL1;
 	msg.dataPayload = &msgData;
 	msg.dataSize = sizeof(msgData);
+
+	pushMessage(msg);
 }
 
 void World::handleInput(InputActors inputActor, MappedInput* mappedInput){

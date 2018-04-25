@@ -28,7 +28,7 @@ void EntityBall::initialise(ContentManager& contentManager, TransformManager& tr
 void EntityBall::launch(Vector2 direction) {
 	direction.Normalise();
 	float magnitiude = 50.0f;
-	physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(magnitiude * direction.x, magnitiude * direction.y), true);
+	physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(magnitiude * direction.x, magnitiude * direction.y), false);
 }
 
 void EntityBall::destroy(TransformManager& transformManager) {

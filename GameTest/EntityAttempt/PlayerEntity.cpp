@@ -70,12 +70,17 @@ void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput)
 		float magnitude = 50.0f;
 		float rangeX = 0.0f;
 		float rangeY = 0.0f;
+		Vector2 dir;
 
 		//will stay zero unless range outside deadzone
-		mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_X, rangeX);
-		mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_Y, rangeY);
-		
-		Vector2 dir = Vector2(rangeX, -rangeY);
+		bool deadzone = true;
+		deadzone = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_X, rangeX);
+		deadzone = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_Y, rangeY);
+		if(deadzone){
+			dir = Vector2(-1.0f, 0);
+		} else {
+			dir = Vector2(rangeX, -rangeY);
+		}
 		dir.Normalise();
 
 		Vector2 position = PhysicsSystem::scaleB2Vec2(physicsComponent->body->GetPosition());
