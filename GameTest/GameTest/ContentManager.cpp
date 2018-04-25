@@ -14,10 +14,17 @@ ContentManager::~ContentManager()
 
 int ContentManager::loadTexture(string textureName, string filePath){
 	auto it = loadedTextureMap.find(textureName);
+
 	if (loadedTextureMap.find(textureName) != loadedTextureMap.end()) {
+		//if texture with this name has already been loaded from file,
+		//then just return id to that texture
 		return it->second;
 	}else{
+		//load texture from file
 		textures[textureIndex] = soilLoadTexture(filePath);
+		//add texture to map
+		loadedTextureMap[textureName] = textureIndex;
+		//return texture id, then incremement indexc
 		return textureIndex++;
 	}
 }

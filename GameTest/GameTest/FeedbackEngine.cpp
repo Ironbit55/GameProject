@@ -20,8 +20,7 @@ void FeedbackEngine::initialise(){
 	initInput();
 	sdlInput.loadMappings();
 	renderer.Init();
-
-	renderer.disableBatching();
+	renderer.enableBatching();
 }
 
 
@@ -83,7 +82,7 @@ bool FeedbackEngine::initInput(){
 
 	//should read mapppings from file...
 
-	//player1 keyboard context
+	//player1 keyboard context, used for admin stuff
 	InputContext context = InputContext(true);
 
 
@@ -96,6 +95,18 @@ bool FeedbackEngine::initInput(){
 
 
 	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "keyboard", context);
+	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER1);
+
+	//game keyboard input, used by player 1
+	InputContext keyboardGameContext = InputContext(true);
+
+	keyboardGameContext.addMapping(InputRaw::Buttons::BUTTON_KEY_UP, InputCooked::States::STATE_PLAYER_MOVE_UP);
+	keyboardGameContext.addMapping(InputRaw::Buttons::BUTTON_KEY_DOWN, InputCooked::States::STATE_PLAYER_MOVE_DOWN);
+	keyboardGameContext.addMapping(InputRaw::Buttons::BUTTON_KEY_LEFT, InputCooked::States::STATE_PLAYER_MOVE_LEFT);
+	keyboardGameContext.addMapping(InputRaw::Buttons::BUTTON_KEY_RIGHT, InputCooked::States::STATE_PLAYER_MOVE_RIGHT);
+	keyboardGameContext.addMapping(InputRaw::Buttons::BUTTON_KEY_SPACE, InputCooked::Actions::ACTION_JUMP);
+
+	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "keyboard_game", keyboardGameContext);
 	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER1);
 
 	//gamepad context, shared by all players

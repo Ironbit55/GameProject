@@ -41,7 +41,7 @@ bool SDLRenderer::Init(){
 		return false;
 	}
 
-	// This makes our buffer swap syncronized with the monitor's vertical refresh
+	// This truns of vysnc
 	SDL_GL_SetSwapInterval(0);
 
 	window.registerResizeCallback(BasicResizeFunc); //Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)	
@@ -57,15 +57,15 @@ bool SDLRenderer::Init(){
 		return false;
 	}
 
-
+	//cornflower blue ofc
 	glClearColor(0.392f, 0.584f, 0.96f, 1.0f);
 
 
 	//glEnable(GL_DEBUG_OUTPUT);
 	//glDebugMessageCallback((GLDEBUGPROC)DebugCallback, 0);
 
+	//doubt any of the debug render features work i haven't tested them
 	InitDebugRenderer();
-
 	initialised = true;
 
 	//I guess everything is good if we make it here

@@ -2,7 +2,7 @@
  * Author: Ed Curran (b15021040)
  * Class: InputManager
  * Extends: InputMapper
- * Description: provides functions to convert from sdl input 
+ * Description: provides functionality to convert from sdl input 
  * into our raw input and add to the underlying InputManager
  * 
  * This is basically another mapping layer

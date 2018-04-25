@@ -83,3 +83,17 @@ EntityBall* EntityManager::createProjectile(Vector2 position, Vector2 launchDire
 	return entity;
 
 }
+
+DebrisEntity* EntityManager::createDebris(Vector2 position, Vector4 colour) {
+	EntityInterface* entity = addEntity(sizeof(DebrisEntity));
+	if (entity == nullptr) {
+		return nullptr;
+	}
+
+	DebrisEntity* debrisPtr = reinterpret_cast<DebrisEntity*>(entity);
+	new(debrisPtr) DebrisEntity();
+	debrisPtr->initialise(contentManager, transformManager, position, colour);
+
+	return debrisPtr;
+
+}

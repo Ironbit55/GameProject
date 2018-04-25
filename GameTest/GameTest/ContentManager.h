@@ -5,8 +5,8 @@
 * Description: A simple content manager, its simple because I'm going to try and get away with
 * just loading all textures into opengl 
 *
-* If we want to make this future proof we could encapsulate texture with a texture class,
-* could just hold gl texture id for now.
+* we encapsulate texture with a texture class,
+* which just holds gl texture id for now.
 * then content manager holds texture and can pass out handles to requested texture
 * this way if texture contained actual texture data it could be loaded in and out of
 * gpu memory.

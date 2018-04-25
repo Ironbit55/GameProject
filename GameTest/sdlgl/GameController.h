@@ -8,6 +8,7 @@
  * as a result we need to maintain the state of the controller and store it
  * so we have the information to tell when buttons are being held
  * 
+	Update:
  * I originally made this class keep track of the controller state
  * however as InputMapper tracks state it isn't neccesary to do it here so
  * we just update InputManager with current state everyframe 

@@ -1,3 +1,11 @@
+/*
+Author: Edward Curran
+Class: SDLRenderer
+Extends: OGLRenderer
+Description: uses sdl to create an opengl context to be used by base OGLRenderer
+*/
+
+
 #pragma once
 #include "..\..\nclgl\OGLRenderer.h"
 #include "SdlWindow.h"

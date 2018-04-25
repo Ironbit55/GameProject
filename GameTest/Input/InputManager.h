@@ -10,7 +10,7 @@
  * raw input can be pushed to the input manager and marked as belonging to a particular input actor
  * Each actor then maps its raw input into an InputMapped instance
  * Can then access the mapped input belonging to a particular actor 
- * callbacks can be registered to receive the mapped input from a particular actor (or combination of actors if i get round to that)
+   can register to recieve the relvent emssage types to get mapped input from a particular actor (or combination of actors if i get round to that)
  * 
  * In reality this is basically just a wrapper around a collection of InputMappers
  * with each InputMapper corrosponding to an Actor

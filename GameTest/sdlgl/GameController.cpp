@@ -73,7 +73,7 @@ bool GameController::rumble(){
 		return false;
 	}
 
-	SDL_HapticRumblePlay(controllerHaptic, 0.5f, 2000);
+	SDL_HapticRumblePlay(controllerHaptic, 0.5f, 400);
 }
 
 bool GameController::buttonEventBelongsToController(const SDL_Event& e){

@@ -1,3 +1,7 @@
+/*
+wrapper around MessageReceiver to help register for specifically input messages
+*/
+
 #pragma once
 
 #include "../Input/InputMapper.h"

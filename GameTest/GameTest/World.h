@@ -3,10 +3,11 @@
  * Class: World
  * 
  * World is basically the seperation from the engine framework and the game.
- * this should be abstracted out so that theres a base world class which this should inherit from
  * so the idea is could use the engine at a low level by creating a new World class for each game
  * alternativly I'm going to provide a world implementation which has a gameobject/entity system built on top of it
  * which provides are more managed environment to build a game on top of
+ *
+ * this should be abstracted out so that theres a base world class which this should inherit from
  * 
  */
 
@@ -67,10 +68,13 @@ private:
 	int wallTextureId;
 	int raiderTextureId;
 
+
 	int test = 0;
 	TransformManager& transformManager;
 	Camera& camera;
 	EntityManager entityManager;
+
+	int numDebris = 0;
 
 };
 

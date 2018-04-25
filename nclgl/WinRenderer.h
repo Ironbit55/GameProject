@@ -1,3 +1,8 @@
+/*
+reimplements original nclgl renderer
+windows specific components will exist in here
+*/
+
 #pragma once
 #include "OGLRenderer.h"
 class WinRenderer :

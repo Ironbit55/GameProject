@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DebrisEntity.h" />
     <ClInclude Include="dummy.h" />
     <ClInclude Include="EntityBall.h" />
     <ClInclude Include="EntityContainer.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="WallEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DebrisEntity.cpp" />
     <ClCompile Include="EntityBall.cpp" />
     <ClCompile Include="EntityContainer.cpp" />
     <ClCompile Include="EntityInterface.cpp" />

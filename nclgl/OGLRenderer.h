@@ -12,6 +12,16 @@ _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 -_-_-_-_-_-_-~|__( ^ .^) /
 _-_-_-_-_-_-_-""  ""   
 
+
+MODIFIED: Edward Curran
+stripped out platform dependent components from original nclgl renderer
+and made this a pure virtual class(interface? whatever) 
+
+this does not create an opengl instance, that is left to derived classes to handle
+this way my sdlgl renderer can inherit from this, and create opengl context in sdl way
+winrender inherits from this and reimplements original nclgl renderer be
+
+
 */
 #include "Common.h"
 
@@ -97,7 +107,7 @@ class Shader;
 
 class OGLRenderer	{
 public:
-	friend class Window;
+
 	OGLRenderer();
 	virtual ~OGLRenderer(void);
 

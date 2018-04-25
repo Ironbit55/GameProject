@@ -124,7 +124,6 @@
     <ClInclude Include="SdlFrameCounter.h" />
     <ClInclude Include="SdlInput.h" />
     <ClInclude Include="SdlInputManager.h" />
-    <ClInclude Include="SdlInputMapper.h" />
     <ClInclude Include="SdlMixer.h" />
     <ClInclude Include="SDLRenderer.h" />
     <ClInclude Include="SdlWindow.h" />
@@ -136,7 +135,6 @@
     <ClCompile Include="SdlFrameCounter.cpp" />
     <ClCompile Include="SdlInput.cpp" />
     <ClCompile Include="SdlInputManager.cpp" />
-    <ClCompile Include="SdlInputMapper.cpp" />
     <ClCompile Include="SdlMixer.cpp" />
     <ClCompile Include="SDLRenderer.cpp" />
     <ClCompile Include="SdlWindow.cpp" />

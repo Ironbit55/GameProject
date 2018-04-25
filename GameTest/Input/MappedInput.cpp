@@ -15,7 +15,7 @@ bool MappedInput::addAction(int actionId, bool state){
 	//gets an index between 0 and max number of actions
 	int actionIndex = actionId - InputCooked::ACTION_ID;
 	if(actions[actionIndex]){
-		printf("action input with id: %i already exists in MappedInput\n", actionId);
+		//printf("action input with id: %i already exists in MappedInput\n", actionId);
 		return false;
 	}
 
@@ -33,7 +33,7 @@ bool MappedInput::addState(int stateId, bool state){
 	//gets an index between 0 and max number of actions
 	int stateIndex = stateId - InputCooked::STATE_ID;
 	if (states[stateIndex]) {
-		printf("state input with id: %i already exists in MappedInput\n", stateId);
+		//printf("state input with id: %i already exists in MappedInput\n", stateId);
 		return false;
 	}
 
@@ -51,7 +51,7 @@ bool MappedInput::addRange(int rangeId, float rangeValue, bool state){
 	//gets an index between 0 and max number of actions
 	int rangeIndex = rangeId - InputCooked::RANGE_ID;
 	if (ranges[rangeIndex]) {
-		printf("range input with id: %i already exists in MappedInput\n", rangeId);
+		//printf("range input with id: %i already exists in MappedInput\n", rangeId);
 		return false;
 	}
 

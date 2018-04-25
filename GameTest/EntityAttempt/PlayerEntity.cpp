@@ -1,7 +1,7 @@
 #include "PlayerEntity.h"
 #include "GameTest/AudioManager.h"
 #include "GameTest/World.h"
-
+#include "../sdlgl/SdlInput.h"
 
 PlayerEntity::PlayerEntity(){
 	
@@ -57,6 +57,19 @@ void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput)
 		//play jump sound effect
 		MessagingService::instance().pushMessage(msg);
 
+		//send controller rumble message
+		ControllerRumbleMsgData rumbleMsgData;
+		rumbleMsgData.inputActor = inputActor;
+		
+		Message msgRumble;
+		msgRumble.messageType = MESSAGE_CONTROLLER_RUMBLE;
+		msgRumble.timeUntillDispatch = 0;
+		msgRumble.dataPayload = &rumbleMsgData;
+		msgRumble.dataSize = sizeof(rumbleMsgData);
+
+		pushMessage(msgRumble);
+
+
 		//use controller stick to find direction 
 		float magnitude = 50.0f;
 		float rangeX = 0.0f;
@@ -78,7 +91,7 @@ void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput)
 
 
 		FireProjectileMessageData msgProjectileData;
-		msgProjectileData.position = Vector2(position.x + (dir.x * 35.0f), position.y + (dir.y * 35.0f));
+		msgProjectileData.position = Vector2(position.x + (dir.x * 25.0f), position.y + (dir.y * 25.0f));
 		msgProjectileData.direction = dir;
 
 		Message msgProjectile;

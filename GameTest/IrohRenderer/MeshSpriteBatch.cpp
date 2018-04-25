@@ -28,8 +28,8 @@ MeshSpriteBatch::MeshSpriteBatch(int maxSprites = 256){
 	tangentBufferPtr = nullptr;
 	indexBufferPtr = nullptr;
 
-	//BufferData(GL_DYNAMIC_DRAW);
-	ImmutableBufferData();
+	BufferData(GL_DYNAMIC_DRAW);
+	//ImmutableBufferData();
 	
 	numSpritesFilled = 0;
 }
@@ -151,63 +151,67 @@ void MeshSpriteBatch::Draw(){
 	int numUsedVertices = numSpritesFilled * VERTICES_PER_SPRITE;
 	int numUsedIndices = numSpritesFilled * INDICES_PER_SPRITE;
 	
+	
 	//Buffer vertex data
 
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
-
-	//apperently orphaning the buffer is a good trick to increase performance
-	//however i tested it and got no benefit from it so I dunno
-	//maybe opengl got smart and optimises it out itself these days
-	//or maybe i should do it per frame not per batch or something
-
-	//glBufferStorage(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_MAP_WRITE_BIT | GL_DYNAMIC_STORAGE_BIT);
-	//glBufferData(GL_ARRAY_BUFFER, numUsedVertices*sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
+	//orphan the old buffer by passing in nullptr
+	glBufferData(GL_ARRAY_BUFFER, numUsedVertices * sizeof(Vector3), nullptr, GL_DYNAMIC_DRAW);
+	//sub in new data to new buffer (depending on what opengl does with the orphaned buffer)
 	glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), vertices);
 
 	//Buffer texture data
 	if (textureCoords) {
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TEXTURE_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices * sizeof(Vector2), nullptr, GL_DYNAMIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector2), textureCoords);
 	}
 
 	//buffer colour data
 	if (colours) {
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[COLOUR_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, numUsedVertices * sizeof(Vector4), nullptr, GL_DYNAMIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector4), colours);
 	}
 
 	//Buffer normal data
-	if (normals) {
-		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), normals);
-	}
+	//if (normals) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), normals);
+	//}
 
 	//Buffer tangent data
-	if (tangents) {
-		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TANGENT_BUFFER]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), tangents);
-	}
+	//if (tangents) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TANGENT_BUFFER]);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0, numUsedVertices*sizeof(Vector3), tangents);
+	//}
 
 	//buffer index data
 	if (indices) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObject[INDEX_BUFFER]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numUsedIndices * sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, numUsedIndices*sizeof(GLuint), indices);
 	}
 
 
-
+	
+	
 	//GL_BREAKPOINT
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, bumpTexture);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, bumpTexture);
 
 	glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);  //draw triangles by indices
 
+	//glBindVertexArray(0);
+
 	//we don't bother clearing the buffer arrays
 	//we'll just overite them with new data
+	numSpritesFilled = 0;
+
 }
 
 //void MeshSpriteBatch::Draw() {

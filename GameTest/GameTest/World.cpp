@@ -58,6 +58,11 @@ void World::loadLevel(const std::wstring& levelFileName) {
 				entityManager.createBall(Vector2(positionX, positionY));
 				break;
 			}
+			case ENTITY_DEBRIS: 
+			{
+				numDebris = attemptRead<int>(infile);
+				break;
+			}
 			default:
 				break;
 		}
@@ -75,39 +80,19 @@ void World::loadContent(ContentManager& contentManager) {
 }
 
 void World::initialise(){
-	bool test = registerInput(INPUT_ACTOR_PLAYER1);
+	
+	registerInput(INPUT_ACTOR_PLAYER1);
 
 	MessageCallback projectileCallback = std::bind(&World::fireProjectile, this, std::placeholders::_1);
 	addListener(MESSAGE_FIRE_PROJECTILE, projectileCallback);
 
+	
 	loadLevel(L"../../Levels/level1.txt");
 
-
-
-
-
 	//this is just for fun
-	//it doesn't use the entity system
-	int numSprites = 1000;
-
-	for (int i = 0; i < numSprites; ++i) {
-		SimpleTransform transform((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8), 5.0f, 5.0f, 0.0f);
-
-		SpriteRenderable sprite;
-		
-
-		//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
-		if (i % 2 == 0) {
-			sprite = SpriteRenderable(dragonTextureId, -100.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		} else {
-			sprite = SpriteRenderable(dragonTextureId, -100.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-		}
-
-		//spriteListTail++;
-		SimpleTransform* transformResult = transformManager.createTransform(transform);
-		transformManager.getRenderSystem().createRenderComponent(transformResult, sprite);
-		PhysicsComponent* p = transformManager.getPhysicsSystem().createComponentBox(transformResult, Vector2(5, 5));
-		//sprites.push_back(&spritesTemp[i]);
+	for (int i = 0; i < numDebris; ++i) {
+		Vector2 position = Vector2((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8));
+		entityManager.createDebris(position, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 
 
@@ -150,22 +135,16 @@ void World::handleWorldInput(MappedInput* mappedInput){
 	int speed = 15.0f;
 	float msec = 33;
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_UP)) {
-		cout << "Move Up";
-		//audioManager.playSoundEffect(EFFECT_JUMP);
-		//MessagingService::instance().pushMessage(msg);
 		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * speed * (msec / 1000));
 	}
 
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_DOWN)) {
-		cout << "Move Down";
 		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, -1.0f, 0.0f) * speed * (msec / 1000));
 	}
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_LEFT)) {
-		cout << "Move Left";
 		camera.SetPosition(camera.GetPosition() + Vector3(-1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 	}
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_RIGHT)) {
-		cout << "Move Right";
 		camera.SetPosition(camera.GetPosition() + Vector3(1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 	}
 
@@ -176,7 +155,8 @@ void World::handleWorldInput(MappedInput* mappedInput){
 	if (mappedInput->getAction(InputCooked::ACTION_TOGGLE_MUSIC)) {
 		MusicMsgData msgData;
 		msgData.command = MusicCommand::COMMAND_TOGGLE;
-		//not actually necessary here
+		//not actually necessary here, toggle will pause / unpause
+		//whatever is currently playing
 		msgData.music = MUSIC_LEVEL1;
 
 		Message msg;
