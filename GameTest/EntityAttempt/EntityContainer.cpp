@@ -2,7 +2,7 @@
 
 
 EntityContainer::~EntityContainer() {
-	delete[] entityDeleteList;
+	//delete[] entityDeleteList;
 }
 
 void EntityContainer::update() {

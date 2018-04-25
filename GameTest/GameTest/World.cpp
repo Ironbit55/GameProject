@@ -6,13 +6,72 @@ World::~World() {
 	deleteAllListeners();
 }
 
+/*
+ * veeery simple level loader,
+ * theres only 3 entities to pick from
+ */
+void World::loadLevel(const std::wstring& levelFileName) {
+	std::wifstream infile(levelFileName.c_str());
+	unsigned numEntities = attemptRead<unsigned>(infile);
+
+	for (int i = 0; i < numEntities; ++i){
+		unsigned entityTypeId = attemptRead<unsigned>(infile);
+		if(entityTypeId >= EntityType::ENTITY_MAX){
+			printf("could not load entity, entity with id: %i does not exist", entityTypeId);
+			return;
+		}
+		EntityType entityType = static_cast<EntityType>(entityTypeId);
+
+		float positionX;
+		float positionY;
+		float rotation = 0.0f;
+
+		switch(entityType) {
+			case ENTITY_WALL:
+			{
+				positionX = attemptRead<float>(infile);
+				positionY = attemptRead<float>(infile);
+				rotation = attemptRead<float>(infile);
+				entityManager.createWall(Vector2(positionX, positionY), rotation);
+				break;
+			}
+
+			case ENTITY_PLAYER:
+			{
+				unsigned inputActorId = attemptRead<unsigned>(infile);
+				if (inputActorId >= INPUT_ACTOR_MAX) {
+					printf("could not load player entity, player actor with id: %i does not exist", inputActorId);
+					return;
+				}
+
+				InputActors inputActor = static_cast<InputActors>(inputActorId);
+				positionX = attemptRead<float>(infile);
+				positionY = attemptRead<float>(infile);
+				entityManager.createPlayer(inputActor, Vector2(positionX, positionY));
+				break;
+			}
+
+			case ENTITY_BALL:
+			{
+				positionX = attemptRead<float>(infile);
+				positionY = attemptRead<float>(infile);
+				entityManager.createBall(Vector2(positionX, positionY));
+				break;
+			}
+			default:
+				break;
+		}
+	}
+	
+
+
+}
+
+
 void World::loadContent(ContentManager& contentManager) {
 	dragonTextureId = contentManager.loadTexture("dragon", "dragon.png");
-	raiderTextureId = contentManager.loadTexture("raider", "raider.png");
-	wallTextureId = contentManager.loadTexture("wall", "floortile.png");
-
-	//load content manager content if we had file to read in from...
-	//entityManager.loadContent(contentManager);
+	//could preload content manager content if we had file to read in
+	//that mapped file path to texture name
 }
 
 void World::initialise(){
@@ -21,74 +80,15 @@ void World::initialise(){
 	MessageCallback projectileCallback = std::bind(&World::fireProjectile, this, std::placeholders::_1);
 	addListener(MESSAGE_FIRE_PROJECTILE, projectileCallback);
 
-
-	SimpleTransform transform(60.0f, 600.0f, 50.0f, 50.0f, -90.0f);
-	SpriteRenderable sprite1 = SpriteRenderable(dragonTextureId, -200.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	/*sprite1.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	sprite1.glTexture = dragonTexture;*/
-
-	//SimpleTransform* t1 = transformManager.createTransform(transform);
-	//RenderComponent* r1 = transformManager.attachRenderComponent(t1, sprite1);
-	//PhysicsComponent* p1 = transformManager.getPhysicsSystem().createComponentBox(t1, Vector2(50, 50));
+	loadLevel(L"../../Levels/level1.txt");
 
 
-	transform = SimpleTransform(-300.0f, 0.0f, 20.0f, 20.0f, 0.0f);
-	SpriteRenderable sprite2 = SpriteRenderable(raiderTextureId , -200.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-	/*sprite2.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	sprite2.glTexture = raiderTexture;*/
-
-	//SimpleTransform* t2 = transformManager.createTransform(transform);
-	//RenderComponent* r2 = transformManager.attachRenderComponent(t2, sprite2);
-	//PhysicsComponent* p2 = transformManager.getPhysicsSystem().createComponentBox(t2, Vector2(20, 20));
 
 
-	//ground wall
-	EntityInterface* wallGround = entityManager.createWall(Vector2(-300.0f, -300.0f), 0.0f);
-	//left wall
-	EntityInterface* wallLeft = entityManager.createWall(Vector2(100.0f, -150.0f), 90.0f);
-	//right wall
-	EntityInterface* wallRight = entityManager.createWall(Vector2(-700.0f, -150.0f), 90.0f);
 
-	EntityBall* ball = entityManager.createProjectile(Vector2(-500.0f, -350.0f), Vector2(1.0f, 0.0f));
-	//entityManager.createWall(Vector2(-300.0f, -300.0f), 0.0f);
-	//entityManager.addToDelete(wallGround);
-	entityManager.addToDelete(wallLeft);
-	//entityManager.addToDelete(wallRight);
-
-	EntityInterface* player1 = entityManager.createPlayer(INPUT_ACTOR_PLAYER1, Vector2(-200.0f, -150.0f), 0.0f);
-	EntityInterface* player2 = entityManager.createPlayer(INPUT_ACTOR_PLAYER2, Vector2(-400.0f, -150.0f), 0.0f);
-
-	/*transform = SimpleTransform(-300.0f, -300.0f, 400.0f, 10.0f, 0.0f);
-	SpriteRenderable tileSprite = SpriteRenderable(wallTextureId);
-	SimpleTransform* groundT = transformManager.createTransform(transform);
-	RenderComponent* groundR = transformManager.attachRenderComponent(groundT, tileSprite);
-
-	b2BodyDef groundBodyDef;
-	b2PolygonShape groundBox;
-	groundBox.SetAsBox(400.0f / SCALE, 5.0f / SCALE);
-
-	b2FixtureDef groundFixtureDef;
-	groundFixtureDef.shape = &groundBox;
-	PhysicsComponent* groundP = transformManager.getPhysicsSystem().createComponent(groundT, groundBodyDef, groundFixtureDef);
-
-	
-	
-	groundBodyDef.angle = PI / 2;
-	
-	transform = SimpleTransform(100.0f, -150.0f, 400.0f, 10.0f, 0.0f);
-	
-	SimpleTransform* wallLeftT = transformManager.createTransform(transform);
-	RenderComponent* wallLeftR = transformManager.attachRenderComponent(wallLeftT, tileSprite);
-	PhysicsComponent* wallLeftP = transformManager.getPhysicsSystem().createComponent(wallLeftT, groundBodyDef, groundFixtureDef);
-
-	
-	
-	transform = SimpleTransform(-700.0f, -150.0f, 400.0f, 10.0f, 0.0f);
-	SimpleTransform* wallRightT = transformManager.createTransform(transform);
-	RenderComponent* wallRightR = transformManager.attachRenderComponent(wallRightT, tileSprite);
-	PhysicsComponent* wallRightP = transformManager.getPhysicsSystem().createComponent(wallRightT, groundBodyDef, groundFixtureDef);*/
-
-	int numSprites = 50;
+	//this is just for fun
+	//it doesn't use the entity system
+	int numSprites = 1000;
 
 	for (int i = 0; i < numSprites; ++i) {
 		SimpleTransform transform((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8), 5.0f, 5.0f, 0.0f);
@@ -110,21 +110,16 @@ void World::initialise(){
 		//sprites.push_back(&spritesTemp[i]);
 	}
 
-	//transformManager.destroyRenderComponent(r2);
-	//transformManager.destroyTransform(t2);
-	//transformManager.destroyRenderComponent(r1);
-	//transformManager.destroyTransform(t1);
 
-	//entityManager.initialise(transformManager);
-
+	//play music on startup
+	//use m to toggle off
+	MusicMsgData msgData;
+	msgData.command = MusicCommand::COMMAND_PLAY;
+	msgData.music = MUSIC_LEVEL1;
 
 	Message msg;
 	msg.messageType = MESSAGE_AUDIO_MUSIC;
 	msg.timeUntillDispatch = 0;
-
-	MusicMsgData msgData;
-	msgData.command = MusicCommand::COMMAND_PLAY;
-	msgData.music = MUSIC_LEVEL1;
 	msg.dataPayload = &msgData;
 	msg.dataSize = sizeof(msgData);
 
@@ -134,10 +129,9 @@ void World::initialise(){
 void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
 	switch (inputActor) {
 		case INPUT_ACTOR_PLAYER1:
-			controlCameraInput(mappedInput);
+			handleWorldInput(mappedInput);
 			break;
 		default:
-			cout << "something else";
 			break;
 	}
 
@@ -152,19 +146,19 @@ void World::update(Camera& camera){
 	entityManager.update(transformManager);
 }
 
-void World::controlCameraInput(MappedInput* mappedInput){
+void World::handleWorldInput(MappedInput* mappedInput){
 	int speed = 15.0f;
 	float msec = 33;
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_UP)) {
 		cout << "Move Up";
 		//audioManager.playSoundEffect(EFFECT_JUMP);
 		//MessagingService::instance().pushMessage(msg);
-		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, -1.0f, 0.0f) * speed * (msec / 1000));
+		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * speed * (msec / 1000));
 	}
 
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_DOWN)) {
 		cout << "Move Down";
-		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * speed * (msec / 1000));
+		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, -1.0f, 0.0f) * speed * (msec / 1000));
 	}
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_LEFT)) {
 		cout << "Move Left";
@@ -173,5 +167,24 @@ void World::controlCameraInput(MappedInput* mappedInput){
 	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_RIGHT)) {
 		cout << "Move Right";
 		camera.SetPosition(camera.GetPosition() + Vector3(1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
+	}
+
+	if(mappedInput->getAction(InputCooked::ACTION_RESET)){
+		entityManager.~EntityManager();
+	}
+
+	if (mappedInput->getAction(InputCooked::ACTION_TOGGLE_MUSIC)) {
+		MusicMsgData msgData;
+		msgData.command = MusicCommand::COMMAND_TOGGLE;
+		//not actually necessary here
+		msgData.music = MUSIC_LEVEL1;
+
+		Message msg;
+		msg.messageType = MESSAGE_AUDIO_MUSIC;
+		msg.timeUntillDispatch = 0;
+		msg.dataPayload = &msgData;
+		msg.dataSize = sizeof(msgData);
+
+		pushMessage(msg);
 	}
 }

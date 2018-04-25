@@ -29,6 +29,7 @@ enum MusicCommand{
 	COMMAND_PLAY,
 	COMMAND_PAUSE,
 	COMMAND_STOP,
+	COMMAND_TOGGLE,
 };
 
 struct SoundEffectMsgData{
@@ -84,6 +85,8 @@ public:
 
 	void stopMusic();
 
+	void toggleMusic();
+
 	bool playingMusic();
 
 	bool pausedMusic();
@@ -109,6 +112,9 @@ protected:
 			break;
 		case COMMAND_STOP:
 			this->stopMusic();
+			break;
+		case COMMAND_TOGGLE:
+			this->toggleMusic();
 			break;
 		}
 		

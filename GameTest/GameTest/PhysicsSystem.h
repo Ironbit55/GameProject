@@ -1,4 +1,10 @@
 /*
+ *Author: Edward Curran
+ *Class: PhysicsSystem
+ *Description: manages physics components, handles updating box 2d
+ *
+ *
+ *uses a fixed step tick with accumulator and interpolation to deal with variable frame rate
  *code from here:
 *https://www.unagames.com/blog/daniele/2010/06/fixed-time-step-implementation-box2d
 *
@@ -75,12 +81,6 @@ protected:
 
 	b2World* world;
 
-	//PhysicsComponent* b2BodyToPhysicsComponent(b2Body* b) {
-	//	
-	//	return p;
-	//};
-
-
 private:
 	
 	int numComponents;
@@ -100,16 +100,16 @@ private:
 	//so have to use this thing for now
 	//std::vector<PhysicsComponent*> physicsComponents;
 
-	//head of linked list
-	PhysicsComponent* componentList;
-	int componentCount;
+	
+	//PhysicsComponent* componentList;
+	//int componentCount;
 
 	//we actually only need to update dynamicPhysicsComponents
 	PhysicsComponent* dynamicComponentList;
 	int dynamicComponentCount;
 
 	//so have to use this thing for now
-	std::vector<PhysicsComponent*> componentsToDelete;
+	//std::vector<PhysicsComponent*> componentsToDelete;
 
 	
 };

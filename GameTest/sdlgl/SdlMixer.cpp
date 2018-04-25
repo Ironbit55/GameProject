@@ -67,7 +67,7 @@ bool SdlMixer::playMusic(int musicId){
 
 void SdlMixer::pauseMusic(){
 	if (playingMusic()) {
-		Mix_PausedMusic();
+		Mix_PauseMusic();
 	}
 }
 

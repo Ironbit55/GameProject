@@ -36,16 +36,7 @@ void PlayerEntity::destroy(TransformManager& transformManager) {
 }
 
 void PlayerEntity::update(EntityContainer& entityManager) {
-	SoundEffectMsgData msgData;
-	msgData.effect = EFFECT_JUMP;
 
-	Message msg;
-	msg.messageType = MESSAGE_AUDIO_EFFECT;
-	msg.timeUntillDispatch = 0;
-	msg.dataPayload = &msgData;
-	msg.dataSize = sizeof(msgData);
-
-	//MessagingService::instance().pushMessage(msg);
 }
 
 void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput){
@@ -73,11 +64,11 @@ void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput)
 		Vector2 dir;
 
 		//will stay zero unless range outside deadzone
-		bool deadzone = true;
-		deadzone = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_X, rangeX);
-		deadzone = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_Y, rangeY);
-		if(deadzone){
-			dir = Vector2(-1.0f, 0);
+		
+		bool deadzoneX = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_X, rangeX);
+		bool deadzoneY = !mappedInput->getRange(InputCooked::RANGE_CONTROLLER_LEFT_Y, rangeY);
+		if(deadzoneX && deadzoneY){
+			dir = Vector2(0, 1.0f);
 		} else {
 			dir = Vector2(rangeX, -rangeY);
 		}
@@ -114,10 +105,10 @@ void PlayerEntity::handleInput(InputActors inputActor, MappedInput* mappedInput)
 	}
 
 	if (mappedInput->getState(InputCooked::STATE_PLAYER_MOVE_LEFT)) {
-		physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(-0.1f, 0), true);
+		physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(-0.2f, 0), true);
 	}
 
 	if (mappedInput->getState(InputCooked::STATE_PLAYER_MOVE_RIGHT)) {
-		physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(0.1f, 0), true);
+		physicsComponent->body->ApplyLinearImpulseToCenter(b2Vec2(0.2f, 0), true);
 	}
 }

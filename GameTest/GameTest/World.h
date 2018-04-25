@@ -30,13 +30,14 @@ public:
 	World(TransformManager& transformManager, ContentManager& contentManager, Camera& camera) : transformManager(transformManager), camera(camera), entityManager(transformManager, contentManager) {};
 	~World();
 
-	
 
-	void loadLevel() {};
+	void loadLevel(const std::wstring& levelFileName);;
 
 	void loadContent(ContentManager& contentManager);
 
 	void initialise();
+
+
 
 	void handleInput(InputActors inputActor, MappedInput* mappedInput) override;
 
@@ -44,7 +45,23 @@ public:
 
 	void update(Camera& camera);;
 protected:
-	void controlCameraInput(MappedInput* mappedInput);
+	void handleWorldInput(MappedInput* mappedInput);
+
+	/*
+	 * Helper for attempting to read from a file (or other istream-compatible interface)
+	 * i got this from 
+	 * http://scribblings-by-apoch.googlecode.com/
+	 */
+	template <typename OutType>
+	OutType attemptRead(std::wistream& stream)
+	{
+		OutType out;
+		if (!(stream >> out))
+			throw std::exception("Failed to read a required value");
+
+		return out;
+	}
+
 private:
 	int dragonTextureId;
 	int wallTextureId;

@@ -20,6 +20,8 @@ void FeedbackEngine::initialise(){
 	initInput();
 	sdlInput.loadMappings();
 	renderer.Init();
+
+	renderer.disableBatching();
 }
 
 
@@ -61,6 +63,7 @@ void FeedbackEngine::start(){
 
 void FeedbackEngine::end(){
 	//make sure everything shuts down
+	delete world;
 }
 
 bool FeedbackEngine::initialiseSdl(){
@@ -85,7 +88,8 @@ bool FeedbackEngine::initInput(){
 
 
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::States::STATE_CAMERA_MOVE_UP);
-	//context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::Actions::ACTION_JUMP);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_M, InputCooked::Actions::ACTION_TOGGLE_MUSIC);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_R, InputCooked::Actions::ACTION_RESET);
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_A, InputCooked::States::STATE_CAMERA_MOVE_LEFT);
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_S, InputCooked::States::STATE_CAMERA_MOVE_DOWN);
 	context.addMapping(InputRaw::Buttons::BUTTON_KEY_D, InputCooked::States::STATE_CAMERA_MOVE_RIGHT);

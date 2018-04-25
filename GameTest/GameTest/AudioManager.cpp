@@ -110,6 +110,14 @@ void AudioManager::stopMusic(){
 	mixer.stopMusic();
 }
 
+void AudioManager::toggleMusic() {
+	if (playingMusic() && pausedMusic()) {
+		unpauseMusic();
+	}else if(playingMusic()){
+		pauseMusic();
+	}
+}
+
 bool AudioManager::playingMusic(){
 	return mixer.playingMusic();
 }

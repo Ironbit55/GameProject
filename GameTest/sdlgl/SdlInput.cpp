@@ -13,6 +13,8 @@ void SdlInput::loadMappings(){
 	inputManager.addSdlKeyMapping(SDLK_a, InputRaw::Buttons::BUTTON_KEY_A);
 	inputManager.addSdlKeyMapping(SDLK_s, InputRaw::Buttons::BUTTON_KEY_S);
 	inputManager.addSdlKeyMapping(SDLK_d, InputRaw::Buttons::BUTTON_KEY_D);
+	inputManager.addSdlKeyMapping(SDLK_r, InputRaw::Buttons::BUTTON_KEY_R);
+	inputManager.addSdlKeyMapping(SDLK_m, InputRaw::Buttons::BUTTON_KEY_M);
 
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_A, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_A);
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_B, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_B);

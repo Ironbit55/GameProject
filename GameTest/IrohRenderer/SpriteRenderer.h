@@ -88,6 +88,14 @@ public:
 		(*spriteList)[spriteListCount] = sprite;
 		spriteListCount++;
 	}
+
+	void enableBatching(){
+		batchingEnabled = true;
+	}
+
+	void disableBatching() {
+		batchingEnabled = false;
+	}
 	
 protected:
 	Camera*	camera;
@@ -100,6 +108,8 @@ protected:
 	int spriteListCount;
 	
 	GLuint previousTexture;
+
+	bool batchingEnabled = true;
 
 	//vector<SpriteRenderable*> sprites;
 

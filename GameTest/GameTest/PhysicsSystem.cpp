@@ -91,40 +91,6 @@ void PhysicsSystem::smoothStates(){
 			oneMinusRatio * component->previousAngle;
 
 	}
-
-	//for (PhysicsComponent* component = componentList; component != NULL; component = component->listNext) {
-	//	b2Body* b = component->body;
-
-
-	//	if (b->GetType() == b2_staticBody) {
-	//		continue;
-	//	}
-
-	//	//update physics component with new smoothed values using previous values
-	//	component->smoothedPosition =
-	//		fixedTimestepAccumulatorRatio * b->GetPosition() +
-	//		oneMinusRatio * component->previousPosition;
-	//	component->smoothedAngle =
-	//		fixedTimestepAccumulatorRatio * b->GetAngle() +
-	//		oneMinusRatio * component->previousAngle;
-	//}
-
-	//for (b2Body* b = world->GetBodyList(); b != NULL; b = b->GetNext()){
-
-	//	//if we kept track of dynamic components we wouldn't have to do this...
-	//	if (b->GetType() == b2_staticBody)
-	//	{
-	//		continue;
-	//	}
-
-	//	PhysicsComponent & c = PhysicsComponent::b2BodyToPhysicsComponent(b);
-	//	c.smoothedPosition =
-	//		fixedTimestepAccumulatorRatio * b->GetPosition() +
-	//		oneMinusRatio * c.previousPosition;
-	//	c.smoothedAngle =
-	//		fixedTimestepAccumulatorRatio * b->GetAngle() +
-	//		oneMinusRatio * c.previousAngle;
-	//}
 }
 
 void PhysicsSystem::resetSmoothStates(){
@@ -150,38 +116,6 @@ void PhysicsSystem::resetSmoothStates(){
 		component->smoothedAngle = b->GetAngle();
 
 	}
-
-	/*for (PhysicsComponent* component = componentList; component != NULL; component = component->listNext) {
-		b2Body* b = component->body;
-
-		if (b->GetType() == b2_staticBody) {
-			continue;
-		}
-
-		component->smoothedPosition = b->GetPosition();
-		component->smoothedAngle = b->GetAngle();
-
-		if (b->GetType() == b2_staticBody)
-		{
-			continue;
-		}
-
-		
-		component->smoothedPosition = b->GetPosition();
-		component->smoothedAngle = b->GetAngle();
-	}*/
-
-	/*for (b2Body * b = world->GetBodyList(); b != NULL; b = b->GetNext())
-	{
-		if (b->GetType() == b2_staticBody)
-		{
-			continue;
-		}
-
-		PhysicsComponent & c = PhysicsComponent::b2BodyToPhysicsComponent(b);
-		c.smoothedPosition = b->GetPosition();
-		c.smoothedAngle = b->GetAngle();
-	}*/
 
 }
 
@@ -226,23 +160,6 @@ PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2B
 
 	//only neccesary if component has non default constructor
 	//PhysicsComponent* component = physicsComponentsPool.newElement();
-	
-
-	// Add to component linked list.
-	//component->listPrev = nullptr;
-
-	////insert at head
-	//component->listNext = componentList;
-	//if (componentList)
-	//{
-	//	componentList->listPrev = component;
-	//}
-	//componentList = component;
-	//++componentCount;
-
-	//world->CreateBody(bodyDef);
-	//return component;
-
 }
 
 PhysicsComponent* PhysicsSystem::createComponentBox(SimpleTransform* transform, Vector2 box){
@@ -289,24 +206,4 @@ void PhysicsSystem::deleteComponent(PhysicsComponent* component){
 	numComponents--;
 	world->DestroyBody(component->body);
 	physicsComponentsPool.deallocate(component);
-
-	// Remove component from list.
-	//if (component->listPrev) {
-	//	//link prev component to next component
-	//	component->listPrev->listNext = component->listNext;
-	//}
-
-	//if (component->listNext) {
-	//	//link next component to prev
-	//	component->listNext->listPrev = component->listPrev;
-	//}
-
-	////if head, change head to next
-	//if (component == componentList){
-	//	componentList = component->listNext;
-	//}
-
-	//--componentCount;
-	//
-	//physicsComponentsPool.deleteElement(component);
 }

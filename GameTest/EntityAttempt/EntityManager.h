@@ -5,9 +5,11 @@
 
 enum EntityType
 {
-	Wall,
-	Ball,
-	Player,
+	ENTITY_WALL,
+	ENTITY_BALL,
+	ENTITY_PLAYER,
+	ENTITY_MAX,
+	
 };
 
 class EntityManager : public EntityContainer

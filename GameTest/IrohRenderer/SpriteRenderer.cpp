@@ -136,17 +136,22 @@ void SpriteRenderer::DrawSprites(){
 		
 		//if  batch size greater than or equal to min match size than use spritebatch
 		//otherwise just draw em.
+		if (batchingEnabled) {
+			updateBatchSize(it, spriteTail(), batchSize);
 
-		//updateBatchSize(it, spriteTail(), batchSize);
-
-		if (batchSize >= MIN_BATCH_SIZE) {
-			DrawSpriteSpriteBatch((*it));
-		} else {
+			if (batchSize >= MIN_BATCH_SIZE) {
+				DrawSpriteSpriteBatch((*it));
+			} else {
+				DrawSprite((*it));
+			}
+		}else{
 			DrawSprite((*it));
 		}
 	}
 
 	emptySpriteBatch();
+
+	spriteBatchMesh->Begin(0);
 	//loop back to front
 	auto it = spriteTail();
 	while(it != transparentListTail){
