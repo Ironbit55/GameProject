@@ -16,7 +16,10 @@ void World::loadContent(ContentManager& contentManager) {
 }
 
 void World::initialise(){
-	//bool test = registerInput(INPUT_ACTOR_PLAYER1);
+	bool test = registerInput(INPUT_ACTOR_PLAYER1);
+
+	MessageCallback projectileCallback = std::bind(&World::fireProjectile, this, std::placeholders::_1);
+	addListener(MESSAGE_FIRE_PROJECTILE, projectileCallback);
 
 
 	SimpleTransform transform(60.0f, 600.0f, 50.0f, 50.0f, -90.0f);
@@ -45,12 +48,15 @@ void World::initialise(){
 	EntityInterface* wallLeft = entityManager.createWall(Vector2(100.0f, -150.0f), 90.0f);
 	//right wall
 	EntityInterface* wallRight = entityManager.createWall(Vector2(-700.0f, -150.0f), 90.0f);
+
+	EntityBall* ball = entityManager.createProjectile(Vector2(-500.0f, -350.0f), Vector2(1.0f, 0.0f));
 	//entityManager.createWall(Vector2(-300.0f, -300.0f), 0.0f);
 	//entityManager.addToDelete(wallGround);
 	entityManager.addToDelete(wallLeft);
 	//entityManager.addToDelete(wallRight);
 
-	//EntityInterface* player1 = entityManager.createPlayer(INPUT_ACTOR_PLAYER1, Vector2(-200.0f, -150.0f), 0.0f);
+	EntityInterface* player1 = entityManager.createPlayer(INPUT_ACTOR_PLAYER1, Vector2(-200.0f, -150.0f), 0.0f);
+	EntityInterface* player2 = entityManager.createPlayer(INPUT_ACTOR_PLAYER2, Vector2(-400.0f, -150.0f), 0.0f);
 
 	/*transform = SimpleTransform(-300.0f, -300.0f, 400.0f, 10.0f, 0.0f);
 	SpriteRenderable tileSprite = SpriteRenderable(wallTextureId);
@@ -82,7 +88,7 @@ void World::initialise(){
 	RenderComponent* wallRightR = transformManager.attachRenderComponent(wallRightT, tileSprite);
 	PhysicsComponent* wallRightP = transformManager.getPhysicsSystem().createComponent(wallRightT, groundBodyDef, groundFixtureDef);*/
 
-	int numSprites = 50;
+	int numSprites = 1000;
 
 	for (int i = 0; i < numSprites; ++i) {
 		SimpleTransform transform((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8), 5.0f, 5.0f, 0.0f);
@@ -133,6 +139,11 @@ void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
 
 }
 
+void World::fireProjectile(Message msg) {
+	FireProjectileMessageData* data = static_cast<FireProjectileMessageData*>(msg.dataPayload);
+	entityManager.createProjectile(data->position, data->direction);
+}
+
 void World::update(Camera& camera){
 	entityManager.update(transformManager);
 }
@@ -140,22 +151,22 @@ void World::update(Camera& camera){
 void World::controlCameraInput(MappedInput* mappedInput){
 	int speed = 15.0f;
 	float msec = 33;
-	if (mappedInput->getState(InputCooked::States::STATE_MOVE_UP)) {
+	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_UP)) {
 		cout << "Move Up";
 		//audioManager.playSoundEffect(EFFECT_JUMP);
 		//MessagingService::instance().pushMessage(msg);
 		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, -1.0f, 0.0f) * speed * (msec / 1000));
 	}
 
-	if (mappedInput->getState(InputCooked::States::STATE_MOVE_DOWN)) {
+	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_DOWN)) {
 		cout << "Move Down";
 		camera.SetPosition(camera.GetPosition() + Vector3(0.0f, 1.0f, 0.0f) * speed * (msec / 1000));
 	}
-	if (mappedInput->getState(InputCooked::States::STATE_MOVE_LEFT)) {
+	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_LEFT)) {
 		cout << "Move Left";
 		camera.SetPosition(camera.GetPosition() + Vector3(-1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 	}
-	if (mappedInput->getState(InputCooked::States::STATE_MOVE_RIGHT)) {
+	if (mappedInput->getState(InputCooked::States::STATE_CAMERA_MOVE_RIGHT)) {
 		cout << "Move Right";
 		camera.SetPosition(camera.GetPosition() + Vector3(1.0f, 0.0f, 0.0f) * speed * (msec / 1000));
 	}

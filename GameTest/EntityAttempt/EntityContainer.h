@@ -26,9 +26,7 @@ class EntityContainer
 {
 public:
 	EntityContainer() {}
-	~EntityContainer() {}
-
-
+	~EntityContainer();
 
 
 	void addToDelete(EntityInterface* entity) {
@@ -58,8 +56,10 @@ protected:
 	MemoryPool<entitysize_t, MAX_NUM_ENTITIES * sizeof(entitysize_t)> entityPool;
 	int numEntities = 0;
 
-	EntityInterface* addEntity(EntityInterface* entityPtr, int size);
+	EntityInterface* addEntity(int size);
 
 	void deleteEntities(TransformManager& transformManager);
+
+	void destructAllEntities(TransformManager& transformManager);
 };
 

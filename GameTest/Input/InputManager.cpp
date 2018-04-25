@@ -105,7 +105,7 @@ void InputManager::performMapping(){
 			continue;
 		}
 
-		MessageType msgType = inputMessageType;
+		msg.messageType = inputMessageType;
 		//msg data input should point to this actors mapped input
 		msgData.input = &mappedInputs[inputActor];
 		msgData.actor = inputActor;

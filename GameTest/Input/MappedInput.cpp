@@ -55,7 +55,7 @@ bool MappedInput::addRange(int rangeId, float rangeValue, bool state){
 		return false;
 	}
 
-	empty = (empty || state);
+	empty = (empty && !state);
 	ranges[rangeIndex] = state;
 	rangeValues[rangeIndex] = rangeValue;
 	return true;

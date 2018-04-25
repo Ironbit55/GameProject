@@ -19,6 +19,11 @@ void SdlInput::loadMappings(){
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_X, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_X);
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_Y, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_Y);
 
+	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_DPAD_UP, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_UP);
+	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_DPAD_DOWN, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_DOWN);
+	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_DPAD_LEFT, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_LEFT);
+	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_DPAD_RIGHT, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_RIGHT);
+
 	inputManager.addSdlGameControllerAxesMapping(SDL_CONTROLLER_AXIS_LEFTX, InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTX);
 	inputManager.addSdlGameControllerAxesMapping(SDL_CONTROLLER_AXIS_LEFTY, InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTY);
 }

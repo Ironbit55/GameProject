@@ -16,7 +16,7 @@ class MessageReceiver
 {
 public:
 	MessageReceiver(){
-		baseMessageCallback = std::bind(&MessageReceiver::onreceiveMessage, this, std::placeholders::_1);
+		baseMessageCallback = std::bind(&MessageReceiver::onReceiveMessage, this, std::placeholders::_1);
 	};
 	//deregister callbacks
 	virtual ~MessageReceiver(){
@@ -114,12 +114,19 @@ protected:
 
 	}
 
-	virtual void onreceiveMessage(Message& msg) {};
+	virtual void onReceiveMessage(Message& msg) {};
 
 
 	//not actually neccesary really but maybe helpfull
 	void pushMessage(Message msg){
 		MessagingService::instance().pushMessage(msg);
+	}
+
+	void unbindCallback(){
+		baseMessageCallback = MessageCallback();
+	}
+	void rebindCallback(){
+		baseMessageCallback = std::bind(&MessageReceiver::onReceiveMessage, this, std::placeholders::_1);
 	}
 
 private:

@@ -19,7 +19,7 @@ const int MAX_INPUTS = 32;
 class InputContext
 {
 public:
-	InputContext(bool active = false) : active(active){}
+	InputContext(bool active = false) : active(active), axisDeadzone(0.1f){}
 	~InputContext();
 
 	bool loadFromFile(std::string fileName);

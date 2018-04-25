@@ -9,6 +9,7 @@ class InputReceiver : public MessageReceiver
 public:
 	InputReceiver() {
 		inputMessageCallback = std::bind(&InputReceiver::onInputMessage, this, std::placeholders::_1);
+		//inputMessageCallback = [this](Message& msg) {this->onInputMessage(msg); };
 	}
 	~InputReceiver();
 
@@ -42,6 +43,17 @@ public:
 			return this->disableListener(i->second);
 		}
 		return false;
+	}
+
+	void rebindCallback(){
+		inputMessageCallback = [this](Message& msg) {this->onInputMessage(msg); };
+		MessageReceiver::rebindCallback();
+	}
+
+	void unbindCallback() {
+		inputMessageCallback = MessageCallback();
+		MessageReceiver::unbindCallback();
+		//memset(&inputMessageCallback, 0, sizeof(inputMessageCallback));
 	}
 
 	//gets called when received a message containing the input for a actor

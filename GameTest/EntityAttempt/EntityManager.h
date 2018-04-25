@@ -1,6 +1,7 @@
 #pragma once
 #include "EntityContainer.h"
 #include "WallEntity.h"
+#include "EntityBall.h"
 
 enum EntityType
 {
@@ -13,7 +14,7 @@ class EntityManager : public EntityContainer
 {
 public:
 	EntityManager(TransformManager& tm, ContentManager& cm) : transformManager(tm), contentManager(cm) {};
-	~EntityManager() {};
+	~EntityManager();;
 
 	void update(TransformManager& transformManager) {
 		deleteEntities(transformManager);
@@ -22,7 +23,10 @@ public:
 
 	EntityInterface* createWall(Vector2 position, float rotation = 0.0f);;
 	EntityInterface* createPlayer(InputActors inputActor, Vector2 position, float rotation = 0.0f);;
-	EntityInterface* createBall(Vector2 position, float rotation = 0.0f) {};
+	EntityBall* createBall(Vector2 position);;
+	EntityBall* createProjectile(Vector2 position, Vector2 launchDirection);;
+	
+	EntityInterface* createDebris(Vector2 position, float rotation = 0.0f) {};
 
 	void createWall(WallEntity& wallEntity) {};
 	//void createPlayer(Vector2 position);

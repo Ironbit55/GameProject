@@ -120,26 +120,48 @@ void MessagingService::dispatchMessage(Message& msg){
 void MessagingService::dispatchMessages(){
 	//sorted so smallest dispatch time at end of array
 	std::sort(messageQueue.begin(), messageQueue.begin() + numMessages, cmpMsg);
+	int dispatchListCount = numMessages;
+
+	//need to create a buffer of messages to dispatch so that callbacks triggered
+	//by messages can add messages to the queue without disrupting the dispatch
+
+	// work from tail of queue to head
+	for (int i = numMessages - 1; i >= 0; --i) {
+		if (messageQueue[i].timeUntillDispatch > 0) {
+			//as array is sorted when we hit a time untill dispatch greater than 0
+			//we know msgs further down are also going to be greater than 0
+			//so don't bother searching any further
+			dispatchListCount = i;
+			continue;
+		}
+
+		//copy messages to dispath into dispatch buffer
+		//this is from o to max
+		messageDispatchBuffer[numMessages - 1 - i] = messageQueue[i];
+
+		//delete / deallocate the message from queue
+		//empty message
+		messageQueue[i] = Message();
+	}
+	numMessages -= dispatchListCount;
 	
-	//work from tail of queue to head
-	for (int i = numMessages - 1; i >= 0; --i){
-		if(messageQueue[i].timeUntillDispatch > 0){
+	
+	//go through copy of queue and dispatch messages
+	//new messages can be added to the main queue during this with no problems
+	for (int i = 0; i < dispatchListCount; ++i){
+		if(messageDispatchBuffer[i].timeUntillDispatch > 0){
 			//as array is sorted when we hit a time untill dispatch greater than 0
 			//we know msgs further down are also going to be greater than 0
 			//so don't bother searching any further
 			continue;
 		}
-		if (messageQueue[i].messageType != MESSAGE_EMPTY) {
-			dispatchMessage(messageQueue[i]);
+		if (messageDispatchBuffer[i].messageType != MESSAGE_EMPTY) {
+			dispatchMessage(messageDispatchBuffer[i]);
 
 			//dealocate message data if it had any
-			if (messageQueue[i].dataPayload != nullptr) {
-				pool.deallocate((messagedatasize_t*)messageQueue[i].dataPayload);
+			if (messageDispatchBuffer[i].dataPayload != nullptr) {
+				pool.deallocate((messagedatasize_t*)messageDispatchBuffer[i].dataPayload);
 			}
-			//delete / deallocate the message from queue
-			//empty message
-			messageQueue[i] = Message();
-			numMessages--;
 		}
 	}
 }

@@ -47,8 +47,12 @@ public:
 
 	void update(float dt);
 
-	b2Vec2 scaleVec2(Vector2 vec2){
+	static b2Vec2 scaleVec2(Vector2 vec2){
 		return b2Vec2(vec2.x / SCALE, vec2.y / SCALE);
+	}
+
+	static Vector2 scaleB2Vec2(b2Vec2 vec) {
+		return Vector2(vec.x * SCALE, vec.y * SCALE);
 	}
 	
 

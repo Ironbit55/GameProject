@@ -84,11 +84,11 @@ bool FeedbackEngine::initInput(){
 	InputContext context = InputContext(true);
 
 
-	context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::States::STATE_MOVE_UP);
-	context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::Actions::ACTION_JUMP);
-	context.addMapping(InputRaw::Buttons::BUTTON_KEY_A, InputCooked::States::STATE_MOVE_LEFT);
-	context.addMapping(InputRaw::Buttons::BUTTON_KEY_S, InputCooked::States::STATE_MOVE_DOWN);
-	context.addMapping(InputRaw::Buttons::BUTTON_KEY_D, InputCooked::States::STATE_MOVE_RIGHT);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::States::STATE_CAMERA_MOVE_UP);
+	//context.addMapping(InputRaw::Buttons::BUTTON_KEY_W, InputCooked::Actions::ACTION_JUMP);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_A, InputCooked::States::STATE_CAMERA_MOVE_LEFT);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_S, InputCooked::States::STATE_CAMERA_MOVE_DOWN);
+	context.addMapping(InputRaw::Buttons::BUTTON_KEY_D, InputCooked::States::STATE_CAMERA_MOVE_RIGHT);
 
 
 	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER1, "keyboard", context);
@@ -99,8 +99,15 @@ bool FeedbackEngine::initInput(){
 	InputContext controllerInputContext = InputContext(true);
 
 	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_A, InputCooked::States::STATE_CONTROLLER_A);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_A, InputCooked::Actions::ACTION_JUMP);
 	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_X, InputCooked::States::STATE_CONTROLLER_X);
 	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_X, InputCooked::Actions::ACTION_CONTROLLER_X);
+
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_UP, InputCooked::States::STATE_PLAYER_MOVE_UP);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_DOWN, InputCooked::States::STATE_PLAYER_MOVE_DOWN);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_LEFT, InputCooked::States::STATE_PLAYER_MOVE_LEFT);
+	controllerInputContext.addMapping(InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_DPAD_RIGHT, InputCooked::States::STATE_PLAYER_MOVE_RIGHT);
+
 	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTX, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_X);
 	controllerInputContext.addMapping(InputRaw::Axes::AXIS_CONTROLLER_AXIS_LEFTY, InputCooked::Ranges::RANGE_CONTROLLER_LEFT_Y);
 
@@ -111,6 +118,7 @@ bool FeedbackEngine::initInput(){
 
 	inputManager.addInputContext(InputActors::INPUT_ACTOR_PLAYER2, "controller", controllerInputContext);
 	inputManager.activateActor(InputActors::INPUT_ACTOR_PLAYER2);
+
 
 	return true;
 

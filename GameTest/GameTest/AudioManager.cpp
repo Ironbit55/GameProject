@@ -30,11 +30,11 @@ void AudioManager::init(){
 	
 	//typedef void(AudioManager::*audioMsgCallbackType)(Message&);
 	//audioMsgCallbackType audioMsgCallbackDummy = &AudioManager::dummy;
-	MessageCallback test = std::bind(&AudioManager::receiveEffectMessage, this, std::placeholders::_1);
-	MessageCallback testDummy = std::bind(&AudioManager::dummy, this, std::placeholders::_1);
+	MessageCallback effectCallback = std::bind(&AudioManager::receiveEffectMessage, this, std::placeholders::_1);
+	MessageCallback musicCallback = std::bind(&AudioManager::receiveMusicMessage, this, std::placeholders::_1);
 
-	addListener(MESSAGE_AUDIO_EFFECT);
-	addListener(MESSAGE_AUDIO_MUSIC, testDummy);
+	addListener(MESSAGE_AUDIO_EFFECT, effectCallback);
+	addListener(MESSAGE_AUDIO_MUSIC, musicCallback);
 
 	Message msg;
 	msg.messageType = MESSAGE_AUDIO_EFFECT;

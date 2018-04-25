@@ -17,6 +17,8 @@ enum MessageType{
 	MESSAGE_INPUT_PLAYER2,
 	MESSAGE_INPUT_PLAYER3,
 	MESSAGE_INPUT_PLAYER4,
+
+	MESSAGE_FIRE_PROJECTILE,
 	MESSAGE_MAX_NUM_MESSAGES,
 };
 const unsigned int IMMEDIATE = 0;
@@ -46,9 +48,9 @@ struct MessageCallbackWrapper {
 	unsigned int callbackId;
 };
 
-const unsigned int MSG_DATA_MAX_BYTES = 64;
+const unsigned int MSG_DATA_MAX_BYTES = 32;
 typedef unsigned char messagedatasize_t[MSG_DATA_MAX_BYTES];
-const unsigned int MESSAGE_QUEUE_CAPACITY = 64;
+const unsigned int MESSAGE_QUEUE_CAPACITY = 32;
 const unsigned int CALLBACKS_CAPACITY = 8;
 
 
@@ -119,6 +121,7 @@ private:
 	//an std::vector
 	
 	std::array<Message, MESSAGE_QUEUE_CAPACITY> messageQueue;
+	std::array<Message, MESSAGE_QUEUE_CAPACITY> messageDispatchBuffer;
 	
 	
 	//we have to keep track of the *real* tail

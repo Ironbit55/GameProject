@@ -114,7 +114,8 @@ protected:
 		
 	};
 
-	void onreceiveMessage(Message& msg) {
+	
+	void onReceiveMessage(Message& msg) {
 		switch (msg.messageType) 
 		{
 			case MESSAGE_AUDIO_EFFECT: 
@@ -128,11 +129,7 @@ protected:
 		}
 	};
 
-	void dummy(Message&) {
-		int i = 1;
-		i++;
-		std::cout << "dummy";
-	};
+
 
 private:
 	std::map<SoundEffect, std::string> effectFileMap;
