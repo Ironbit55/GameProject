@@ -2,7 +2,10 @@
 
 
 
-SdlInput::SdlInput(SdlInputManager& inputManager) : inputManager(inputManager) {};
+SdlInput::SdlInput(SdlInputManager& inputManager) : inputManager(inputManager) {
+	MessageCallback rumbleCallback = std::bind(&SdlInput::onRumbleMessage, this, std::placeholders::_1);
+	addListener(MESSAGE_CONTROLLER_RUMBLE, rumbleCallback);
+};
 
 
 SdlInput::~SdlInput(){
@@ -15,6 +18,13 @@ void SdlInput::loadMappings(){
 	inputManager.addSdlKeyMapping(SDLK_d, InputRaw::Buttons::BUTTON_KEY_D);
 	inputManager.addSdlKeyMapping(SDLK_r, InputRaw::Buttons::BUTTON_KEY_R);
 	inputManager.addSdlKeyMapping(SDLK_m, InputRaw::Buttons::BUTTON_KEY_M);
+
+	inputManager.addSdlKeyMapping(SDLK_UP, InputRaw::Buttons::BUTTON_KEY_UP);
+	inputManager.addSdlKeyMapping(SDLK_DOWN, InputRaw::Buttons::BUTTON_KEY_DOWN);
+	inputManager.addSdlKeyMapping(SDLK_LEFT, InputRaw::Buttons::BUTTON_KEY_LEFT);
+	inputManager.addSdlKeyMapping(SDLK_RIGHT, InputRaw::Buttons::BUTTON_KEY_RIGHT);
+
+	inputManager.addSdlKeyMapping(SDLK_SPACE, InputRaw::Buttons::BUTTON_KEY_SPACE);
 
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_A, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_A);
 	inputManager.addSdlGameControllerButtonMapping(SDL_CONTROLLER_BUTTON_B, InputRaw::Buttons::BUTTON_CONTROLLER_BUTTON_B);
@@ -62,3 +72,12 @@ void SdlInput::handleEvent(SDL_Event& e){
 	//button presses are done with polling
 	if (controllerContainer.handleEvent(e)) { return; }
 }
+
+void SdlInput::onRumbleMessage(Message msg) {
+	ControllerRumbleMsgData* data = static_cast<ControllerRumbleMsgData*>(msg.dataPayload);
+	if (controllerContainer.controllerIsConnected(data->inputActor)) {
+		
+		controllerContainer.getController(data->inputActor).rumble();
+	}
+}
+

@@ -14,8 +14,13 @@
 #include <SDL.h>
 #include "SdlInputManager.h"
 #include "GameControllerContainer.h"
+#include "../GameTest/MessageReceiver.h"
 
-class SdlInput
+struct ControllerRumbleMsgData {
+	InputActors inputActor;
+};
+
+class SdlInput : MessageReceiver
 {
 public:
 	SdlInput(SdlInputManager& inputManager);
@@ -25,6 +30,8 @@ public:
 
 	void update();
 	void handleEvent(SDL_Event &e);
+
+	void onRumbleMessage(Message msg);
 
 	GameControllerContainer& getControllerContainer() { return controllerContainer; }
 private:

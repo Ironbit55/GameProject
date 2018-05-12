@@ -1,3 +1,11 @@
+/*
+* Class: FeedbackEngine
+* Author: Ed Curran (b5021040)
+* Description: The Real Deal, The Main Man this is the heart of the engine
+  it holds all the subsystems, gets hooked into entrypoint to startup
+  then updates subsystems, renders, handles events etc
+  provides hooks for World instance to execute on top of the engine
+*/
 #pragma once
 #include <SDL.h>
 #include <cstdio>

@@ -34,59 +34,6 @@ bool SpriteRenderer::Init() {
 	projMatrix = Matrix4::Orthographic(-1.0f, 10000.0f, width / 2.0f, -width / 2.0f, height / 2.0f, -height / 2.0f);
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix*viewMatrix);
-
-	/*spriteMesh = Mesh::GenerateQuad();
-	spriteBatchMesh = new MeshSpriteBatch(256);*/
-
-
-
-	///this is just for testing it doesn't belong here promise
-
-	//GLuint dragonTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	//GLuint raiderTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-
-
-	//create a bunch of sprite in contigous memory
-	//const int numSprites = 35000;
-	//int i;
-	//for (i = 0; i < numSprites; ++i){
-	//	spriteListAll[i] = SpriteRenderable(Vector2((-960.0f + (i % 180) * 8), (600.0f - ((i / 180)) * 8)), -200.0f, Vector3(5.0f, 5.0f, 5.0f), 0.0f);
-	//	
-	//	//spritesTemp[i] = SpriteRenderable(Vector3((-960.0f + (i % 180) * 120), (600.0f - ((i / 180)) * 120), -200.0f), Vector3(30.0f, 30.0f, 5.0f));
-	//	if (i % 2 == 0) {
-	//		spriteListAll[i].glTexture = dragonTexture;
-	//		spriteListAll[i].colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	//	}else{
-	//		spriteListAll[i].glTexture = raiderTexture;
-	//		spriteListAll[i].colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	//	}
-
-	//	//spriteListTail++;
-	//	spriteListAllCount++;
-	//	//sprites.push_back(&spritesTemp[i]);
-	//}
-
-	//SpriteRenderable sprite1 = SpriteRenderable(Vector2(0.0f, 0.0f), -200.0f, Vector3(50.0f, 50.0f, 50.0f), 20.0f);
-	//sprite1.colour = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	//sprite1.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"dragon.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	//
-	//spriteListAll[i] = sprite1;
-	//i++;
-	//spriteListAllCount++;
-	////addSprite(&spriteListAll[i]);
-	////addSprite(sprite1);
-	////sprites.push_back(sprite1);
-
-	//SpriteRenderable sprite2 = SpriteRenderable(Vector2(-80.0f, 0.0f), -200.0f, Vector3(20.0f, 20.0f, 50.0f));
-	//sprite2.colour = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-	//sprite2.glTexture = SOIL_load_OGL_texture(TEXTUREDIR"raider.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-	//
-	//spriteListAll[i] = sprite2;
-	//spriteListAllCount++;
-	//i++;
-	
-	//addSprite(&sprite2);
-	//sprites.push_back(sprite2);
 	
 	previousTexture = -1;
 	return true;
@@ -95,7 +42,7 @@ bool SpriteRenderer::Init() {
 
 SpriteRenderer::~SpriteRenderer(){
 	//delete[] spriteListAll;
-	delete spriteList;
+	//delete spriteList;
 }
 
 void SpriteRenderer::RenderScene(){
@@ -109,7 +56,7 @@ void SpriteRenderer::RenderScene(){
 
 	//maybe try and use same shader over frames where
 	//possible
-	glUseProgram(0);
+	//glUseProgram(0);
 	SwapBuffers();
 }
 
@@ -118,8 +65,8 @@ void SpriteRenderer::RenderScene(){
 
 void SpriteRenderer::DrawSprites(){
 	
-	previousTexture = -1;
-	spriteBatchMesh->Begin(0);
+	previousTexture = -2;
+	spriteBatchMesh->Begin(-1);
 	
 	int batchSize = -1;
 
@@ -134,11 +81,14 @@ void SpriteRenderer::DrawSprites(){
 		}
 
 		
-		//if  batch size greater than or equal to min match size than use spritebatch
-		//otherwise just draw em.
+		
 		if (batchingEnabled) {
+			//DrawSpriteSpriteBatch((*it));
+
 			updateBatchSize(it, spriteTail(), batchSize);
 
+			//if  batch size greater than or equal to min batch size than use spritebatch
+			//otherwise just draw em.
 			if (batchSize >= MIN_BATCH_SIZE) {
 				DrawSpriteSpriteBatch((*it));
 			} else {
@@ -151,7 +101,7 @@ void SpriteRenderer::DrawSprites(){
 
 	emptySpriteBatch();
 
-	spriteBatchMesh->Begin(0);
+	spriteBatchMesh->Begin(-1);
 	//loop back to front
 	auto it = spriteTail();
 	while(it != transparentListTail){

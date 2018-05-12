@@ -70,7 +70,7 @@ void EntityContainer::destructAllEntities(TransformManager& transformManager) {
 		entityI->destroy(transformManager);
 		entityI->~EntityInterface();
 
-		entityPool.deallocate(entity);
+		//entityPool.deallocate(entity);
 
 		numEntities--;
 

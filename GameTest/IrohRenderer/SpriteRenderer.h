@@ -3,7 +3,8 @@
  * Implements: SdlRenderer
  * Author:Ed Curran (b5021040)
  * Description: Used to render sprites. Includes some sprite rendering optimisations
- * Takes some ideas from the 2d Renderer used in simulations coursework
+ * like ordering sprites by texture and sprite batching
+ * 
  * 
  */
 
@@ -111,18 +112,6 @@ protected:
 
 	bool batchingEnabled = true;
 
-	//vector<SpriteRenderable*> sprites;
-
-	//vector<SpriteRenderable*> transparentSpriteList;
-	//vector<SpriteRenderable*> opaqueSpriteList;
-
-
-	//SpriteRenderable* spriteListAll;
-	//int spriteListAllCount;
-	
-
-	/*array<SpriteRenderable, MAX_NUM_TRANSPARENT_SPRITES> transparentSpriteList;
-	array<SpriteRenderable, MAX_NUM_OPAQUE_SPRITES> opaqueSpriteList;*/
 
 
 	std::array <SpriteRenderable*, MAX_NUM_SPRITES>::iterator spriteTail(){

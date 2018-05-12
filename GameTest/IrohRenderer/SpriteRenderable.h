@@ -21,10 +21,7 @@ public:
 	float depth;
 	Vector4 colour;
 
-	//maybe create a texture class to abstract this
-	//probably still just a glTexture underneath...
-	//but in case we do something more sophistacted with textures
-	//eg hold in ram
+	//used to ask content manager for a texture
 	int textureId;
 	
 	//only used by renderer, maybe i can make these private and make
