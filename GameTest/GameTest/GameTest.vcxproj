@@ -139,8 +139,10 @@
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="cpptoml.h" />
     <ClInclude Include="FeedbackEngine.h" />
     <ClInclude Include="InputReceiver.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="MessageReceiver.h" />
     <ClInclude Include="MessagingService.h" />
     <ClInclude Include="PhysicsSystem.h" />
