@@ -44,6 +44,7 @@ public:
 	* 
 	*/
 	int loadTexture(string textureName, string filePath);
+	int loadTexture(string textureName);
 	bool getTexture(int textureHandle, Texture& outTexture);
 
 	void free();

@@ -1,27 +1,10 @@
-#include <SDL.h>
+//this needs to be defined on windows otherwise box2d includes
+//windows.h for some reason and max and min macro break cpptoml
+//okay this isn't working for some reason, i've underfined min and max in cpptoml.h
+//instead for now although this isn't ideal
+#define NOMINMAX
 
-#include "Renderer.h"
-#include "RenderObject.h"
-#include <stdio.h>
-#include <iostream>
-#include "../sdlgl/SdlWindow.h"
-#include "../sdlgl/SDLRenderer.h"
-#include "../Input/InputMapper.h"
-#include "../sdlgl/SdlInputMapper.h"
-#include "../sdlgl/SdlInput.h"
-#include "../sdlgl/GameController.h"
-#include "../sdlgl/GameControllerContainer.h"
-#include "../Input/InputManager.h"
-#include "../sdlgl/SdlInputManager.h"
-#include "../IrohRenderer/SpriteRenderer.h"
-#include "../EntityAttempt/EntityInterface.h"
-#include "../sdlgl/SdlDeltaTimer.h"
-#include "../sdlgl/SdlFrameCounter.h"
-#include "../sdlgl/SdlMixer.h"
-#include "AudioManager.h"
-#include "IrohRenderer/RenderSystem.h"
-#include "PhysicsSystem.h"
-#include "TransformManager.h"
+#include <SDL.h>
 #include "FeedbackEngine.h"
 
 #pragma comment (lib, "EntityAttempt.lib")
@@ -30,9 +13,8 @@
 #pragma comment(lib, "sdlgl.lib")
 #pragma comment(lib, "nclgl.lib")
 #pragma comment(lib, "Box2D.lib")
-//#pragma comment(lib, "MemoryManagement.lib")
 
-////Screen dimension constants
+//Screen dimension constants
 const int SCREEN_WIDTH = 1800;
 const int SCREEN_HEIGHT = 1000;
 bool quit = false;
@@ -55,11 +37,7 @@ int main(int argc, char* args[]) {
 	World* world = engine.createWorld();
 	engine.start();
 
-
 	// While application is running
-
-
-	
 	while (!quit) {
 		//Handle events on queue
 		while (SDL_PollEvent(&e) != 0) {

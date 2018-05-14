@@ -1,5 +1,5 @@
 #include "ContentManager.h"
-
+#include <iostream>
 
 
 ContentManager::ContentManager(int numTextures, string directory){
@@ -27,6 +27,19 @@ int ContentManager::loadTexture(string textureName, string filePath){
 		//return texture id, then incremement indexc
 		return textureIndex++;
 	}
+}
+
+int ContentManager::loadTexture(string textureName) {
+	auto it = loadedTextureMap.find(textureName);
+
+	if (loadedTextureMap.find(textureName) != loadedTextureMap.end()) {
+		//look for texture loaded with this name
+		return it->second;
+	}
+
+	//could not find texture with name
+	printf("could not load texture with name: %s, texture not found", textureName.c_str());
+	return -1;
 }
 
 bool ContentManager::getTexture(int textureHandle, Texture& outTexture){

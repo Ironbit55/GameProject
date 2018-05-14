@@ -24,13 +24,6 @@ struct FireProjectileMessageData {
 	Vector2 direction;
 };
 
-struct EntityDef{
-	std::string name;
-	int entityType;
-	std::string textureName;
-	Vector2 position;
-
-};
 
 
 class World : InputReceiver
@@ -41,6 +34,8 @@ public:
 
 
 	void loadLevel(const std::wstring& levelFileName);;
+
+	void loadLevelToml(const std::string& levelFileName);
 
 	void loadContent(ContentManager& contentManager);
 

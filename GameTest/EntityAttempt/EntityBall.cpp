@@ -13,7 +13,7 @@ EntityBall::~EntityBall()
 
 void EntityBall::initialise(ContentManager& contentManager, TransformManager& transformManager, Vector2 position) {
 
-	int ballTextureId = contentManager.loadTexture("ball", "raider.png");
+	int ballTextureId = contentManager.loadTexture("ball");
 
 	Vector2 spriteScale = Vector2(10.0f, 10.0f);
 

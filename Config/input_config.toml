@@ -1,0 +1,72 @@
+title = "input config"
+#name needs to be unique across all input names
+buttons = [
+	{id = 1000, name = "BUTTON_KEY_W"},
+	{id = 1001, name = "BUTTON_KEY_A"},
+	{id = 1002, name = "BUTTON_KEY_S"},
+	{id = 1003, name = "BUTTON_KEY_D"},
+	{id = 1004, name = "BUTTON_KEY_R"},
+	{id = 1005, name = "BUTTON_KEY_M"},
+
+	{id = 1006, name = "BUTTON_KEY_UP"},
+	{id = 1007, name = "BUTTON_KEY_DOWN"},
+	{id = 1008, name = "BUTTON_KEY_LEFT"},
+	{id = 1009, name = "BUTTON_KEY_RIGHT"},
+
+	{id = 1010, name = "BUTTON_KEY_SPACE"},
+
+	{id = 1011, name = "BUTTON_CONTROLLER_A"},
+	{id = 1012, name = "BUTTON_CONTROLLER_B"},
+	{id = 1013, name = "BUTTON_CONTROLLER_X"},
+	{id = 1014, name = "BUTTON_CONTROLLER_Y"},
+	{id = 1015, name = "BUTTON_CONTROLLER_DPAD_UP"},
+	{id = 1016, name = "BUTTON_CONTROLLER_DPAD_DOWN"},
+	{id = 1017, name = "BUTTON_CONTROLLER_DPAD_LEFT"},
+	{id = 1018, name = "BUTTON_CONTROLLER_DPAD_RIGHT"},
+]
+
+axis = [
+	{id = 2002, name = "AXIS_CONTROLLER_LEFTX"},
+	{id = 2003, name = "AXIS_CONTROLLER_LEFTY"},
+]
+
+
+
+
+actions = [
+	{id = 3000, name = "ACTION_JUMP"},
+	{id = 3001, name = "ACTION_CONTROLLER_X"},
+	{id = 3002, name = "ACTION_TOGGLE_MUSIC"},
+	{id = 3003, name = "ACTION_RESET"},
+]
+
+states = [
+	{id = 4000, name = "STATE_CAMERA_MOVE_UP"},
+	{id = 4001, name = "STATE_CAMERA_MOVE_LEFT"},
+	{id = 4002, name = "STATE_CAMERA_MOVE_DOWN"},
+	{id = 4003, name = "STATE_CAMERA_MOVE_RIGHT"},
+
+	{id = 4004, name = "STATE_PLAYER_MOVE_UP"},
+	{id = 4005, name = "STATE_PLAYER_MOVE_LEFT"},
+	{id = 4006, name = "STATE_PLAYER_MOVE_DOWN"},
+	{id = 4007, name = "STATE_PLAYER_MOVE_RIGHT"},
+
+	{id = 4007, name = "STATE_CONTROLLER_A"},
+	{id = 4007, name = "STATE_CONTROLLER_X"},
+]
+
+ranges = [
+	{id = 5000, name = "RANGE_DIRECTION_VERTICAL"},
+	{id = 5001, name = "RANGE_DIRECTION_HORIZONTAL"},
+
+	{id = 5002, name = "RANGE_CONTROLLER_LEFT_X"},
+	{id = 5003, name = "RANGE_CONTROLLER_LEFT_Y"},
+]
+
+#not used atm
+input_actors = [
+	{id = 0, name = "PLAYER1"},
+	{id = 1, name = "PLAYER2"},
+	{id = 2, name = "PLAYER3"},
+	{id = 3, name = "PLAYER4"},
+]

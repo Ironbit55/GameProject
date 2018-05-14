@@ -39,6 +39,9 @@
     <ClInclude Include="DebrisEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntityManager.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DebrisEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,7 +5,7 @@
 void WallEntity::initialise(ContentManager& contentManager, TransformManager& transformManager, Vector2 position,
 	float rotation){
 
-	int wallTextureId = contentManager.loadTexture("wall", "floortile.png");
+	int wallTextureId = contentManager.loadTexture("wall");
 
 	Vector2 spriteScale = Vector2(400.0f, 10.0f);
 

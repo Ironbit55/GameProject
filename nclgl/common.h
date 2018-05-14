@@ -33,8 +33,8 @@ static inline double DegToRad(const double rad)	{
 };
 
 //I blame Microsoft...
-#define max(a,b)    (((a) > (b)) ? (a) : (b))
-#define min(a,b)    (((a) < (b)) ? (a) : (b))
+#define nclgl_max(a,b)    (((a) > (b)) ? (a) : (b))
+#define nclgl_min(a,b)    (((a) < (b)) ? (a) : (b))
 
 #define SHADERDIR	"../../Shaders/"
 #define MESHDIR		"../../Meshes/"

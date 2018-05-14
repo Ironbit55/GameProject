@@ -6,9 +6,9 @@
   then updates subsystems, renders, handles events etc
   provides hooks for World instance to execute on top of the engine
 */
+
 #pragma once
 #include <SDL.h>
-#include <cstdio>
 #include "sdlgl/SdlWindow.h"
 #include "sdlgl/SdlInputManager.h"
 #include "sdlgl/SdlFrameCounter.h"

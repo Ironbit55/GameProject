@@ -7,7 +7,6 @@ Description:Creates and handles the Window, including the initialisation of the 
 #pragma warning( disable : 4099 )
 
 #include <string>
-
 #include <windows.h>
 #include <io.h>
 #include <stdio.h>

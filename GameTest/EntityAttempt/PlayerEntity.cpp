@@ -13,7 +13,7 @@ PlayerEntity::~PlayerEntity() {
 
 void PlayerEntity::initialise(ContentManager& contentManager, TransformManager& transformManager, InputActors inputActor, Vector2 position,
 	float rotation) {
-	int playerTextureId = contentManager.loadTexture("player", "dragon.png");
+	int playerTextureId = contentManager.loadTexture("dragon");
 
 	Vector2 spriteScale = Vector2(20.0f, 20.0f);
 

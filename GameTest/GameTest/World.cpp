@@ -1,6 +1,7 @@
 #include "World.h"
 #include "MessageReceiver.h"
 #include "AudioManager.h"
+#include "EntityAttempt/ConfigUtil.h"
 
 World::~World() {
 	deleteAllListeners();
@@ -72,9 +73,40 @@ void World::loadLevel(const std::wstring& levelFileName) {
 
 }
 
+void World::loadLevelToml(const std::string& levelFileName) {
+	auto config = cpptoml::parse_file(levelFileName);
 
+	auto entityTypeMappings = config->get_table_array("entity");
+	for (const auto& table : *entityTypeMappings) {
+		EntityDef entityDef = entityManager.entityDefFromTOML(*table);
+		entityManager.createEntity(entityDef);
+	}
+}
+
+/*
+ * preload textures according to texture config file
+ * each texture entry contains a file name to load the texture from
+ * and a name to attach to the texture, which can be used ot retrieve it
+ * in the future
+ */
 void World::loadContent(ContentManager& contentManager) {
-	dragonTextureId = contentManager.loadTexture("dragon", "dragon.png");
+	auto config = cpptoml::parse_file(CONFIG_FOLDER_PATH + TEXTURE_CONFIG_FILE);
+
+	auto entityTypeMappings = config->get_table_array("textures");
+
+	//loop through each "texture" entry in config file
+	for (const auto& table : *entityTypeMappings) {
+		const auto name = table->get_as<std::string>("name");
+		const auto file = table->get_as<std::string>("file");
+		if((name && file) && (!name->empty() && !file->empty())){
+			//if entry contains a non empty name and file
+			//then load the texure at file and give it name
+			contentManager.loadTexture(*name, *file);
+		}
+		
+	}
+
+	//dragonTextureId = contentManager.loadTexture("dragon", "dragon.png");
 	//could preload content manager content if we had file to read in
 	//that mapped file path to texture name
 }
@@ -82,12 +114,12 @@ void World::loadContent(ContentManager& contentManager) {
 void World::initialise(){
 	
 	registerInput(INPUT_ACTOR_PLAYER1);
-
 	MessageCallback projectileCallback = std::bind(&World::fireProjectile, this, std::placeholders::_1);
 	addListener(MESSAGE_FIRE_PROJECTILE, projectileCallback);
 
-	
-	loadLevel(L"../../Levels/level1.txt");
+	entityManager.loadConfig("../../config/entity_config.toml");
+	//loadLevel(L"../../Levels/level1.txt");
+	loadLevelToml("../../Levels/testtoml.toml");
 
 	//this is just for fun
 	for (int i = 0; i < numDebris; ++i) {
@@ -98,17 +130,18 @@ void World::initialise(){
 
 	//play music on startup
 	//use m to toggle off
-	MusicMsgData msgData;
-	msgData.command = MusicCommand::COMMAND_PLAY;
-	msgData.music = MUSIC_LEVEL1;
 
-	Message msg;
-	msg.messageType = MESSAGE_AUDIO_MUSIC;
-	msg.timeUntillDispatch = 0;
-	msg.dataPayload = &msgData;
-	msg.dataSize = sizeof(msgData);
+	//MusicMsgData msgData;
+	//msgData.command = MusicCommand::COMMAND_PLAY;
+	//msgData.music = MUSIC_LEVEL1;
 
-	pushMessage(msg);
+	//Message msg;
+	//msg.messageType = MESSAGE_AUDIO_MUSIC;
+	//msg.timeUntillDispatch = 0;
+	//msg.dataPayload = &msgData;
+	//msg.dataSize = sizeof(msgData);
+
+	//pushMessage(msg);
 }
 
 void World::handleInput(InputActors inputActor, MappedInput* mappedInput){

@@ -1,0 +1,52 @@
+title = "TOML test level"
+
+[[entity]]
+name = "wall_left"
+type_id = 0
+position_x = -300.0
+position_y = -300.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+type = "WALL"
+position_x = 100.0
+position_y = -150.0
+rotation = 90.0
+texture = "test"
+
+[[entity]]
+type = "WALL"
+position_x = -700.0
+position_y = -150.0
+rotation = 90.0
+texture = "test"
+
+[[entity]]
+type = "BALL"
+position_x = -400.0
+position_y = 0.0
+# rotation = 0.0
+# texture = "test
+
+[[entity]]
+name = "player1"
+type = "PLAYER"
+player = 0
+position_x = -200.0
+position_y = -150.0
+# rotation = 0.0
+# texture = "test"
+
+[[entity]]
+name = "player2"
+type = "PLAYER"
+player = 1
+position_x = -400.0
+position_y = -150.0
+
+[[entity]]
+type = "DEBRIS"
+number = 100
+
+

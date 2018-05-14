@@ -1,17 +1,33 @@
 #pragma once
+#define NOMINMAX
+
 #include "EntityContainer.h"
 #include "WallEntity.h"
 #include "EntityBall.h"
 #include "DebrisEntity.h"
+#include "../GameTest/cpptoml.h"
 
 enum EntityType
 {
+	ENTITY_INVALID = -1,
 	ENTITY_WALL,
 	ENTITY_BALL,
 	ENTITY_PLAYER,
 	ENTITY_DEBRIS,
 	ENTITY_MAX,
 	
+};
+
+struct EntityDef {
+	std::string name;
+	EntityType entityType;
+	std::string textureName;
+	Vector2 position;
+	float rotation;
+	InputActors inputActor;
+	int number;
+
+
 };
 
 class EntityManager : public EntityContainer
@@ -37,11 +53,20 @@ public:
 	//void createBall(Vector2 position);
 
 	void createEntity(EntityType type, Vector2 position, float rotation = 0.0f) {};
+	void createEntity(EntityDef& entityDef);
+
+	EntityDef entityDefFromTOML(cpptoml::table& entityDefTable);
+
+	void loadConfig(const std::string& configFile);
+
+	EntityType asEntityType(int entityTypeId);
+	EntityType asEntityType(std::string);
 
 
 protected:
 	TransformManager& transformManager;
 	ContentManager& contentManager;
+	std::map<std::string, EntityType> entityTypeMap;
 
 };
 

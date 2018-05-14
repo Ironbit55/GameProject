@@ -40,6 +40,7 @@
  * 
  */
 enum InputActors{
+	INPUT_ACTOR_INVALID = -1,
 	INPUT_ACTOR_PLAYER1,
 	INPUT_ACTOR_PLAYER2,
 	INPUT_ACTOR_PLAYER3,
@@ -66,6 +67,19 @@ class InputManager
 public:
 	InputManager();
 	~InputManager();
+
+	static bool isInputActor(int inputActorId) {
+		return inputActorId >= 0 && inputActorId < INPUT_ACTOR_MAX;
+	}
+	
+	static InputActors asInputActor(int inputActorId) {
+		if(!isInputActor(inputActorId)) {
+			return INPUT_ACTOR_INVALID;
+		}
+
+		return static_cast<InputActors>(inputActorId);
+	}
+
 
 	void loadMappings();
 

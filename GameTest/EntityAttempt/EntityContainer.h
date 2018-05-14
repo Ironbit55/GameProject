@@ -59,6 +59,17 @@ protected:
 
 	EntityInterface* addEntity(int size);
 
+	template <typename EntityType>
+	EntityType addEntity() {
+		EntityInterface* entity = addEntity(sizeof(EntityType));
+		if (entity == nullptr) {
+			return nullptr;
+		}
+		EntityType* entityPtr = reinterpret_cast<EntityType*>(entity);
+		new(entityPtr) EntityType();
+		return entityPtr;
+	}
+
 	void deleteEntities(TransformManager& transformManager);
 
 	void destructAllEntities(TransformManager& transformManager);

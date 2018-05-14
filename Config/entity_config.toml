@@ -1,0 +1,28 @@
+title = "level config"
+
+#maps EntityType enum to a string which
+#can be used by level loader
+# [[entity_type]]
+# id = 0
+# name = "WALL"
+
+# [[entity_type]]
+# id = 1
+# name = "BALL"
+
+# [[entity_type]]
+# id = 2
+# name = "PLAYER"
+
+# [[entity_type]]
+# id = 3
+# name = "DEBRIS"
+
+entity_type = [
+
+	{id = 0, name = "WALL"},
+	{id = 1, name = "BALL"},
+	{id = 2, name = "PLAYER"},
+	{id = 3, name = "DEBRIS"},
+
+]

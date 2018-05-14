@@ -1,0 +1,8 @@
+title = "texture config"
+
+textureDir = "../../Textures/" #this doesn't actually do anything right now
+textures = [
+	{name = "dragon", file = "dragon.png"},
+	{name = "wall", file = "floortile.png"},
+	{name = "ball", file = "raider.png"}
+]

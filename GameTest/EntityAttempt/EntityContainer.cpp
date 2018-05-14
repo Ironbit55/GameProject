@@ -47,6 +47,8 @@ EntityInterface* EntityContainer::addEntity(int size) {
 	return entityDest;
 }
 
+
+
 void EntityContainer::deleteEntities(TransformManager& transformManager) {
 	//should really sort entities by address before deleting them
 	//this is because of the wierd way deallocation works in my memory pool

@@ -1,0 +1,86 @@
+title = "input mapping"
+
+[[input_actors]]
+actor = "PLAYER1"
+actor_id = 0
+contexts = [
+	"default.contexts.keyboard",
+	"default.contexts.keyboard_game",
+	"default.contexts.gamepad",
+]
+
+[[input_actors]]
+actor = "PLAYER2"
+actor_id = 1
+contexts = [
+	"default.contexts.gamepad",
+]
+
+
+
+
+# shortcut for:
+# [default]
+#   [contexts]
+#     [contexts.keyboard]
+#     [contexts.gamepad]
+# [player1]
+#   [contexts]
+#     [contexts.keyboard]
+#     [contexts.gamepad]
+
+[default.contexts.keyboard]
+name = "keyboard"
+mappings = [
+	{raw = "BUTTON_KEY_M", cooked = "ACTION_TOGGLE_MUSIC"},
+	{raw = "BUTTON_KEY_R", cooked = "ACTION_RESET"},
+
+	{raw = "BUTTON_KEY_W", cooked = "STATE_CAMERA_MOVE_UP"},
+	{raw = "BUTTON_KEY_A", cooked = "STATE_CAMERA_MOVE_LEFT"},
+	{raw = "BUTTON_KEY_S", cooked = "STATE_CAMERA_MOVE_DOWN"},
+	{raw = "BUTTON_KEY_D", cooked = "STATE_CAMERA_MOVE_RIGHT"},
+]
+
+[default.contexts.keyboard_game]
+name = "keyboard_game"
+mappings = [
+	{raw = "BUTTON_KEY_SPACE", cooked = "ACTION_JUMP"},
+
+	{raw = "BUTTON_KEY_UP", cooked = "STATE_PLAYER_MOVE_UP"},
+	{raw = "BUTTON_KEY_DOWN", cooked = "STATE_PLAYER_MOVE_DOWN"},
+	{raw = "BUTTON_KEY_LEFT", cooked = "STATE_PLAYER_MOVE_LEFT"},
+	{raw = "BUTTON_KEY_RIGHT", cooked = "STATE_PLAYER_MOVE_RIGHT"},
+]
+
+[default.contexts.gamepad]
+name = "gamepad"
+deadzone = 0.1
+mappings = [
+	{raw = "BUTTON_CONTROLLER_A", cooked = "ACTION_JUMP"},
+
+	{raw = "BUTTON_CONTROLLER_DPAD_UP", cooked = "STATE_PLAYER_MOVE_UP"},
+	{raw = "BUTTON_CONTROLLER_DPAD_DOWN", cooked = "STATE_PLAYER_MOVE_DOWN"},
+	{raw = "BUTTON_CONTROLLER_DPAD_LEFT", cooked = "STATE_PLAYER_MOVE_LEFT"},
+	{raw = "BUTTON_CONTROLLER_DPAD_RIGHT", cooked = "STATE_PLAYER_MOVE_RIGHT"},
+
+	{raw = "AXIS_CONTROLLER_LEFTX", cooked = "RANGE_CONTROLLER_LEFT_X"},
+	{raw = "AXIS_CONTROLLER_LEFTY", cooked = "RANGE_CONTROLLER_LEFT_Y"},
+]
+
+
+
+
+
+#should be rebindable
+#won't get round to doing this untill after the coursework is due :/
+[player1.contexts.keyboard]
+name = "keyboard"
+mappings = [
+]
+
+[player1.contexts.gamepad]
+name = "gamepad"
+mappings = [
+]
+
+
