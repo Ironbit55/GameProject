@@ -6,9 +6,12 @@ PhysicsSystem::PhysicsSystem() : fixedTimestepAccumulatorRatio(0), fixedTimestep
 	b2Vec2 gravity(0.0f, -9.81);
 	world = new b2World(gravity);
 
+	world->SetContactListener(&contactListener);
+
 	//we want to handle this manually to clear once per frame
 	//not once per step as it would automatically
 	world->SetAutoClearForces(false);
+	world->SetAllowSleeping(true);
 }
 
 
@@ -138,7 +141,7 @@ void PhysicsSystem::updateTransforms(){
 }
 
 
-PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2BodyDef& bodyDef, b2FixtureDef& fixtureDef){
+PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2BodyDef& bodyDef){
 	if(transform == nullptr){
 		//can't create physics component without transform
 		return nullptr;
@@ -153,7 +156,7 @@ PhysicsComponent* PhysicsSystem::createComponent(SimpleTransform* transform, b2B
 	bodyDef.position = scaleVec2(transform->getOrigin());
 	bodyDef.angle = DegToRad(transform->rotation);
 	component->body = world->CreateBody(&bodyDef);
-	component->body->CreateFixture(&fixtureDef);
+	//component->body->CreateFixture(&fixtureDef);
 	component->transform = transform;
 
 	return component;
@@ -179,7 +182,10 @@ PhysicsComponent* PhysicsSystem::createComponentBox(SimpleTransform* transform, 
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
 
-	return createComponent(transform, bodyDef, fixtureDef);
+	PhysicsComponent* p = createComponent(transform, bodyDef);
+	p->body->CreateFixture(&fixtureDef);
+	return p;
+	//return createComponent(transform, bodyDef, fixtureDef);
 }
 
 PhysicsComponent* PhysicsSystem::createComponentCircle(SimpleTransform* transform, float radius){
@@ -199,7 +205,12 @@ PhysicsComponent* PhysicsSystem::createComponentCircle(SimpleTransform* transfor
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
 
-	return createComponent(transform, bodyDef, fixtureDef);
+	PhysicsComponent* p = createComponent(transform, bodyDef);
+	p->body->CreateFixture(&fixtureDef);
+
+	return p;
+
+	//return createComponent(transform, bodyDef, fixtureDef);
 }
 
 void PhysicsSystem::deleteComponent(PhysicsComponent* component){

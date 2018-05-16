@@ -18,7 +18,7 @@ const int DELETE_LIST_MAX = 40;
 const int MAX_NUM_ENTITIES = 2000;
 //this only needs to be so big because some entities inherit from MessageReciever which is pretty big
 //because it has an std::map
-const int ENTITY_SIZE_BYTES = 160;
+const int ENTITY_SIZE_BYTES = 256;
 
 typedef unsigned char entitysize_t[ENTITY_SIZE_BYTES];
 
@@ -39,7 +39,7 @@ public:
 		entityDeleteListCount++;
 	}
 
-	void update();
+	void update(float msec);
 
 	//void loadContent(ContentManager& contentManager);
 

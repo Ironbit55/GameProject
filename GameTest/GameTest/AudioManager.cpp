@@ -7,6 +7,7 @@ LookupEffectFile effectLookup[] =
 {
 	{EFFECT_JUMP, "Jump.wav"},
 	{EFFECT_BOUNCE, "placeholder_bounce.wav" },
+	{EFFECT_YAY, "gruntyay.mp3" },
 	{EFFECT_MAX, ""},
 };
 

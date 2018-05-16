@@ -1,11 +1,14 @@
 #include "EntityManager.h"
 #include "PlayerEntity.h"
+#include "GoalEntity.h"
+#include "GameRefereeEntity.h"
+#include "BallSpawnerEntity.h"
 
 EntityManager::~EntityManager() {
 	destructAllEntities(transformManager);
 }
 
-EntityInterface* EntityManager::createWall(Vector2 position, float rotation) {
+EntityInterface* EntityManager::createWall(EntityDef entityDef) {
 	
 	EntityInterface* entity = addEntity(sizeof(WallEntity));
 	if(entity == nullptr){
@@ -24,7 +27,7 @@ EntityInterface* EntityManager::createWall(Vector2 position, float rotation) {
 	//i think everything may be out of allignment so everything will probably break horribly at some point
 	//the memory pool handles out allignement but only for the object type you initialse it with...
 	new(wallPtr) WallEntity();
-	wallPtr->initialise(contentManager, transformManager, position, rotation);
+	wallPtr->initialise(contentManager, transformManager, entityDef);
 	
 
 	return entity;
@@ -50,7 +53,49 @@ EntityInterface* EntityManager::createPlayer(InputActors inputActor, Vector2 pos
 	return entity;
 }
 
-EntityBall* EntityManager::createBall(Vector2 position) {
+EntityInterface* EntityManager::createGoal(EntityDef entityDef) {
+	EntityInterface* entity = addEntity(sizeof(PlayerEntity));
+	if (entity == nullptr) {
+		return nullptr;
+	}
+
+	GoalEntity* goalPtr = reinterpret_cast<GoalEntity*>(entity);
+	new(goalPtr) GoalEntity();
+	goalPtr->initialise(contentManager, transformManager, entityDef);
+
+
+	return entity;
+}
+
+EntityInterface* EntityManager::createGameReferee(EntityDef entityDef) {
+	EntityInterface* entity = addEntity(sizeof(GameRefereeEntity));
+	if (entity == nullptr) {
+		return nullptr;
+	}
+
+	GameRefereeEntity* refereePtr = reinterpret_cast<GameRefereeEntity*>(entity);
+	new(refereePtr) GameRefereeEntity();
+	refereePtr->initialise(contentManager, transformManager, entityDef);
+
+
+	return entity;
+}
+
+EntityInterface* EntityManager::createBallSpawner(EntityDef entityDef) {
+	EntityInterface* entity = addEntity(sizeof(BallSpawnerEntity));
+	if (entity == nullptr) {
+		return nullptr;
+	}
+
+	BallSpawnerEntity* refereePtr = reinterpret_cast<BallSpawnerEntity*>(entity);
+	new(refereePtr) BallSpawnerEntity();
+	refereePtr->initialise(contentManager, transformManager, entityDef);
+
+
+	return entity;
+}
+
+EntityBall* EntityManager::createBall(EntityDef entityDef) {
 	EntityInterface* entity = addEntity(sizeof(PlayerEntity));
 	if (entity == nullptr) {
 		return nullptr;
@@ -58,19 +103,22 @@ EntityBall* EntityManager::createBall(Vector2 position) {
 
 	EntityBall* ballPtr = reinterpret_cast<EntityBall*>(entity);
 	new(ballPtr) EntityBall();
-	ballPtr->initialise(contentManager, transformManager, position);
+	ballPtr->initialise(contentManager, transformManager, entityDef);
 
 	return ballPtr;
 
 }
 
-EntityBall* EntityManager::createProjectile(Vector2 position, Vector2 launchDirection) {
-	EntityBall* entity = createBall(position);
+EntityBall* EntityManager::createProjectile(Vector2 position, Vector2 launchDirection, float magnitude, InputActors playerIndex) {
+	EntityDef entityDef;
+	entityDef.position = position;
+	entityDef.inputActor = playerIndex;
+	EntityBall* entity = createBall(entityDef);
 	if (entity == nullptr) {
 		return nullptr;
 	}
 
-	entity->launch(launchDirection);
+	entity->launch(launchDirection, magnitude);
 	return entity;
 
 }
@@ -92,7 +140,7 @@ DebrisEntity* EntityManager::createDebris(Vector2 position, Vector4 colour) {
 void EntityManager::createEntity(EntityDef& entityDef) {
 	switch (entityDef.entityType){
 	case ENTITY_WALL: {
-		createWall(entityDef.position, entityDef.rotation);
+		createWall(entityDef);
 		break;
 	}
 
@@ -102,7 +150,7 @@ void EntityManager::createEntity(EntityDef& entityDef) {
 	}
 
 	case ENTITY_BALL: {
-		createBall(entityDef.position);
+		createBall(entityDef);
 		break;
 	}
 	case ENTITY_DEBRIS: {
@@ -111,6 +159,14 @@ void EntityManager::createEntity(EntityDef& entityDef) {
 			Vector2 position = Vector2((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8));
 			createDebris(position, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 		}
+		break;
+	}
+	case ENTITY_GOAL: {
+		createGoal(entityDef);
+		break;
+	}
+	case ENTITY_BALL_SPAWNER: {
+		createBallSpawner(entityDef);
 		break;
 	}
 	default:
@@ -132,6 +188,8 @@ EntityDef EntityManager::entityDefFromTOML(cpptoml::table& entityDefTable) {
 
 	entityDef.position.x = entityDefTable.get_as<double>("position_x").value_or(0);
 	entityDef.position.y = entityDefTable.get_as<double>("position_y").value_or(0);
+	entityDef.scale.x = entityDefTable.get_as<double>("scale_x").value_or(100.0f);
+	entityDef.scale.y = entityDefTable.get_as<double>("scale_y").value_or(100.0f);
 	entityDef.rotation = entityDefTable.get_as<double>("rotation").value_or(0);
 	int inputActorId = entityDefTable.get_as<int>("player").value_or(-1);
 	if (InputManager::isInputActor(inputActorId)) {
@@ -145,6 +203,8 @@ EntityDef EntityManager::entityDefFromTOML(cpptoml::table& entityDefTable) {
 		entityDef.inputActor = InputActors::INPUT_ACTOR_INVALID;
 	}
 	entityDef.number = entityDefTable.get_as<int>("number").value_or(0);
+	entityDef.textureName = entityDefTable.get_as<std::string>("texture").value_or("");
+	entityDef.spawn = entityDefTable.get_as<bool>("spawn").value_or(false);
 	return entityDef;
 }
 
@@ -187,4 +247,16 @@ EntityType EntityManager::asEntityType(std::string typeName) {
 	}
 
 	return asEntityType(it->second);
+}
+
+void EntityManager::onReceiveMessage(Message& msg) {
+	switch(msg.messageType)
+	{
+		case MESSAGE_CREATE_ENTITY: {
+			CreateEntityMsgData* data = static_cast<CreateEntityMsgData*>(msg.dataPayload);
+			createEntity(data->entityDef);
+		}
+		default:
+			break;
+	}
 }

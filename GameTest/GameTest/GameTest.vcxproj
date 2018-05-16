@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
+    <ClCompile Include="EntityContactListener.cpp" />
     <ClCompile Include="FeedbackEngine.cpp" />
     <ClCompile Include="InputReceiver.cpp" />
     <ClCompile Include="main.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="cpptoml.h" />
+    <ClInclude Include="EntityContactListener.h" />
     <ClInclude Include="FeedbackEngine.h" />
     <ClInclude Include="InputReceiver.h" />
     <ClInclude Include="json.hpp" />

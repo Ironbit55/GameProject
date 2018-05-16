@@ -1,8 +1,10 @@
 title = "texture config"
 
 textureDir = "../../Textures/" #this doesn't actually do anything right now
+
 textures = [
-	{name = "dragon", file = "dragon.png"},
+	{name = "dragon", file = "block.png"},
 	{name = "wall", file = "floortile.png"},
-	{name = "ball", file = "raider.png"}
+	{name = "ball", file = "ball.png"},
+	{name = "circle_white", file = "circle_filled.png"},
 ]

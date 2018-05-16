@@ -41,14 +41,14 @@ public:
 	//should return id
 	SimpleTransform* createTransform(SimpleTransform& trasform);
 	
-	PhysicsComponent* attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body, b2FixtureDef& fixtureDef);
+	PhysicsComponent* attachPhysicsComponent(SimpleTransform* objectTransform, b2BodyDef& body);
 	RenderComponent* attachRenderComponent(SimpleTransform* objectTransform, SpriteRenderable& renderable);
 
 	
 
 	void destroyTransform(SimpleTransform* transform);
 
-	void destroyRigidBody(PhysicsComponent* rigidBody);
+	void destroyPhysicsComponent(PhysicsComponent* rigidBody);
 
 	void destroyRenderComponent(RenderComponent* r);
 	

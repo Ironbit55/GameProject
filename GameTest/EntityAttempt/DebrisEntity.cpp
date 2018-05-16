@@ -1,5 +1,5 @@
 #include "DebrisEntity.h"
-
+#include "EntityManager.h"
 
 
 DebrisEntity::DebrisEntity()
@@ -27,9 +27,13 @@ void DebrisEntity::initialise(ContentManager & contentManager, TransformManager 
 
 void DebrisEntity::destroy(TransformManager & transformManager) {
 	transformManager.destroyRenderComponent(renderComponent);
-	transformManager.destroyRigidBody(physicsComponent);
+	transformManager.destroyPhysicsComponent(physicsComponent);
 	transformManager.destroyTransform(transform);
 }
 
-void DebrisEntity::update(EntityContainer & entityManager) {
+void DebrisEntity::update(float msec, EntityContainer & entityManager) {
+}
+
+EntityType DebrisEntity::getEntityType() {
+	return ENTITY_DEBRIS;
 }

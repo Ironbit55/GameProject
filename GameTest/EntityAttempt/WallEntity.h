@@ -1,26 +1,30 @@
 #pragma once
-#include "EntityInterface.h"
-#include "GameTest/InputReceiver.h"
 
-class WallEntity : public EntityInterface {
+#include "GameTest/InputReceiver.h"
+#include "PhysicsEntity.h"
+
+class WallEntity : public PhysicsEntity{
 public:
 	WallEntity() {};
 	~WallEntity() {};
 
 	//void loadContent(ContentManager contentManager) override;
 
-	void initialise(ContentManager& contentManager, TransformManager &transformManager, Vector2 position = Vector2(), float rotation = 0);
+	void initialise(ContentManager& contentManager, TransformManager &transformManager, EntityDef entityDef);
 
-	void destroy(TransformManager& transformManager) override;
 
-	void update(EntityContainer& entityManager) override;
+	void update(float msec, EntityContainer& entityManager) override;
 
 	void updateDraw() override;
 
+	EntityType getEntityType() override;
+
+
+	bool acceptsContacts() override;
+	void onContactBegin(const ContactData& data) override;
+	void onContactEnd(const ContactData& data) override;
 private:
-	SimpleTransform* transform;
-	RenderComponent* renderComponent;
-	PhysicsComponent* physicsComponent;
+
 
 
 };

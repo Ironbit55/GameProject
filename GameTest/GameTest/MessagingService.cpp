@@ -120,41 +120,33 @@ void MessagingService::dispatchMessage(Message& msg){
 void MessagingService::dispatchMessages(){
 	//sorted so smallest dispatch time at end of array
 	std::sort(messageQueue.begin(), messageQueue.begin() + numMessages, cmpMsg);
-	int dispatchListCount = numMessages;
+	int dispatchListCount = 0;
 
 	//need to create a buffer of messages to dispatch so that callbacks triggered
 	//by messages can add messages to the queue without disrupting the dispatch
 
-	// work from tail of queue to head
-	for (int i = numMessages - 1; i >= 0; --i) {
-		if (messageQueue[i].timeUntillDispatch > 0) {
+	for (int i = 0; i < numMessages; ++i){
+		if(messageQueue[i].timeUntillDispatch < 0 + FLT_EPSILON){
+			//copy messages to dispath into dispatch buffer
+			//this is from o to max
+			messageDispatchBuffer[i] = messageQueue[i];
+
+			//delete / deallocate the message from queue
+			//this isn't actually neccesary as message will get ovverriten below
+			messageQueue[i] = Message();
+			dispatchListCount++;
+		}else{
 			//as array is sorted when we hit a time untill dispatch greater than 0
 			//we know msgs further down are also going to be greater than 0
 			//so don't bother searching any further
-			dispatchListCount = i;
-			continue;
+			break;
 		}
-
-		//copy messages to dispath into dispatch buffer
-		//this is from o to max
-		messageDispatchBuffer[numMessages - 1 - i] = messageQueue[i];
-
-		//delete / deallocate the message from queue
-		//empty message
-		messageQueue[i] = Message();
 	}
-	numMessages -= dispatchListCount;
-	
 	
 	//go through copy of queue and dispatch messages
 	//new messages can be added to the main queue during this with no problems
 	for (int i = 0; i < dispatchListCount; ++i){
-		if(messageDispatchBuffer[i].timeUntillDispatch > 0){
-			//as array is sorted when we hit a time untill dispatch greater than 0
-			//we know msgs further down are also going to be greater than 0
-			//so don't bother searching any further
-			continue;
-		}
+
 		if (messageDispatchBuffer[i].messageType != MESSAGE_EMPTY) {
 			dispatchMessage(messageDispatchBuffer[i]);
 
@@ -164,10 +156,23 @@ void MessagingService::dispatchMessages(){
 			}
 		}
 	}
+
+
+	//move undispatched messages to front of queue
+	//this ovverites the dispatched messages
+	for (int i = dispatchListCount; i < numMessages; ++i){
+		messageQueue[i - dispatchListCount] = messageQueue[i];
+	}
+
+	//we have less messages as we dispatched some
+	numMessages -= dispatchListCount;
 }
 
 void MessagingService::update(float msec){
-	for (int i = numMessages; i > 0; --i) {
+	for (int i = 0; i < numMessages; ++i){
 		messageQueue[i].timeUntillDispatch -= msec;
 	}
+	//for (int i = numMessages; i > 0; --i) {
+	//	messageQueue[i].timeUntillDispatch -= msec;
+	//}
 }

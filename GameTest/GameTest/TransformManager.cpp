@@ -15,9 +15,8 @@ SimpleTransform* TransformManager::createTransform(SimpleTransform& transform){
 	return t;
 }
 
-PhysicsComponent* TransformManager::attachRigidBody(SimpleTransform* objectTransform, b2BodyDef& body,
-	b2FixtureDef& fixtureDef) {
-	PhysicsComponent* p = physicsSystem.createComponent(objectTransform, body, fixtureDef);
+PhysicsComponent* TransformManager::attachPhysicsComponent(SimpleTransform* objectTransform, b2BodyDef& body) {
+	PhysicsComponent* p = physicsSystem.createComponent(objectTransform, body);
 	p->transform = objectTransform;
 
 	return p;
@@ -32,14 +31,23 @@ RenderComponent* TransformManager::attachRenderComponent(SimpleTransform* object
 
 
 void TransformManager::destroyTransform(SimpleTransform* transform){
+	if (transform ==  nullptr) {
+		return;
+	}
 	transformPool.deallocate(transform);
 }
 
-void TransformManager::destroyRigidBody(PhysicsComponent* p){
+void TransformManager::destroyPhysicsComponent(PhysicsComponent* p){
+	if(p == nullptr){
+		return;
+	}
 	physicsSystem.deleteComponent(p);
 }
 
 void TransformManager::destroyRenderComponent(RenderComponent* r){
+	if (r == nullptr) {
+		return;
+	}
 	renderSystem.deleteRenderComponent(r);
 }
 

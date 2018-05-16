@@ -1,40 +1,182 @@
 title = "TOML test level"
 
 [[entity]]
-name = "wall_left"
+name = "middle_left"
 type_id = 0
-position_x = -300.0
-position_y = -300.0
+position_x = -100.0
+position_y = -100.0
+scale_x = 50.0
+scale_y = 8.0
 rotation = 0.0
 texture = "test"
 
 [[entity]]
-type = "WALL"
+name = "middle_right"
+type_id = 0
 position_x = 100.0
-position_y = -150.0
-rotation = 90.0
+position_y = -100.0
+scale_x = 50.0
+scale_y = 8.0
+rotation = 0.0
 texture = "test"
 
 [[entity]]
-type = "WALL"
-position_x = -700.0
-position_y = -150.0
-rotation = 90.0
+name = "wall_bottom"
+type_id = 0
+position_x = 0.0
+position_y = -400.0
+scale_x = 230.0
+scale_y = 8.0
+rotation = 0.0
 texture = "test"
 
 [[entity]]
-type = "BALL"
-position_x = -400.0
-position_y = 0.0
-# rotation = 0.0
-# texture = "test
+name = "wall_bottom_up_left"
+type_id = 0
+position_x = -200.0
+position_y = -250.0
+scale_x = 50.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_bottom_up_right"
+type_id = 0
+position_x = 200.0
+position_y = -250.0
+scale_x = 50.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_bottom_middle_vertical"
+type_id = 0
+position_x = 0.0
+position_y = -260.0
+scale_x = 40.0
+scale_y = 8.0
+rotation = 90.0
+texture = "test"
+
+
+[[entity]]
+name = "wall_top_middle_horizontal"
+type_id = 0
+position_x = 0.0
+position_y = 50.0
+scale_x = 40.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+
+[[entity]]
+name = "wall_top_upper_left"
+type_id = 0
+position_x = -300.0
+position_y = 180.0
+scale_x = 30.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_top_upper_left_middle"
+type_id = 0
+position_x = -200.0
+position_y = 180.0
+scale_x = 30.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_top_upper_right_middle"
+type_id = 0
+position_x = 200.0
+position_y = 180.0
+scale_x = 30.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_top_upper_right"
+type_id = 0
+position_x = 300.0
+position_y = 180.0
+scale_x = 30.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+
+
+
+[[entity]]
+name = "wall_top_top_left"
+type_id = 0
+position_x = -100.0
+position_y = 350.0
+scale_x = 40.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+[[entity]]
+name = "wall_top_top_right"
+type_id = 0
+position_x = 100.0
+position_y = 350.0
+scale_x = 40.0
+scale_y = 8.0
+rotation = 0.0
+texture = "test"
+
+
+# [[entity]]
+# type = "WALL"
+# position_x = 100.0
+# position_y = -150.0
+# rotation = 90.0
+# texture = "test"
+
+# [[entity]]
+# type = "WALL"
+# position_x = -700.0
+# position_y = -150.0
+# rotation = 90.0
+# texture = "test"
+
+
+
+[[entity]]
+name = "ball_player1"
+player = 0
+type = "BALL_SPAWNER"
+position_x = -200.0
+position_y = -390.0
+rotation = 0.0
+spawn = true
+
+[[entity]]
+name = "ball_player2"
+player = 1
+type = "BALL_SPAWNER"
+position_x = 200.0
+position_y = -390.0
+rotation = 0.0
+spawn = true
+
 
 [[entity]]
 name = "player1"
 type = "PLAYER"
 player = 0
-position_x = -200.0
-position_y = -150.0
+position_x = 50.0
+position_y = 150.0
 # rotation = 0.0
 # texture = "test"
 
@@ -42,11 +184,32 @@ position_y = -150.0
 name = "player2"
 type = "PLAYER"
 player = 1
-position_x = -400.0
-position_y = -150.0
+position_x = -50.0
+position_y = 150.0
+
+# [[entity]]
+# type = "DEBRIS"
+# number = 100
 
 [[entity]]
-type = "DEBRIS"
-number = 100
+name = "goal1"
+type = "GOAL"
+texture = "circle_white"
+player = 0
+position_x = -800.0
+position_y = 0.0
+scale_x = 60.0
+scale_y = 60.0
+rotation = 0.0
 
+[[entity]]
+name = "goal2"
+type = "GOAL"
+texture = "circle_white"
+player = 1
+position_x = 800.0
+position_y = 0.0
+scale_x = 60.0
+scale_y = 60.0
+rotation = 0.0
 

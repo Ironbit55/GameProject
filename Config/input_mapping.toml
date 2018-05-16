@@ -57,8 +57,8 @@ name = "gamepad"
 deadzone = 0.1
 mappings = [
 	{raw = "BUTTON_CONTROLLER_A", cooked = "ACTION_JUMP"},
-
-	{raw = "BUTTON_CONTROLLER_DPAD_UP", cooked = "STATE_PLAYER_MOVE_UP"},
+	{raw = "BUTTON_CONTROLLER_DPAD_UP", cooked = "ACTION_CONTROLLER_X"},
+	#{raw = "BUTTON_CONTROLLER_DPAD_UP", cooked = "STATE_PLAYER_MOVE_UP"},
 	{raw = "BUTTON_CONTROLLER_DPAD_DOWN", cooked = "STATE_PLAYER_MOVE_DOWN"},
 	{raw = "BUTTON_CONTROLLER_DPAD_LEFT", cooked = "STATE_PLAYER_MOVE_LEFT"},
 	{raw = "BUTTON_CONTROLLER_DPAD_RIGHT", cooked = "STATE_PLAYER_MOVE_RIGHT"},

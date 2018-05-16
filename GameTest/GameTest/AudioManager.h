@@ -17,6 +17,7 @@
 enum SoundEffect {
 	EFFECT_JUMP,
 	EFFECT_BOUNCE,
+	EFFECT_YAY,
 	EFFECT_MAX,
 };
 

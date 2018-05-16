@@ -11,67 +11,67 @@ World::~World() {
  * veeery simple level loader,
  * theres only 3 entities to pick from
  */
-void World::loadLevel(const std::wstring& levelFileName) {
-	std::wifstream infile(levelFileName.c_str());
-	unsigned numEntities = attemptRead<unsigned>(infile);
-
-	for (int i = 0; i < numEntities; ++i){
-		unsigned entityTypeId = attemptRead<unsigned>(infile);
-		if(entityTypeId >= EntityType::ENTITY_MAX){
-			printf("could not load entity, entity with id: %i does not exist", entityTypeId);
-			return;
-		}
-		EntityType entityType = static_cast<EntityType>(entityTypeId);
-
-		float positionX;
-		float positionY;
-		float rotation = 0.0f;
-
-		switch(entityType) {
-			case ENTITY_WALL:
-			{
-				positionX = attemptRead<float>(infile);
-				positionY = attemptRead<float>(infile);
-				rotation = attemptRead<float>(infile);
-				entityManager.createWall(Vector2(positionX, positionY), rotation);
-				break;
-			}
-
-			case ENTITY_PLAYER:
-			{
-				unsigned inputActorId = attemptRead<unsigned>(infile);
-				if (inputActorId >= INPUT_ACTOR_MAX) {
-					printf("could not load player entity, player actor with id: %i does not exist", inputActorId);
-					return;
-				}
-
-				InputActors inputActor = static_cast<InputActors>(inputActorId);
-				positionX = attemptRead<float>(infile);
-				positionY = attemptRead<float>(infile);
-				entityManager.createPlayer(inputActor, Vector2(positionX, positionY));
-				break;
-			}
-
-			case ENTITY_BALL:
-			{
-				positionX = attemptRead<float>(infile);
-				positionY = attemptRead<float>(infile);
-				entityManager.createBall(Vector2(positionX, positionY));
-				break;
-			}
-			case ENTITY_DEBRIS: 
-			{
-				numDebris = attemptRead<int>(infile);
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	
-
-
-}
+//void World::loadLevel(const std::wstring& levelFileName) {
+//	std::wifstream infile(levelFileName.c_str());
+//	unsigned numEntities = attemptRead<unsigned>(infile);
+//
+//	for (int i = 0; i < numEntities; ++i){
+//		unsigned entityTypeId = attemptRead<unsigned>(infile);
+//		if(entityTypeId >= EntityType::ENTITY_MAX){
+//			printf("could not load entity, entity with id: %i does not exist", entityTypeId);
+//			return;
+//		}
+//		EntityType entityType = static_cast<EntityType>(entityTypeId);
+//
+//		float positionX;
+//		float positionY;
+//		float rotation = 0.0f;
+//
+//		switch(entityType) {
+//			case ENTITY_WALL:
+//			{
+//				positionX = attemptRead<float>(infile);
+//				positionY = attemptRead<float>(infile);
+//				rotation = attemptRead<float>(infile);
+//				entityManager.createWall(Vector2(positionX, positionY), rotation);
+//				break;
+//			}
+//
+//			case ENTITY_PLAYER:
+//			{
+//				unsigned inputActorId = attemptRead<unsigned>(infile);
+//				if (inputActorId >= INPUT_ACTOR_MAX) {
+//					printf("could not load player entity, player actor with id: %i does not exist", inputActorId);
+//					return;
+//				}
+//
+//				InputActors inputActor = static_cast<InputActors>(inputActorId);
+//				positionX = attemptRead<float>(infile);
+//				positionY = attemptRead<float>(infile);
+//				entityManager.createPlayer(inputActor, Vector2(positionX, positionY));
+//				break;
+//			}
+//
+//			case ENTITY_BALL:
+//			{
+//				positionX = attemptRead<float>(infile);
+//				positionY = attemptRead<float>(infile);
+//				entityManager.createBall(Vector2(positionX, positionY));
+//				break;
+//			}
+//			case ENTITY_DEBRIS: 
+//			{
+//				numDebris = attemptRead<int>(infile);
+//				break;
+//			}
+//			default:
+//				break;
+//		}
+//	}
+//	
+//
+//
+//}
 
 void World::loadLevelToml(const std::string& levelFileName) {
 	auto config = cpptoml::parse_file(levelFileName);
@@ -126,22 +126,22 @@ void World::initialise(){
 		Vector2 position = Vector2((-800.0f + (i % 120) * 8), (600.0f - ((i / 180)) * 8));
 		entityManager.createDebris(position, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	}
-
-
+	EntityDef dummyDef;
+	EntityInterface* referee = entityManager.createGameReferee(dummyDef);
 	//play music on startup
 	//use m to toggle off
 
-	//MusicMsgData msgData;
-	//msgData.command = MusicCommand::COMMAND_PLAY;
-	//msgData.music = MUSIC_LEVEL1;
+	MusicMsgData msgData;
+	msgData.command = MusicCommand::COMMAND_PLAY;
+	msgData.music = MUSIC_LEVEL1;
 
-	//Message msg;
-	//msg.messageType = MESSAGE_AUDIO_MUSIC;
-	//msg.timeUntillDispatch = 0;
-	//msg.dataPayload = &msgData;
-	//msg.dataSize = sizeof(msgData);
+	Message msg;
+	msg.messageType = MESSAGE_AUDIO_MUSIC;
+	msg.timeUntillDispatch = 0;
+	msg.dataPayload = &msgData;
+	msg.dataSize = sizeof(msgData);
 
-	//pushMessage(msg);
+	pushMessage(msg);
 }
 
 void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
@@ -157,11 +157,18 @@ void World::handleInput(InputActors inputActor, MappedInput* mappedInput){
 
 void World::fireProjectile(Message msg) {
 	FireProjectileMessageData* data = static_cast<FireProjectileMessageData*>(msg.dataPayload);
-	entityManager.createProjectile(data->position, data->direction);
+	EntityBall* ball = entityManager.createProjectile(data->position, data->direction, data->magnitude, data->originalOwnerPlayer);
+	ball->setTouchedByPlayer(data->lastTouchedByPlayer);
 }
 
-void World::update(Camera& camera){
-	entityManager.update(transformManager);
+void World::spawnBall() {
+	float delay = 30.0f;
+
+
+}
+
+void World::update(float msec, Camera& camera){
+	entityManager.update(msec, transformManager);
 }
 
 void World::handleWorldInput(MappedInput* mappedInput){

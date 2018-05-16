@@ -22,6 +22,11 @@ enum MessageType{
 
 	MESSAGE_FIRE_PROJECTILE,
 
+	MESSAGE_SCORE_GOAL,
+	MESSAGE_RESPAWN_BALL,
+
+	MESSAGE_CREATE_ENTITY,
+
 	MESSAGE_MAX_NUM_MESSAGES,
 };
 const unsigned int IMMEDIATE = 0;
@@ -51,7 +56,7 @@ struct MessageCallbackWrapper {
 	unsigned int callbackId;
 };
 
-const unsigned int MSG_DATA_MAX_BYTES = 32;
+const unsigned int MSG_DATA_MAX_BYTES = 128;
 typedef unsigned char messagedatasize_t[MSG_DATA_MAX_BYTES];
 const unsigned int MESSAGE_QUEUE_CAPACITY = 32;
 const unsigned int CALLBACKS_CAPACITY = 8;
@@ -107,9 +112,11 @@ public:
 	}
 
 	//compare primarily by dispatch time and secondary by MessageType 
+	//empty messages are ALWAYS sorted after other messages regardless of time untill dispatch
+	//empty messages are really invalid messages, the name should be clearer
 	static bool cmpMsg(Message a, Message b) {
 		return a.timeUntillDispatch < b.timeUntillDispatch ||
-			((a.timeUntillDispatch == b.timeUntillDispatch) && (a.messageType < b.messageType));
+			(a.timeUntillDispatch == b.timeUntillDispatch && a.messageType < b.messageType);
 	}
 
 

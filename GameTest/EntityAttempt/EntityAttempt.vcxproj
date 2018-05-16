@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BallSpawnerEntity.h" />
     <ClInclude Include="ConfigUtil.h" />
     <ClInclude Include="DebrisEntity.h" />
     <ClInclude Include="dummy.h" />
@@ -125,16 +126,23 @@
     <ClInclude Include="EntityContainer.h" />
     <ClInclude Include="EntityInterface.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="GameRefereeEntity.h" />
+    <ClInclude Include="GoalEntity.h" />
+    <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="PlayerEntity.h" />
     <ClInclude Include="WallEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BallSpawnerEntity.cpp" />
     <ClCompile Include="ConfigUtil.cpp" />
     <ClCompile Include="DebrisEntity.cpp" />
     <ClCompile Include="EntityBall.cpp" />
     <ClCompile Include="EntityContainer.cpp" />
     <ClCompile Include="EntityInterface.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="GameRefereeEntity.cpp" />
+    <ClCompile Include="GoalEntity.cpp" />
+    <ClCompile Include="PhysicsEntity.cpp" />
     <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="WallEntity.cpp" />
   </ItemGroup>

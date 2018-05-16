@@ -5,10 +5,10 @@ EntityContainer::~EntityContainer() {
 	//delete[] entityDeleteList;
 }
 
-void EntityContainer::update() {
+void EntityContainer::update(float msec) {
 	entitysize_t* freeSlot = entityPool.firstFree();
 	for (entitysize_t* entity = entityPool.first(); entity != nullptr; entity = entityPool.next(entity, freeSlot)) {
-		reinterpret_cast<EntityInterface*>(entity)->update(*this);
+		reinterpret_cast<EntityInterface*>(entity)->update(msec, *this);
 	}
 }
 

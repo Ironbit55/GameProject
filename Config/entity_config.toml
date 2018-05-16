@@ -24,5 +24,7 @@ entity_type = [
 	{id = 1, name = "BALL"},
 	{id = 2, name = "PLAYER"},
 	{id = 3, name = "DEBRIS"},
+	{id = 4, name = "GOAL"},
+	{id = 5, name = "BALL_SPAWNER"},
 
 ]

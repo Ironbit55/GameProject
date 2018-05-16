@@ -22,6 +22,9 @@
 struct FireProjectileMessageData {
 	Vector2 position;
 	Vector2 direction;
+	float magnitude;
+	InputActors lastTouchedByPlayer;
+	InputActors originalOwnerPlayer;
 };
 
 
@@ -33,7 +36,7 @@ public:
 	~World();
 
 
-	void loadLevel(const std::wstring& levelFileName);;
+	//void loadLevel(const std::wstring& levelFileName);;
 
 	void loadLevelToml(const std::string& levelFileName);
 
@@ -47,7 +50,11 @@ public:
 
 	void fireProjectile(Message msg);
 
-	void update(Camera& camera);;
+	void deleteBall();
+
+	void spawnBall();
+
+	void update(float msec, Camera& camera);
 protected:
 	void handleWorldInput(MappedInput* mappedInput);
 

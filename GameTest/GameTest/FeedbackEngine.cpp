@@ -36,7 +36,7 @@ void FeedbackEngine::update(){
 	sdlInput.update();
 	inputManager.performMapping();
 
-	world->update(*(renderer.getCamera()));
+	world->update(deltaTimeMs, *(renderer.getCamera()));
 	physicsSystem.update(deltaTimeMs);
 	renderSystem.update(deltaTimeMs, contentManager);
 	
@@ -81,6 +81,7 @@ bool FeedbackEngine::initInput(){
 
 	ConfigUtil configUtil;
 	configUtil.loadInputConfig();
+	//read mappings in from file
 	configUtil.loadInputMappings(inputManager);
 	
 	//should read mapppings from file...

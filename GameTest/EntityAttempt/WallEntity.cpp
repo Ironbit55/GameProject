@@ -1,15 +1,14 @@
 #include "WallEntity.h"
-#include "EntityContainer.h"
+#include "EntityManager.h"
 
 
-void WallEntity::initialise(ContentManager& contentManager, TransformManager& transformManager, Vector2 position,
-	float rotation){
+void WallEntity::initialise(ContentManager& contentManager, TransformManager& transformManager, EntityDef entityDef){
 
 	int wallTextureId = contentManager.loadTexture("wall");
 
-	Vector2 spriteScale = Vector2(400.0f, 10.0f);
+	Vector2 spriteScale = entityDef.scale;
 
-	SimpleTransform tempTransform = SimpleTransform(position.x, position.y, spriteScale.x, spriteScale.y, rotation);
+	SimpleTransform tempTransform = SimpleTransform(entityDef.position.x, entityDef.position.y, spriteScale.x, spriteScale.y, entityDef.rotation);
 	SpriteRenderable wallSprite = SpriteRenderable(wallTextureId);
 
 	transform = transformManager.createTransform(tempTransform);
@@ -23,20 +22,46 @@ void WallEntity::initialise(ContentManager& contentManager, TransformManager& tr
 
 	b2FixtureDef groundFixtureDef;
 	groundFixtureDef.shape = &groundBox;
-	groundBodyDef.angle = DegToRad(rotation);
+	groundBodyDef.angle = DegToRad(entityDef.rotation);
 	
-
-	physicsComponent = transformManager.getPhysicsSystem().createComponent(transform, groundBodyDef, groundFixtureDef);
+	createPhysicsComponentFromBody(groundBodyDef, transformManager);
+	attachFixture(groundFixtureDef);
+	//physicsComponent = transformManager.getPhysicsSystem().createComponent(transform, groundBodyDef);
+	//physicsComponent->body->CreateFixture(&groundFixtureDef);
 
 }
 
-void WallEntity::destroy(TransformManager& transformManager) {
-	transformManager.destroyRenderComponent(renderComponent);
-	transformManager.destroyRigidBody(physicsComponent);
-	transformManager.destroyTransform(transform);
-}
 
-void WallEntity::update(EntityContainer& entityContainer) {}
+void WallEntity::update(float msec, EntityContainer& entityContainer) {}
 
 void WallEntity::updateDraw() {
+}
+
+EntityType WallEntity::getEntityType() {
+	return ENTITY_WALL;
+}
+
+bool WallEntity::acceptsContacts() {
+	return true;
+}
+
+void WallEntity::onContactBegin(const ContactData& data) {
+	if(data.entityCollidingWith == nullptr){
+		return;
+	}
+
+	EntityType EntityBType = data.entityCollidingWith->getEntityType();
+	switch(EntityBType)
+	{
+	case ENTITY_BALL: {
+		renderComponent->sprite.colour = Vector4(1, 0, 0, 1);
+		break;
+	}
+	default:
+			break;
+	}
+}
+
+void WallEntity::onContactEnd(const ContactData& data)
+{
 }
