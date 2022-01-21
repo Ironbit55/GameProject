@@ -10,4 +10,4 @@ The [engine](https://github.com/Ironbit55/GameProject/blob/master/GameTest/GameT
 - Messaging System - allows other systems to talk to each other and what not.
 - Audio Manager - loads, caches and triggers audio effects
 - Content Manager - loads and caches textures
-- sdlgl - not really a module, a wrapper around sdl with opengl and sdl input
+- sdlgl - not a system, a wrapper library around sdl with opengl and sdl input
